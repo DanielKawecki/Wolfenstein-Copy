@@ -14,7 +14,7 @@ private:
 
     void initialize();
     void render();
-    void handleInput();
+    void handleInput(GLFWwindow* window);
     void drawPlayer2d();
 
 public:

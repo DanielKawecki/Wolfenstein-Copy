@@ -4,6 +4,7 @@ class Player {
 private:
 	float x = 0;
 	float y = 0;
+	float angle = 0;
 
 public:
 	Player();
@@ -13,4 +14,5 @@ public:
 
 	float getX() const;
 	float getY() const;
+	float getAngle() const;
 };
