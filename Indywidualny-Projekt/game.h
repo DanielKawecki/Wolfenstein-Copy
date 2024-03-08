@@ -2,6 +2,7 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
+#include "player.h"
 
 class Game {
 private:
@@ -9,9 +10,11 @@ private:
     int screenWidth, screenHeight;
     const char* windowTitle;
 
+    Player player;
+
     void initialize();
     void render();
-    void handleEvents();
+    void handleInput();
     void drawPlayer2d();
 
 public:

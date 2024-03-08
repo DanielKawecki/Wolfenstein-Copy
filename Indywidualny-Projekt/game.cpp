@@ -4,6 +4,7 @@
 Game::Game(int width, int height, const char* title)
     : screenWidth(width), screenHeight(height), windowTitle(title), window(nullptr) {
     initialize();
+    player = Player();
 }
 
 Game::~Game() {
@@ -27,7 +28,8 @@ void Game::initialize() {
 
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
-    glOrtho(0.0f, 640.0f, 0.f, 480.f, 0.0f, 100.0f);
+    glOrtho(0, screenWidth, 0, screenWidth, -1, 1);
+    glfwSetKeyCallback(window, handleInput());
 }
 
 void Game::render() {
@@ -40,27 +42,31 @@ void Game::render() {
     glfwSwapBuffers(window);
 }
 
-void Game::handleEvents() {
-    glfwPollEvents();
+//void Game::handleInput(unsigned char key, int x, int y) {
+//    if (key == 'w') { player.moveY(1.f); }
+//    if (key == 's') { player.moveY(-1.f); }
+//
+//    
+//}
+
+void handleInput(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_W && action == GLFW_PRESS)
+        player.moveY(1.f);
 }
 
 void Game::drawPlayer2d() {
-    glColor3f(1, 1, 0);
+    glColor3f(0, 1, 0);
     glPointSize(50.f);
     glBegin(GL_POINTS);
-    glVertex2i(100, 100);
-    glEnd();
-    glColor3f(1, 0, 0);
-    glPointSize(10.f);
-    glBegin(GL_POINTS);
-    glVertex2i(100, 100);
+    glVertex2i(100, player.getY());
     glEnd();
 }
 
 void Game::run() {
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
+        glfwPollEvents();
         render();
-        handleEvents();
     }
 }
