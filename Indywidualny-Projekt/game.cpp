@@ -31,6 +31,11 @@ void Game::initialize() {
     glOrtho(0, screenWidth, 0, screenWidth, -1, 1);
 }
 
+void Game::update() {
+    setDeltaTime();
+    player.handleInput(window, delta_time);
+}
+
 void Game::render() {
     /* Render here */
     glClear(GL_COLOR_BUFFER_BIT);
@@ -41,15 +46,10 @@ void Game::render() {
     glfwSwapBuffers(window);
 }
 
-void Game::handleInput(GLFWwindow* window) {
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        player.moveY(1.f);
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        player.moveY(-1.f);
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        player.moveX(-1.f);
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        player.moveX(1.f);
+void Game::setDeltaTime() {
+    current_time = static_cast<float>(glfwGetTime());
+    delta_time = current_time - previous_time;
+    previous_time = current_time;
 }
 
 void Game::drawPlayer2d() {
@@ -64,7 +64,7 @@ void Game::run() {
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
-        handleInput(window);
+        update();
         render();
     }
 }

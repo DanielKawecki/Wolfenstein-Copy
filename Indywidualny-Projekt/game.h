@@ -9,12 +9,22 @@ private:
     GLFWwindow* window;
     int screenWidth, screenHeight;
     const char* windowTitle;
+    
+    float delta_time = 0;
+    float current_time = 0;
+    float previous_time = 0;
 
     Player player;
 
+    // Initializing functions
     void initialize();
+
+    // Main functions
+    void update();
     void render();
-    void handleInput(GLFWwindow* window);
+    void setDeltaTime();
+
+    // Additional functions
     void drawPlayer2d();
 
 public:
