@@ -1,8 +1,8 @@
 #include "player.h"
 
 Player::Player() {
-	x = 0;
-	y = 0;
+	x = 300;
+	y = 300;
 }
 
 void Player::setPosition(float x_, float y_) {

@@ -3,7 +3,8 @@
 
 Game::Game(int width, int height, const char* title)
     : screenWidth(width), screenHeight(height), windowTitle(title), window(nullptr) {
-    initialize();
+    initializeGL();
+    initilizeMap();
     player = Player();
 }
 
@@ -14,7 +15,7 @@ Game::~Game() {
     }
 }
 
-void Game::initialize() {
+void Game::initializeGL() {
     /* Initialize the library */
     if (!glfwInit())
         throw std::runtime_error("Failed to initialize GLFW");
@@ -28,7 +29,25 @@ void Game::initialize() {
 
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
-    glOrtho(0, screenWidth, 0, screenWidth, -1, 1);
+    glOrtho(0, screenWidth, 0, screenHeight, -1, 1);
+}
+
+void Game::initilizeMap() {
+    map_layout = {
+        "################################",
+        "#          #                   #",
+        "#          #      ###          #",
+        "### ###### #       #   ##   ####",
+        "#        #    #        #       #",
+        "#             #                #",
+        "#        #       ## # ##    #  #",
+        "## #     #########     ##   #  #",
+        "#  #      #     #   #   #      #",
+        "#  # #    #         #   ### # ##",
+        "#    #          #   #   #      #",
+        "#    #    #     #              #",
+        "################################"
+    };
 }
 
 void Game::update() {
@@ -40,6 +59,7 @@ void Game::render() {
     /* Render here */
     glClear(GL_COLOR_BUFFER_BIT);
 
+    drawMap2d();
     drawPlayer2d();
 
     /* Swap front and back buffers */
@@ -54,10 +74,35 @@ void Game::setDeltaTime() {
 
 void Game::drawPlayer2d() {
     glColor3f(0, 1, 0);
-    glPointSize(50.f);
+    glPointSize(10.f);
     glBegin(GL_POINTS);
     glVertex2i(player.getX(), player.getY());
     glEnd();
+}
+
+void Game::drawMap2d() {
+    int x0 = 0;
+    int y0 = 0;
+    int tile_size = 32;
+
+    for (size_t i = 0; i < map_layout.size(); ++i) {
+        for (size_t j = 0; j < map_layout[i].size(); ++j) {
+            if (map_layout[i][j] == '#') {
+                glColor3f(1, 1, 1); 
+            }
+            else { 
+                glColor3f(0, 0, 0); 
+            }
+            x0 = i * tile_size;
+            y0 = j * tile_size;
+            glBegin(GL_QUADS);
+            glVertex2i(x0 + 1, y0 + 1);
+            glVertex2i(x0 + 1, y0 + tile_size - 1);
+            glVertex2i(x0 + tile_size - 1, y0 + tile_size - 1);
+            glVertex2i(x0 + tile_size - 1, y0 + 1);
+            glEnd();
+        }
+    }
 }
 
 void Game::run() {

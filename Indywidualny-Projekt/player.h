@@ -12,7 +12,7 @@ private:
 	float x = 0;
 	float y = 0;
 	float angle = 0;
-	float speed = 500;
+	float speed = 200;
 
 public:
 	Player();
