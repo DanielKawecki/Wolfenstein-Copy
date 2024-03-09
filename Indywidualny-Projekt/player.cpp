@@ -47,6 +47,8 @@ void Player::handleInput(GLFWwindow* window, float delta_time) {
 
     if (angle < 0)
         angle += 2 * PI;
+    if (angle > 2 * PI)
+        angle -= 2 * PI;
 }
 
 void Player::movePosition(float dx, float dy) {

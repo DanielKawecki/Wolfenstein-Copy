@@ -16,6 +16,7 @@ private:
     float previous_time = 0;
 
     std::vector<std::string> map_layout;
+    int map_width = 8;
 
     Player player;
 
@@ -27,6 +28,9 @@ private:
     void update();
     void render();
     void setDeltaTime();
+
+    // Casting rays related functions
+    void drawRays3d();
 
     // Additional functions
     void drawPlayer2d();
