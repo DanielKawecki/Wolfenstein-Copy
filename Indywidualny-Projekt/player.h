@@ -4,22 +4,24 @@
 #include <GLFW/glfw3.h>
 #endif 
 
-
 #pragma once
+
+#include <math.h>
+#define PI 3.141592653589
 
 class Player {
 private:
 	float x = 0;
 	float y = 0;
 	float angle = 0;
-	float speed = 200;
+	float speed = 150;
+	float rotation_speed = 4; // radians
 
 public:
 	Player();
 	void setPosition(float x_, float y_);
 	void handleInput(GLFWwindow* window, float delta_time);
-	void moveX(float offset);
-	void moveY(float offset);
+	void movePosition(float dx, float dy);
 
 	float getX() const;
 	float getY() const;

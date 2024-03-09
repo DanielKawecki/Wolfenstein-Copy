@@ -3,10 +3,7 @@
 
 #include <GLFW/glfw3.h>
 #include <vector>
-#include <math.h>
 #include "player.h"
-
-#define PI 3.141592653589
 
 class Game {
 private:

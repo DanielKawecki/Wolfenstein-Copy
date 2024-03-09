@@ -78,6 +78,18 @@ void Game::drawPlayer2d() {
     glBegin(GL_POINTS);
     glVertex2i(player.getX(), player.getY());
     glEnd();
+
+    // Direction that player looks at
+    float angleRadians = player.getAngle();
+
+    float endX = player.getX() + 20.0f * cos(angleRadians);
+    float endY = player.getY() + 20.0f * sin(angleRadians);
+
+    glLineWidth(2);
+    glBegin(GL_LINES);
+    glVertex2f(player.getX(), player.getY());
+    glVertex2f(endX, endY);
+    glEnd();
 }
 
 void Game::drawMap2d() {
