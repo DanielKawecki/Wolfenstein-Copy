@@ -31,6 +31,7 @@ private:
 
     // Casting rays related functions
     void drawRays3d();
+    float getRayLength(float a_x, float a_y, float b_x, float b_y, float angle);
 
     // Additional functions
     void drawPlayer2d();

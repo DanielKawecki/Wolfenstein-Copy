@@ -78,13 +78,13 @@ void Game::drawRays3d() {
     float ray_angle = 0;
     float ray_x;
     float ray_y;
-    float x_offset;
-    float y_offset;
+    float x_offset = 64;
+    float y_offset = 64;
     float player_angle = player.getAngle();
     ray_angle = player_angle;
 
     for (int rays = 0; rays < 1; rays++) {
-        //--- Chcecking Horizontal Lines ---
+        ////--- Chcecking Horizontal Lines ---
         depth_of_field = 0;
         float angle_tangent = -1 / tan(ray_angle);
         if (ray_angle > PI) {
@@ -104,12 +104,53 @@ void Game::drawRays3d() {
             ray_y = player_y;
             depth_of_field = 8;
         }
-        while (depth_of_field < 3) {
+        while (depth_of_field < 8) {
             map_x = (int)(ray_x) >> 6;
             map_y = (int)(ray_y) >> 6;
             map_position = map_y * map_width + map_x;
-            std::cout << map_x << " " << map_y << std::endl; /////////
-            if (map_x < 8 && map_x > 0 && map_layout[map_x][map_y] == '#') {
+            //std::cout << map_x << " " << map_y << std::endl; /////////
+            if (map_x < 8 && map_x >= 0 && map_layout[map_x][map_y] == '#') {
+                depth_of_field = 8;
+            }
+            else {
+                ray_x += x_offset;
+                ray_y += y_offset;
+                depth_of_field += 1;
+            }
+        }
+        glColor3f(0, 0, 1);
+        glLineWidth(1);
+        glBegin(GL_LINES);
+        glVertex2i(player_x, player_y + 1);
+        glVertex2i(ray_x, ray_y + 1);
+        glEnd();
+
+        //--- Chcecking Vertical Lines ---
+        depth_of_field = 0;
+        float negative_tangent = -tan(ray_angle);
+        if (ray_angle > (PI / 2.f) && ray_angle < (3.f * PI / 2.f)) {
+            ray_x = (((int)player_x >> 6) << 6) - 0.0001;
+            ray_y = (player_x - ray_x) * negative_tangent + player_y;
+            x_offset = -64;
+            y_offset = -x_offset * negative_tangent;
+        }
+        if (ray_angle < (PI / 2.f) || ray_angle > (3.f * PI / 2.f)) {
+            ray_x = (((int)player_x >> 6) << 6) + 64;
+            ray_y = (player_x - ray_x) * negative_tangent + player_y;
+            x_offset = 64;
+            y_offset = -x_offset * negative_tangent;
+        }
+        if (ray_angle == 0 || ray_angle == PI) {
+            ray_x = player_x;
+            ray_y = player_y;
+            depth_of_field = 8;
+        }
+        while (depth_of_field < 8) {
+            map_x = (int)(ray_x) >> 6;
+            map_y = (int)(ray_y) >> 6;
+            map_position = map_y * map_width + map_x;
+            //std::cout << map_x << " " << map_y << std::endl; /////////
+            if (map_y < 8 && map_y >= 0 && map_layout[map_x][map_y] == '#') {
                 depth_of_field = 8;
             }
             else {
@@ -126,6 +167,10 @@ void Game::drawRays3d() {
         glEnd();
     }
     
+}
+
+float Game::getRayLength(float a_x, float a_y, float b_x, float b_y, float angle) {
+    return (sqrt((b_x - a_x) * (b_x - a_x) + (b_y - a_y) * (b_y - a_y)));
 }
 
 void Game::drawPlayer2d() {
