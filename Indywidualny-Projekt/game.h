@@ -17,6 +17,7 @@ private:
 
     std::vector<std::string> map_layout;
     int map_width = 8;
+    int tile_size = 64;
 
     Player player;
 
@@ -33,9 +34,10 @@ private:
     void drawRays3d();
     float getRayLength(float a_x, float a_y, float b_x, float b_y, float angle);
 
-    // Additional functions
+    // Drawing functions
     void drawPlayer2d();
     void drawMap2d();
+    void drawLine(float a_x, float a_y, float b_x, float b_y);
 
 public:
     Game(int width, int height, const char* title);

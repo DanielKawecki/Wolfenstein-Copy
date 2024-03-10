@@ -41,9 +41,9 @@ void Player::handleInput(GLFWwindow* window, float delta_time) {
     movePosition(dx, dy);
 
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-        angle += rotation_speed * delta_time;
-    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
         angle -= rotation_speed * delta_time;
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+        angle += rotation_speed * delta_time;
 
     if (angle < 0)
         angle += 2 * PI;

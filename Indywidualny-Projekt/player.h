@@ -8,6 +8,7 @@
 
 #include <math.h>
 #define PI 3.141592653589
+#define Degree 0.0174532925 // radians
 
 class Player {
 private:
