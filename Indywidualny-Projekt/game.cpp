@@ -86,6 +86,9 @@ void Game::drawRays3d() {
     for (int rays = 0; rays < 1; rays++) {
         ////--- Chcecking Horizontal Lines ---
         depth_of_field = 0;
+        float horizontal_distance = 1000000;
+        float horizontal_x = player_x;
+        float horizontal_y = player_y;
         float angle_tangent = -1 / tan(ray_angle);
         if (ray_angle > PI) {
             ray_y = (((int)player_y >> 6) << 6) - 0.0001;
@@ -110,7 +113,10 @@ void Game::drawRays3d() {
             map_position = map_y * map_width + map_x;
             //std::cout << map_x << " " << map_y << std::endl; /////////
             if (map_x < 8 && map_x >= 0 && map_layout[map_x][map_y] == '#') {
-                depth_of_field = 8;
+                horizontal_x = ray_x;
+                horizontal_y = ray_y;
+                horizontal_distance = getRayLength(player_x, player_y, horizontal_x, horizontal_y, ray_angle);
+                depth_of_field = 8; // Ending the while loop
             }
             else {
                 ray_x += x_offset;
@@ -118,15 +124,12 @@ void Game::drawRays3d() {
                 depth_of_field += 1;
             }
         }
-        glColor3f(0, 0, 1);
-        glLineWidth(1);
-        glBegin(GL_LINES);
-        glVertex2i(player_x, player_y + 1);
-        glVertex2i(ray_x, ray_y + 1);
-        glEnd();
 
         //--- Chcecking Vertical Lines ---
         depth_of_field = 0;
+        float vertical_distance = 1000000;
+        float vertical_x = player_x;
+        float vertical_y = player_y;
         float negative_tangent = -tan(ray_angle);
         if (ray_angle > (PI / 2.f) && ray_angle < (3.f * PI / 2.f)) {
             ray_x = (((int)player_x >> 6) << 6) - 0.0001;
@@ -151,6 +154,9 @@ void Game::drawRays3d() {
             map_position = map_y * map_width + map_x;
             //std::cout << map_x << " " << map_y << std::endl; /////////
             if (map_y < 8 && map_y >= 0 && map_layout[map_x][map_y] == '#') {
+                vertical_x = ray_x;
+                vertical_y = ray_y;
+                vertical_distance = getRayLength(player_x, player_y, vertical_x, vertical_y, ray_angle);
                 depth_of_field = 8;
             }
             else {
@@ -159,6 +165,16 @@ void Game::drawRays3d() {
                 depth_of_field += 1;
             }
         }
+
+        if (vertical_distance < horizontal_distance) {
+            ray_x = vertical_x;
+            ray_y = vertical_y;
+        }
+        else if (vertical_distance > horizontal_distance) {
+            ray_x = horizontal_x;
+            ray_y = horizontal_y;
+        }
+            
         glColor3f(1, 0, 0);
         glLineWidth(1);
         glBegin(GL_LINES);
