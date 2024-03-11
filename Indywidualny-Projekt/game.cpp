@@ -29,16 +29,16 @@ void Game::initializeGL() {
 
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
-    glOrtho(0, screenWidth, 0, screenHeight, -1, 1);
+    glOrtho(0, screenWidth, screenHeight, 0, -1, 1);
 }
 
 void Game::initilizeMap() {
     map_layout = {
         "########",
+        "#    # #",
+        "#    # #",
         "#      #",
         "#   #  #",
-        "#   #  #",
-        "#      #",
         "#  ##  #",
         "#  #   #",
         "########",
@@ -54,8 +54,8 @@ void Game::render() {
     /* Render here */
     glClear(GL_COLOR_BUFFER_BIT);
 
-    //drawMap2d();
-    //drawPlayer2d();
+    drawMap2d();
+    drawPlayer2d();
     drawRays3d();
 
     /* Swap front and back buffers */
@@ -118,7 +118,7 @@ void Game::drawRays3d() {
             map_y = (int)(ray_y) >> 6;
             map_position = map_y * map_width + map_x;
             //std::cout << map_x << " " << map_y << std::endl; /////////
-            if (map_x < 8 && map_x >= 0 && map_layout[map_x][map_y] == '#') {
+            if (map_x < 8 && map_x >= 0 && map_layout[map_y][map_x] == '#') {
                 horizontal_x = ray_x;
                 horizontal_y = ray_y;
                 horizontal_distance = getRayLength(player_x, player_y, horizontal_x, horizontal_y, ray_angle);
@@ -159,7 +159,7 @@ void Game::drawRays3d() {
             map_y = (int)(ray_y) >> 6;
             map_position = map_y * map_width + map_x;
             //std::cout << map_x << " " << map_y << std::endl; /////////
-            if (map_y < 8 && map_y >= 0 && map_layout[map_x][map_y] == '#') {
+            if (map_y < 8 && map_y >= 0 && map_layout[map_y][map_x] == '#') {
                 vertical_x = ray_x;
                 vertical_y = ray_y;
                 vertical_distance = getRayLength(player_x, player_y, vertical_x, vertical_y, ray_angle);
@@ -176,14 +176,16 @@ void Game::drawRays3d() {
             ray_x = vertical_x;
             ray_y = vertical_y;
             length = vertical_distance;
+            glColor3f(0.5, 0.5, 0.5);
         }
         else if (vertical_distance > horizontal_distance) {
             ray_x = horizontal_x;
             ray_y = horizontal_y;
             length = horizontal_distance;
+            glColor3f(0.6, 0.6, 0.6);
         }
            
-        //drawLine(player_x, player_y, ray_x, ray_y);
+        drawLine(player_x, player_y, ray_x, ray_y);
 
         //--- 3D Projection ---
         float cosine_angle = player_angle - ray_angle;
@@ -195,17 +197,16 @@ void Game::drawRays3d() {
 
         length = length * cos(cosine_angle);
 
-        float line_height = (tile_size * screenHeight) / length;
-        float line_offset = screenHeight - (line_height / 2.f);
+        float line_height = (tile_size * 320) / length;
+        float line_offset = 160 - line_height / 2.f;
 
-        if (line_height > 2 * screenHeight)
-            line_height = 2 * screenHeight;
+        if (line_height > 2 * 320)
+            line_height = 2 * 320;
 
-        glColor3f(1, 0, 0);
-        glLineWidth(21);
+        glLineWidth(8);
         glBegin(GL_LINES);
-        glVertex2i(rays * 21, line_offset / 2.f);
-        glVertex2i(rays * 21, line_height + line_offset / 2.f);
+        glVertex2i(rays * 8 + 530, line_offset);
+        glVertex2i(rays * 8 + 530, line_height + line_offset);
         glEnd();
 
         ray_angle += Degree;
@@ -230,7 +231,7 @@ void Game::drawPlayer2d() {
     glEnd();
 
     // Direction that player looks at
-    /*float angleRadians = player.getAngle();
+    float angleRadians = player.getAngle();
 
     float endX = player.getX() + 20.0f * cos(angleRadians);
     float endY = player.getY() + 20.0f * sin(angleRadians);
@@ -239,7 +240,7 @@ void Game::drawPlayer2d() {
     glBegin(GL_LINES);
     glVertex2f(player.getX(), player.getY());
     glVertex2f(endX, endY);
-    glEnd();*/
+    glEnd();
 }
 
 void Game::drawMap2d() {
@@ -247,16 +248,15 @@ void Game::drawMap2d() {
     int y0 = 0;
     int tile_size = 64;
 
-    for (size_t i = 0; i < map_layout.size(); ++i) {
-        for (size_t j = 0; j < map_layout[i].size(); ++j) {
-            if (map_layout[i][j] == '#') {
-                glColor3f(1, 1, 1); 
-            }
-            else { 
-                glColor3f(0, 0, 0); 
-            }
-            x0 = i * tile_size;
-            y0 = j * tile_size;
+    for (size_t y = 0; y < map_layout.size(); ++y) {
+        for (size_t x = 0; x < map_layout[y].size(); ++x) {
+            if (map_layout[y][x] == '#')
+                glColor3f(1, 1, 1);
+            else 
+                glColor3f(0, 0, 0);
+            
+            x0 = x * tile_size;
+            y0 = y * tile_size;
             glBegin(GL_QUADS);
             glVertex2i(x0 + 1, y0 + 1);
             glVertex2i(x0 + 1, y0 + tile_size - 1);
@@ -265,10 +265,11 @@ void Game::drawMap2d() {
             glEnd();
         }
     }
+
 }
 
 void Game::drawLine(float a_x, float a_y, float b_x, float b_y) {
-    glColor3f(1, 0, 0);
+    //glColor3f(1, 0, 0);
     glLineWidth(1);
     glBegin(GL_LINES);
     glVertex2i(a_x, a_y);

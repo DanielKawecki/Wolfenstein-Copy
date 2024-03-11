@@ -4,7 +4,7 @@
 
 int main(void) {
     try {
-        Game game(1280, 720, "Wolfenstein");
+        Game game(1024, 512, "Wolfenstein");
         game.run();
         return 0;
     }

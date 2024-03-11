@@ -1,8 +1,8 @@
 #include "player.h"
 
 Player::Player() {
-	x = 300;
-	y = 300;
+	x = 100;
+	y = 200;
 }
 
 void Player::setPosition(float x_, float y_) {
@@ -27,12 +27,12 @@ void Player::handleInput(GLFWwindow* window, float delta_time) {
         dy += -vy;
     }
         
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
         dx += vy;
         dy += -vx;
     }
         
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
         dx += -vy;
         dy += vx;
     }
