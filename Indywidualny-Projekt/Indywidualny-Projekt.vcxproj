@@ -26,6 +26,7 @@
   <ItemGroup>
     <ClInclude Include="game.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="state.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

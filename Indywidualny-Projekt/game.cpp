@@ -1,8 +1,7 @@
 #include <iostream>
 #include "game.h"
 
-Game::Game(int width, int height, const char* title)
-    : screenWidth(width), screenHeight(height), windowTitle(title), window(nullptr) {
+Game::Game() {
     initializeGL();
     initilizeMap();
     player = Player();
@@ -21,7 +20,7 @@ void Game::initializeGL() {
         throw std::runtime_error("Failed to initialize GLFW");
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(screenWidth, screenHeight, windowTitle, nullptr, nullptr);
+    window = glfwCreateWindow(screen_width, screen_height, window_title, nullptr, nullptr);
     if (!window) {
         glfwTerminate();
         throw std::runtime_error("Failed to create GLFW window");
@@ -29,7 +28,7 @@ void Game::initializeGL() {
 
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
-    glOrtho(0, screenWidth, screenHeight, 0, -1, 1);
+    glOrtho(0, screen_width, screen_height, 0, -1, 1);
 }
 
 void Game::initilizeMap() {
@@ -45,12 +44,12 @@ void Game::initilizeMap() {
     };
 }
 
-void Game::update() {
+void Game::updatePlaying() {
     setDeltaTime();
     player.handleInput(window, delta_time);
 }
 
-void Game::render() {
+void Game::renderPlaying() {
     /* Render here */
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -223,6 +222,25 @@ float Game::getRayLength(float a_x, float a_y, float b_x, float b_y, float angle
     return (sqrt((b_x - a_x) * (b_x - a_x) + (b_y - a_y) * (b_y - a_y)));
 }
 
+void Game::popState() {
+    delete states.top();
+    states.top();
+}
+
+void Game::changeState(State* state_) {
+    if (!states.empty())
+        popState();
+    pushState(state_);
+}
+
+State* Game::peekState()
+{
+    if (states.empty())
+        return nullptr;
+
+    return states.top();
+}
+
 void Game::drawPlayer2d() {
     glColor3f(0, 1, 0);
     glPointSize(10.f);
@@ -277,11 +295,19 @@ void Game::drawLine(float a_x, float a_y, float b_x, float b_y) {
     glEnd();
 }
 
+void Game::pushState(State* state_) {
+    states.push(state_);
+}
+
 void Game::run() {
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
-        update();
-        render();
+        /*updatePlaying();
+        renderPlaying();*/
+        if (!states.empty()) {
+            states.top()->update(delta_time);
+            states.top()->render();
+        }
     }
 }

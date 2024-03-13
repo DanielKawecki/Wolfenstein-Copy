@@ -3,13 +3,17 @@
 
 #include <GLFW/glfw3.h>
 #include <vector>
+#include <stack>
 #include "player.h"
+
+class State;
 
 class Game {
 private:
-    GLFWwindow* window;
-    int screenWidth, screenHeight;
-    const char* windowTitle;
+    GLFWwindow* window = nullptr;
+    int screen_width = 1024;
+    int screen_height = 512;
+    const char* window_title = "Wolfenstein";
     
     float delta_time = 0;
     float current_time = 0;
@@ -25,14 +29,15 @@ private:
     void initializeGL();
     void initilizeMap();
 
-    // Main functions
-    void update();
-    void render();
-    void setDeltaTime();
-
     // Casting rays related functions
     void drawRays3d();
     float getRayLength(float a_x, float a_y, float b_x, float b_y, float angle);
+
+    // State Machine related functions
+    std::stack<State*> states;
+    void popState();
+    void changeState(State* state_);
+    State* peekState();
 
     // Drawing functions
     void drawPlayer2d();
@@ -40,10 +45,17 @@ private:
     void drawLine(float a_x, float a_y, float b_x, float b_y);
 
 public:
-    Game(int width, int height, const char* title);
+    Game();
     ~Game();
 
+    void pushState(State* state_);
     void run();
+
+    // Main functions for playing state
+    void updatePlaying();
+    void renderPlaying();
+    void setDeltaTime();
 
 };
 
+#include "state.h"
