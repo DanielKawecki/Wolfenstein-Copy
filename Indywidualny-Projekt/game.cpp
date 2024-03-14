@@ -1,10 +1,10 @@
 #include <iostream>
 #include "game.h"
 
-Game::Game() {
+Game::Game() : player(Player(map_layout)) {
     initializeGL();
     initilizeMap();
-    player = Player();
+    //player = Player(map_layout);
 }
 
 Game::~Game() {
@@ -246,6 +246,14 @@ void Game::drawPlayer2d() {
     glPointSize(10.f);
     glBegin(GL_POINTS);
     glVertex2i(player.getX(), player.getY());
+    glEnd();
+
+    glColor3f(1, 0, 0);
+    glLineWidth(2);
+    glBegin(GL_LINES);
+    std::cout << player.getRect().at(0) << std::endl;
+    glVertex2f(player.getRect().at(0), player.getRect().at(2));
+    glVertex2f(player.getRect().at(1), player.getRect().at(3));
     glEnd();
 
     // Direction that player looks at

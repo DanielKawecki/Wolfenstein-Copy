@@ -1,8 +1,9 @@
 #include "player.h"
 
-Player::Player() {
+Player::Player(std::vector<std::string> map_layout_) {
 	x = 100;
 	y = 200;
+    map_layout = map_layout_;
 }
 
 void Player::setPosition(float x_, float y_) {
@@ -59,8 +60,37 @@ void Player::movePosition(float dx, float dy) {
     // !checkWalls(position.x, position.y + dy)
     if (true)
         y += dy;
+
+    setRect();
+}
+
+void Player::setTilePosition(int tile_size) {
+    tile_x = floor(x / tile_size);
+    tile_y = floor(y / tile_size); 
+}
+
+bool Player::checkWalls(float dx, float dy) {
+    for (int i = 0; i < 1; i++)
+        for (int j = 0; j < 1; j++)
+            
+    return false;
+}
+
+void Player::setRect() {
+    top = y - size;
+    bottom = y + size;
+    left = x - size;
+    right = x + size;
 }
 
 float Player::getX() const { return x; }
 float Player::getY() const { return y; }
+
+int Player::getTileX() const { return tile_x; }
+int Player::getTileY() const { return tile_y; }
+
 float Player::getAngle() const { return angle; }
+
+std::vector<float> Player::getRect() {
+    return { top, bottom, left, right };
+}
