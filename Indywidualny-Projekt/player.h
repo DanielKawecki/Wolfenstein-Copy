@@ -12,6 +12,11 @@
 #define PI 3.141592653589
 #define Degree 0.0174532925 // radians
 
+struct Rect {
+	float left, top;
+	float right, bottom;
+};
+
 class Player {
 private:
 	float x = 0;
@@ -24,6 +29,7 @@ private:
 	int tile_x = 0;
 	int tile_y = 0;
 
+	Rect rect;
 	float size = 20;
 	float top = 0;
 	float bottom = 0;
@@ -31,18 +37,20 @@ private:
 	float right = 0;
 
 public:
-	Player(std::vector<std::string> map_layout);
+	Player();
 	void setPosition(float x_, float y_);
 	void handleInput(GLFWwindow* window, float delta_time);
 	void movePosition(float dx, float dy);
 	void setTilePosition(int tile_size);
 	bool checkWalls(float dx, float dy);
-	void setRect();
+	void setRect(float x_, float y_);
+	void setWalls(std::vector<std::string> map_layout_);
+	bool intersects(const Rect& rect1, const Rect& rect2);
 
 	float getX() const;
 	float getY() const;
 	int getTileX() const;
 	int getTileY() const;
 	float getAngle() const;
-	std::vector<float> getRect();
+	Rect getRect();
 };

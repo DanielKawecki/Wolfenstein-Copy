@@ -1,9 +1,8 @@
 #include "player.h"
 
-Player::Player(std::vector<std::string> map_layout_) {
-	x = 100;
+Player::Player() {
+	x = 200;
 	y = 200;
-    map_layout = map_layout_;
 }
 
 void Player::setPosition(float x_, float y_) {
@@ -54,14 +53,14 @@ void Player::handleInput(GLFWwindow* window, float delta_time) {
 
 void Player::movePosition(float dx, float dy) {
     // !checkWalls(position.x + dx, position.y)
-    if (true)
+    if (!checkWalls(x + dx, y))
         x += dx;
 
     // !checkWalls(position.x, position.y + dy)
-    if (true)
+    if (!checkWalls(x, y + dy))
         y += dy;
 
-    setRect();
+    setRect(x, y);
 }
 
 void Player::setTilePosition(int tile_size) {
@@ -70,17 +69,49 @@ void Player::setTilePosition(int tile_size) {
 }
 
 bool Player::checkWalls(float dx, float dy) {
-    for (int i = 0; i < 1; i++)
-        for (int j = 0; j < 1; j++)
+    setTilePosition(64);
+    Rect player_rect;
+    player_rect.top = dy - size;
+    player_rect.bottom = dy + size;
+    player_rect.left = dx - size;
+    player_rect.right = dx + size;
+    
+    for (int i = -1; i <= 1; i++) {
+        for (int j = -1; j <= 1; j++) {
+            if (map_layout[tile_x + i][tile_y + j] == '#') {
+                float wall_x = (tile_x + i) * 64;
+                float wall_y = (tile_y + j) * 64;
+                Rect wall_rect = { wall_x, wall_y, wall_x + 64, wall_y + 64 };
+                
+                if (intersects(rect, wall_rect))
+                    return true;
+            }
+        }
+    }
             
     return false;
 }
 
-void Player::setRect() {
-    top = y - size;
-    bottom = y + size;
-    left = x - size;
-    right = x + size;
+void Player::setRect(float x_, float y_) {
+    rect.top = y_ - size;
+    rect.bottom = y_ + size;
+    rect.left = x_ - size;
+    rect.right = x_ + size;
+}
+
+void Player::setWalls(std::vector<std::string> map_layout_) {
+    map_layout = map_layout_;
+}
+
+bool Player::intersects(const Rect& rect1, const Rect& rect2) {
+    if (rect1.right <= rect2.left || 
+        rect2.right <= rect1.left || 
+        rect1.bottom <= rect2.top || 
+        rect2.bottom <= rect1.top) { 
+        return false;
+    }
+    
+    return true;
 }
 
 float Player::getX() const { return x; }
@@ -91,6 +122,6 @@ int Player::getTileY() const { return tile_y; }
 
 float Player::getAngle() const { return angle; }
 
-std::vector<float> Player::getRect() {
-    return { top, bottom, left, right };
+Rect Player::getRect() {
+    return rect;
 }
