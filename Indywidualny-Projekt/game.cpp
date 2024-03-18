@@ -88,7 +88,7 @@ void Game::updateMenu() {
 void Game::renderMenu() {
     /* Render here */
     glClear(GL_COLOR_BUFFER_BIT);
-
+    
     glColor3f(1, 0, 0);
     glBegin(GL_QUADS);
     glVertex2d(0, 0);
@@ -96,7 +96,6 @@ void Game::renderMenu() {
     glVertex2d(screen_width, screen_height);
     glVertex2d(0, screen_height);
     glEnd();
-
 
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
@@ -351,7 +350,6 @@ void Game::drawMap2d() {
 }
 
 void Game::drawLine(float a_x, float a_y, float b_x, float b_y) {
-    //glColor3f(1, 0, 0);
     glLineWidth(1);
     glBegin(GL_LINES);
     glVertex2i(a_x, a_y);
@@ -367,8 +365,7 @@ void Game::run() {
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
-        /*updatePlaying();
-        renderPlaying();*/
+        
         if (!states.empty()) {
             states.top()->update(delta_time);
             states.top()->render();
