@@ -28,6 +28,7 @@ private:
     // Initializing functions
     void initializeGL();
     void initilizeMap();
+    void setPlayerPosition();
 
     // Casting rays related functions
     void drawRays3d();

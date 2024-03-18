@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+#include <string>
 #include "game.h"
 
 Game::Game() {
@@ -29,17 +31,32 @@ void Game::initializeGL() {
     glOrtho(0, screen_width, screen_height, 0, -1, 1);
 }
 
-void Game::initilizeMap() {
-    map_layout = {
-        "########",
-        "#    # #",
-        "#    # #",
-        "#      #",
-        "#   #  #",
-        "#  ##  #",
-        "#  #   #",
-        "########",
-    };
+void Game::initilizeMap(/*map number*/) {
+    map_layout.clear();
+
+    try {
+        std::ifstream file("assets/maps/map1.txt");
+        if (!file.is_open()) {
+            throw std::runtime_error("Error opening file");
+        }
+        std::string line;
+        while (std::getline(file, line)) {
+            map_layout.push_back(line);
+        }
+        file.close();
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Exception occurred: " << e.what() << std::endl;
+    }
+}
+
+void Game::setPlayerPosition() {
+    for (size_t y = 0; y < map_layout.size(); ++y) {
+        for (size_t x = 0; x < map_layout[y].size(); ++x) {
+            if (map_layout[y][x] == 'p')
+                player.setPosition(x * 64 + 32, y * 64 + 32);
+        }
+    }
 }
 
 void Game::updatePlaying() {
@@ -65,12 +82,7 @@ void Game::renderPlaying() {
 
 void Game::updateMenu() {
     setDeltaTime();
-    menuHandleInput();
-
-    initilizeMap();
-    player = Player();
-    player.setWalls(map_layout);
-    
+    menuHandleInput();    
 }
 
 void Game::renderMenu() {
@@ -275,6 +287,10 @@ State* Game::peekState()
 
 void Game::menuHandleInput() {
     if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) {
+        initilizeMap();
+        player = Player();
+        player.setWalls(map_layout);
+        setPlayerPosition();
         pushState(new PlayingState(this));
     }
 }

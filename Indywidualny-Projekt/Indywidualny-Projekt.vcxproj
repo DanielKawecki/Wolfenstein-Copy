@@ -28,6 +28,9 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="state.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="assets\maps\map1.txt" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
