@@ -39,6 +39,8 @@ private:
     void changeState(State* state_);
     State* peekState();
 
+    void menuHandleInput();
+
     // Drawing functions
     void drawPlayer2d();
     void drawMap2d();
@@ -50,6 +52,10 @@ public:
 
     void pushState(State* state_);
     void run();
+
+    //Main functions for menu state
+    void updateMenu();
+    void renderMenu();
 
     // Main functions for playing state
     void updatePlaying();

@@ -3,9 +3,6 @@
 
 Game::Game() {
     initializeGL();
-    initilizeMap();
-    player = Player();
-    player.setWalls(map_layout);
 }
 
 Game::~Game() {
@@ -48,6 +45,10 @@ void Game::initilizeMap() {
 void Game::updatePlaying() {
     setDeltaTime();
     player.handleInput(window, delta_time);
+
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        pushState(new MenuState(this));
+    }
 }
 
 void Game::renderPlaying() {
@@ -62,10 +63,38 @@ void Game::renderPlaying() {
     glfwSwapBuffers(window);
 }
 
+void Game::updateMenu() {
+    setDeltaTime();
+    menuHandleInput();
+
+    initilizeMap();
+    player = Player();
+    player.setWalls(map_layout);
+    
+}
+
+void Game::renderMenu() {
+    /* Render here */
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glColor3f(1, 0, 0);
+    glBegin(GL_QUADS);
+    glVertex2d(0, 0);
+    glVertex2d(screen_width, 0);
+    glVertex2d(screen_width, screen_height);
+    glVertex2d(0, screen_height);
+    glEnd();
+
+
+    /* Swap front and back buffers */
+    glfwSwapBuffers(window);
+}
+
 void Game::setDeltaTime() {
     current_time = static_cast<float>(glfwGetTime());
     delta_time = current_time - previous_time;
     previous_time = current_time;
+    //std::cout << 1.f / delta_time << "fps" << std::endl;
 }
 
 void Game::drawRays3d() {
@@ -244,19 +273,27 @@ State* Game::peekState()
     return states.top();
 }
 
+void Game::menuHandleInput() {
+    if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) {
+        pushState(new PlayingState(this));
+    }
+}
+
 void Game::drawPlayer2d() {
-    glColor3f(0, 1, 0);
+    /*glColor3f(0, 1, 0);
     glPointSize(10.f);
     glBegin(GL_POINTS);
     glVertex2i(player.getX(), player.getY());
-    glEnd();
+    glEnd();*/
 
     // Diagonal of the players rect
-    glColor3f(1, 0, 0);
-    glLineWidth(2);
-    glBegin(GL_LINES);
+    glColor3f(0, 1, 0);
+    glLineWidth(1);
+    glBegin(GL_QUADS);
     glVertex2f(player.getRect().left, player.getRect().top);
+    glVertex2f(player.getRect().right, player.getRect().top);
     glVertex2f(player.getRect().right, player.getRect().bottom);
+    glVertex2f(player.getRect().left, player.getRect().bottom);
     glEnd();
 
     // Direction that player looks at

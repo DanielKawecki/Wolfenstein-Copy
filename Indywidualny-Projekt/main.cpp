@@ -13,7 +13,7 @@ int main(void) {
         return -1;
     }*/
     Game game;
-    game.pushState(new PlayingState(&game));
+    game.pushState(new MenuState(&game));
     game.run();
 
     return 0;
