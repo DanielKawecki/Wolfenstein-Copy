@@ -3,7 +3,7 @@
 #include "game.h"
 
 // Maszyna stanów wykonana jest w ten sposób w celach edukacyjnych. Z pewnoœci¹
-// do tego zastosowania mo¿a by zrobiæ to proœcij.
+// do tego zastosowania mo¿a by zrobiæ to proœciej.
 
 class State {
 public:

@@ -197,11 +197,13 @@ void Game::drawRays3d() {
 
         length = length * cos(cosine_angle);
 
-        float line_height = (tile_size * 320) / length;
-        float line_offset = 160 - line_height / 2.f;
-
+        float line_height = (tile_size * 420) / length;
         if (line_height > 2 * 320)
             line_height = 2 * 320;
+
+        float line_offset = 180 - line_height / 2.f;
+
+        
 
         glLineWidth(8);
         glBegin(GL_LINES);

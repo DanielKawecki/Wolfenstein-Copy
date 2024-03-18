@@ -52,11 +52,9 @@ void Player::handleInput(GLFWwindow* window, float delta_time) {
 }
 
 void Player::movePosition(float dx, float dy) {
-    // !checkWalls(position.x + dx, position.y)
     if (!checkWalls(x + dx, y))
         x += dx;
 
-    // !checkWalls(position.x, position.y + dy)
     if (!checkWalls(x, y + dy))
         y += dy;
 
@@ -75,15 +73,15 @@ bool Player::checkWalls(float dx, float dy) {
     player_rect.bottom = dy + size;
     player_rect.left = dx - size;
     player_rect.right = dx + size;
-    
+   
     for (int i = -1; i <= 1; i++) {
         for (int j = -1; j <= 1; j++) {
-            if (map_layout[tile_x + i][tile_y + j] == '#') {
-                float wall_x = (tile_x + i) * 64;
-                float wall_y = (tile_y + j) * 64;
+            if (map_layout[tile_y + i][tile_x + j] == '#') {
+                float wall_y = (tile_y + i) * 64;
+                float wall_x = (tile_x + j) * 64;
                 Rect wall_rect = { wall_x, wall_y, wall_x + 64, wall_y + 64 };
                 
-                if (intersects(rect, wall_rect))
+                if (intersects(player_rect, wall_rect))
                     return true;
             }
         }
