@@ -3,11 +3,26 @@
 #include <string>
 #include "game.h"
 
-Game::Game() {
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+    glViewport(0, 0, width, height);
+}
+
+Game::Game() {    
+    if (!initFreeType(ft, face, "assets/font/pixelFont.ttf", 24)) {
+        glfwTerminate();
+    }
+    
     initializeGL();
+
+    //glEnable(GL_TEXTURE_2D);
+    //glEnable(GL_BLEND);
+    //(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 Game::~Game() {
+    FT_Done_Face(face);
+    FT_Done_FreeType(ft);
+
     if (window) {
         glfwDestroyWindow(window);
         glfwTerminate();
@@ -19,6 +34,14 @@ void Game::initializeGL() {
     if (!glfwInit())
         throw std::runtime_error("Failed to initialize GLFW");
 
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(screen_width, screen_height, window_title, nullptr, nullptr);
     if (!window) {
@@ -28,7 +51,12 @@ void Game::initializeGL() {
 
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
-    glOrtho(0, screen_width, screen_height, 0, -1, 1);
+    //glOrtho(0, screen_width, screen_height, 0, -1, 1);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+    }
 }
 
 void Game::initilizeMap(/*map number*/) {
@@ -59,6 +87,26 @@ void Game::setPlayerPosition() {
     }
 }
 
+bool Game::initFreeType(FT_Library& ft, FT_Face& face, const char* fontPath, int fontSize) {
+    if (FT_Init_FreeType(&ft) != 0) {
+        std::cerr << "Failed to initialize FreeType." << std::endl;
+        return false;
+    }
+
+    if (FT_New_Face(ft, fontPath, 0, &face) != 0) {
+        std::cerr << "Failed to load font." << std::endl;
+        return false;
+    }
+
+    FT_Set_Pixel_Sizes(face, 0, fontSize);
+
+    return true;
+}
+
+//void Game::framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+//    glViewport(0, 0, width, height);
+//}
+
 void Game::updatePlaying() {
     setDeltaTime();
     player.handleInput(window, delta_time);
@@ -76,6 +124,8 @@ void Game::renderPlaying() {
     drawPlayer2d();
     drawRays3d();
 
+    //renderText(face, "Hello!", 50.f, 50.f, 2.f);
+
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
 }
@@ -87,7 +137,7 @@ void Game::updateMenu() {
 
 void Game::renderMenu() {
     /* Render here */
-    glClear(GL_COLOR_BUFFER_BIT);
+    /*glClear(GL_COLOR_BUFFER_BIT);
     
     glColor3f(1, 0, 0);
     glBegin(GL_QUADS);
@@ -95,7 +145,9 @@ void Game::renderMenu() {
     glVertex2d(screen_width, 0);
     glVertex2d(screen_width, screen_height);
     glVertex2d(0, screen_height);
-    glEnd();
+    glEnd();*/
+
+    renderText(face, "Hello, OpenGL!", 250.0f, 250.0f, 4.f);
 
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
@@ -216,13 +268,13 @@ void Game::drawRays3d() {
             ray_x = vertical_x;
             ray_y = vertical_y;
             length = vertical_distance;
-            glColor3f(0.5, 0.5, 0.5);
+            //glColor3f(0.5, 0.5, 0.5);
         }
         else if (vertical_distance > horizontal_distance) {
             ray_x = horizontal_x;
             ray_y = horizontal_y;
             length = horizontal_distance;
-            glColor3f(0.6, 0.6, 0.6);
+            //glColor3f(0.6, 0.6, 0.6);
         }
            
         drawLine(player_x, player_y, ray_x, ray_y);
@@ -245,11 +297,11 @@ void Game::drawRays3d() {
 
         
 
-        glLineWidth(8);
-        glBegin(GL_LINES);
-        glVertex2i(rays * 8 + 530, line_offset);
-        glVertex2i(rays * 8 + 530, line_height + line_offset);
-        glEnd();
+        //glLineWidth(8);
+        //glBegin(GL_LINES);
+        //glVertex2i(rays * 8 + 530, line_offset);
+        //glVertex2i(rays * 8 + 530, line_height + line_offset);
+        //glEnd();
 
         ray_angle += Degree;
 
@@ -291,6 +343,7 @@ void Game::menuHandleInput() {
         player.setWalls(map_layout);
         setPlayerPosition();
         pushState(new PlayingState(this));
+        std::cout << "Playing" << std::endl;
     }
 }
 
@@ -302,14 +355,14 @@ void Game::drawPlayer2d() {
     glEnd();*/
 
     // Diagonal of the players rect
-    glColor3f(0, 1, 0);
-    glLineWidth(1);
+    //glColor3f(0, 1, 0);
+    /*glLineWidth(1);
     glBegin(GL_QUADS);
     glVertex2f(player.getRect().left, player.getRect().top);
     glVertex2f(player.getRect().right, player.getRect().top);
     glVertex2f(player.getRect().right, player.getRect().bottom);
     glVertex2f(player.getRect().left, player.getRect().bottom);
-    glEnd();
+    glEnd();*/
 
     // Direction that player looks at
     float angleRadians = player.getAngle();
@@ -317,11 +370,11 @@ void Game::drawPlayer2d() {
     float endX = player.getX() + 20.0f * cos(angleRadians);
     float endY = player.getY() + 20.0f * sin(angleRadians);
 
-    glLineWidth(2);
-    glBegin(GL_LINES);
+    //glLineWidth(2);
+    /*glBegin(GL_LINES);
     glVertex2f(player.getX(), player.getY());
     glVertex2f(endX, endY);
-    glEnd();
+    glEnd();*/
 }
 
 void Game::drawMap2d() {
@@ -332,30 +385,80 @@ void Game::drawMap2d() {
     for (size_t y = 0; y < map_layout.size(); ++y) {
         for (size_t x = 0; x < map_layout[y].size(); ++x) {
             if (map_layout[y][x] == '#')
-                glColor3f(1, 1, 1);
-            else 
-                glColor3f(0, 0, 0);
+                //glColor3f(1, 1, 1);
+                continue;
+            else
+                //glColor3f(0, 0, 0);
+                continue;
             
             x0 = x * tile_size;
             y0 = y * tile_size;
-            glBegin(GL_QUADS);
+           /* glBegin(GL_QUADS);
             glVertex2i(x0 + 1, y0 + 1);
             glVertex2i(x0 + 1, y0 + tile_size - 1);
             glVertex2i(x0 + tile_size - 1, y0 + tile_size - 1);
             glVertex2i(x0 + tile_size - 1, y0 + 1);
-            glEnd();
+            glEnd();*/
         }
     }
 
 }
 
 void Game::drawLine(float a_x, float a_y, float b_x, float b_y) {
-    glLineWidth(1);
-    glBegin(GL_LINES);
+    //glLineWidth(1);
+    /*glBegin(GL_LINES);
     glVertex2i(a_x, a_y);
     glVertex2i(b_x, b_y);
-    glEnd();
+    glEnd();*/
 }
+
+void Game::renderText(FT_Face& face, const char* text, float x, float y, float scale) {
+    // Save the current modelview matrix
+    //glMatrixMode(GL_MODELVIEW);
+    //glPushMatrix();
+
+    //// Apply the translation and scaling
+    //glLoadIdentity();
+    //glTranslatef(x, y, 0);
+    //glScalef(scale, scale, 1.0f);
+
+    //// Set text color
+    //glColor3f(1.0f, 1.0f, 1.0f); // White color
+
+    // Render each glyph
+    const FT_GlyphSlot& slot = face->glyph;
+    for (const char* p = text; *p; ++p) {
+        if (FT_Load_Char(face, *p, FT_LOAD_RENDER) != 0) {
+            continue;
+        }
+
+        // Get glyph bitmap and dimensions
+        FT_Bitmap& bitmap = slot->bitmap;
+        int width = bitmap.width;
+        int height = bitmap.rows;
+        int xoffset = slot->bitmap_left;
+        int yoffset = slot->bitmap_top - height; // Adjust for baseline
+
+        // Render the glyph as a textured quad
+        //glPushMatrix();
+        //glTranslatef(slot->bitmap_left, slot->bitmap_top, 0); // Move to glyph position
+        //glTranslatef(xoffset, yoffset, 0); // Apply glyph offset
+        //glBegin(GL_QUADS);
+        //glTexCoord2f(0, 0); glVertex2f(0, -height);
+        //glTexCoord2f(1, 0); glVertex2f(width, -height);
+        //glTexCoord2f(1, 1); glVertex2f(width, 0);
+        //glTexCoord2f(0, 1); glVertex2f(0, 0);
+        //glEnd();
+        //glPopMatrix();
+
+        // Move pen position for next glyph
+        //glTranslatef(slot->advance.x >> 6, 0, 0);
+    }
+
+    // Restore the original modelview matrix
+    //glPopMatrix();
+}
+
 
 void Game::pushState(State* state_) {
     states.push(state_);

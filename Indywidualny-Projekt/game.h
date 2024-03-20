@@ -1,9 +1,11 @@
 
 #pragma once
 
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <ft2build.h>
 #include FT_FREETYPE_H
+
 #include <stack>
 #include "player.h"
 
@@ -25,6 +27,9 @@ private:
     int tile_size = 64;
 
     Player player;
+
+    FT_Library ft;
+    FT_Face face;
     
     // Font rendering data
     int font_height;
@@ -33,6 +38,8 @@ private:
     void initializeGL();
     void initilizeMap();
     void setPlayerPosition();
+    bool initFreeType(FT_Library& ft, FT_Face& face, const char* fontPath, int fontSize);
+    //void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
     // Casting rays related functions
     void drawRays3d();
@@ -50,6 +57,7 @@ private:
     void drawPlayer2d();
     void drawMap2d();
     void drawLine(float a_x, float a_y, float b_x, float b_y);
+    void renderText(FT_Face& face, const char* text, float x, float y, float scale);
 
     // Math functions
     int min(int a, int b) { return (a < b) ? a : b; };
