@@ -122,6 +122,7 @@ void Game::drawRays3d() {
     float x_offset = 64;
     float y_offset = 64;
     float player_angle = player.getAngle();
+    float shading;
     ray_angle = player_angle - 30 * Degree;
 
     if (ray_angle < 0)
@@ -216,13 +217,15 @@ void Game::drawRays3d() {
             ray_x = vertical_x;
             ray_y = vertical_y;
             length = vertical_distance;
-            glColor3f(0.5, 0.5, 0.5);
+            shading = (64.f * 2) / length; if (shading >= 1) { shading = 1; };
+            glColor3f(0.6 * shading, 0.6 * shading, 0.6 * shading);
         }
         else if (vertical_distance > horizontal_distance) {
             ray_x = horizontal_x;
             ray_y = horizontal_y;
             length = horizontal_distance;
-            glColor3f(0.6, 0.6, 0.6);
+            shading = (64.f * 2) / length; if (shading >= 1) { shading = 1; };
+            glColor3f(0.7 * shading, 0.7 * shading, 0.7 * shading); 
         }
            
         drawLine(player_x, player_y, ray_x, ray_y);
