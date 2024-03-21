@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <ft2build.h>
 #include FT_FREETYPE_H
+#include <SOIL/SOIL.h>
 #include <stack>
 #include "player.h"
 
@@ -33,6 +34,7 @@ private:
     void initializeGL();
     void initilizeMap();
     void setPlayerPosition();
+    GLuint loadTexture(const char* texturePath);
 
     // Casting rays related functions
     void drawRays3d();
