@@ -4,11 +4,15 @@
 #include <GLFW/glfw3.h>
 #include <ft2build.h>
 #include FT_FREETYPE_H
-#include <SOIL/SOIL.h>
+#include <SOIL2/SOIL2.h>
 #include <stack>
 #include "player.h"
 
 class State;
+
+struct Textures {
+    GLuint test;
+};
 
 class Game {
 private:
@@ -26,6 +30,7 @@ private:
     int tile_size = 64;
 
     Player player;
+    Textures textures;
     
     // Font rendering data
     int font_height;
@@ -34,6 +39,7 @@ private:
     void initializeGL();
     void initilizeMap();
     void setPlayerPosition();
+    void inicializeTextures();
     GLuint loadTexture(const char* texturePath);
 
     // Casting rays related functions

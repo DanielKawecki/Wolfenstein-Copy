@@ -5,6 +5,7 @@
 
 Game::Game() {
     initializeGL();
+    inicializeTextures();
 }
 
 Game::~Game() {
@@ -59,33 +60,37 @@ void Game::setPlayerPosition() {
     }
 }
 
-//GLuint Game::loadTexture(const char* texturePath) {
-//    GLuint textureID;
-//    glGenTextures(1, &textureID);
-//    glBindTexture(GL_TEXTURE_2D, textureID);
-//
-//    int width, height, channels;
-//    unsigned char* image = SOIL_load_image(texturePath, &width, &height, &channels, SOIL_LOAD_RGBA);
-//    if (!image) {
-//        std::cerr << "Failed to load texture: " << texturePath << std::endl;
-//        return 0;
-//    }
-//
-//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-//    SOIL_free_image_data(image);
-//
-//    // Set texture wrapping parameters
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-//
-//    // Set texture filtering parameters
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//
-//    glBindTexture(GL_TEXTURE_2D, 0);
-//
-//    return textureID;
-//}
+void Game::inicializeTextures() {
+    textures.test = loadTexture("assets/textures/test.png");
+}
+
+GLuint Game::loadTexture(const char* texturePath) {
+    GLuint textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+
+    int width, height, channels;
+    unsigned char* image = SOIL_load_image(texturePath, &width, &height, &channels, SOIL_LOAD_RGBA);
+    if (!image) {
+        std::cerr << "Failed to load texture: " << texturePath << std::endl;
+        return 0;
+    }
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+    SOIL_free_image_data(image);
+
+    // Set texture wrapping parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    // Set texture filtering parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    return textureID;
+}
 
 void Game::updatePlaying() {
     setDeltaTime();
@@ -117,13 +122,32 @@ void Game::renderMenu() {
     /* Render here */
     glClear(GL_COLOR_BUFFER_BIT);
     
-    glColor3f(1, 0, 0);
+    /*glColor3f(1, 0, 0);
     glBegin(GL_QUADS);
     glVertex2d(0, 0);
     glVertex2d(screen_width, 0);
     glVertex2d(screen_width, screen_height);
     glVertex2d(0, screen_height);
+    glEnd();*/
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, textures.test);
+
+    // Draw quad
+    float quadSize = 64.0f;
+    float quadX = 100.0f;
+    float quadY = 100.0f;
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 0.0f); glVertex2f(quadX, quadY);
+    glTexCoord2f(1.0f, 0.0f); glVertex2f(quadX + quadSize, quadY);
+    glTexCoord2f(1.0f, 1.0f); glVertex2f(quadX + quadSize, quadY + quadSize);
+    glTexCoord2f(0.0f, 1.0f); glVertex2f(quadX, quadY + quadSize);
     glEnd();
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    
 
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
