@@ -122,32 +122,13 @@ void Game::renderMenu() {
     /* Render here */
     glClear(GL_COLOR_BUFFER_BIT);
     
-    /*glColor3f(1, 0, 0);
+    glColor3f(1, 0, 0);
     glBegin(GL_QUADS);
     glVertex2d(0, 0);
     glVertex2d(screen_width, 0);
     glVertex2d(screen_width, screen_height);
     glVertex2d(0, screen_height);
-    glEnd();*/
-
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, textures.test);
-
-    // Draw quad
-    float quadSize = 64.0f;
-    float quadX = 100.0f;
-    float quadY = 100.0f;
-
-    glBegin(GL_QUADS);
-    glTexCoord2f(0.0f, 0.0f); glVertex2f(quadX, quadY);
-    glTexCoord2f(1.0f, 0.0f); glVertex2f(quadX + quadSize, quadY);
-    glTexCoord2f(1.0f, 1.0f); glVertex2f(quadX + quadSize, quadY + quadSize);
-    glTexCoord2f(0.0f, 1.0f); glVertex2f(quadX, quadY + quadSize);
     glEnd();
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    
 
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
@@ -298,13 +279,13 @@ void Game::drawRays3d() {
 
         float line_offset = 180 - line_height / 2.f;
 
-        
-
-        glLineWidth(8);
+        /*glLineWidth(8);
         glBegin(GL_LINES);
         glVertex2i(rays * 8 + 530, line_offset);
         glVertex2i(rays * 8 + 530, line_height + line_offset);
-        glEnd();
+        glEnd();*/
+        
+        drawSlice(rays * 8 + 530, line_offset, 8, line_height, textures.test, length);
 
         ray_angle += Degree;
 
@@ -313,7 +294,6 @@ void Game::drawRays3d() {
         if (ray_angle > 2 * PI)
             ray_angle -= 2 * PI;
     }
-    
 }
 
 float Game::getRayLength(float a_x, float a_y, float b_x, float b_y, float angle) {
@@ -410,6 +390,23 @@ void Game::drawLine(float a_x, float a_y, float b_x, float b_y) {
     glVertex2i(a_x, a_y);
     glVertex2i(b_x, b_y);
     glEnd();
+}
+
+void Game::drawSlice(float x, float y, float size_x, float size_y, GLuint texture, float distance) {
+    float shading = (64.f * 2) / distance; if (shading >= 1) { shading = 1; };
+    glColor3f(1.f * shading, 1.f * shading, 1.f * shading);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 0.0f); glVertex2f(x, y);
+    glTexCoord2f(1.0f, 0.0f); glVertex2f(x + size_x, y);
+    glTexCoord2f(1.0f, 1.0f); glVertex2f(x + size_x, y + size_y);
+    glTexCoord2f(0.0f, 1.0f); glVertex2f(x, y + size_y);
+    glEnd();
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Game::pushState(State* state_) {

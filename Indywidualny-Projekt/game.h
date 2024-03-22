@@ -58,6 +58,7 @@ private:
     void drawPlayer2d();
     void drawMap2d();
     void drawLine(float a_x, float a_y, float b_x, float b_y);
+    void drawSlice(float x, float y, float size_x, float size_y, GLuint texture, float distance);
 
     // Math functions
     int min(int a, int b) { return (a < b) ? a : b; };
