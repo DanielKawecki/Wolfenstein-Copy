@@ -48,5 +48,14 @@
     <Image Include="assets\textures\test_2.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
+    <Image Include="assets\textures\greystone.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\textures\eagle.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\textures\redbrick.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
   </ItemGroup>
 </Project>

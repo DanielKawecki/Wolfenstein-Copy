@@ -13,7 +13,9 @@ class State;
 
 struct Textures {
     GLuint test;
-    GLuint test_2;
+    GLuint greystone;
+    GLuint eagle;
+    GLuint red_brick;
 };
 
 class Game {
@@ -29,7 +31,7 @@ private:
 
     std::vector<std::string> map_layout;
     std::map<char, GLuint> texture_atlas;
-    std::string wall_chars = "12#";
+    std::string wall_chars = "123#";
     int map_width = 8;
     int tile_size = 64;
 

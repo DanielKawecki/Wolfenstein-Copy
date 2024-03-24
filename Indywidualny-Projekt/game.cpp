@@ -62,10 +62,14 @@ void Game::setPlayerPosition() {
 
 void Game::inicializeTextures() {
     textures.test = loadTexture("assets/textures/test.png");
-    textures.test_2 = loadTexture("assets/textures/test_2.png");
+    textures.greystone = loadTexture("assets/textures/greystone.png");
+    textures.eagle = loadTexture("assets/textures/eagle.png");
+    textures.red_brick = loadTexture("assets/textures/redbrick.png");
 
     texture_atlas.insert({ '#', textures.test });
-    texture_atlas.insert({ '1', textures.test_2 });
+    texture_atlas.insert({ '1', textures.greystone });
+    texture_atlas.insert({ '2', textures.eagle });
+    texture_atlas.insert({ '3', textures.red_brick });
 }
 
 GLuint Game::loadTexture(const char* texturePath) {
@@ -108,6 +112,14 @@ void Game::updatePlaying() {
 void Game::renderPlaying() {
     /* Render here */
     glClear(GL_COLOR_BUFFER_BIT);
+
+    glColor3f(0.3f, 0.3f, 0.3f);
+    glBegin(GL_QUADS);
+    glVertex2f(530, screen_height);
+    glVertex2f(1008, screen_height);
+    glVertex2f(1008, screen_height - 320);
+    glVertex2f(530, screen_height - 320);
+    glEnd();
 
     drawMap2d();
     drawPlayer2d();

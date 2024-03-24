@@ -32,6 +32,9 @@
     <Text Include="assets\maps\map1.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="assets\textures\eagle.png" />
+    <Image Include="assets\textures\greystone.png" />
+    <Image Include="assets\textures\redbrick.png" />
     <Image Include="assets\textures\test.png" />
     <Image Include="assets\textures\test_2.png" />
   </ItemGroup>
