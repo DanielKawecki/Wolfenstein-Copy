@@ -6,12 +6,14 @@
 #include FT_FREETYPE_H
 #include <SOIL2/SOIL2.h>
 #include <stack>
+#include <set>
 #include "player.h"
 
 class State;
 
 struct Textures {
     GLuint test;
+    GLuint test_2;
 };
 
 class Game {
@@ -26,14 +28,12 @@ private:
     float previous_time = 0;
 
     std::vector<std::string> map_layout;
+    std::string wall_chars = "12#";
     int map_width = 8;
     int tile_size = 64;
 
     Player player;
     Textures textures;
-    
-    // Font rendering data
-    int font_height;
 
     // Initializing functions
     void initializeGL();
@@ -59,6 +59,9 @@ private:
     void drawMap2d();
     void drawLine(float a_x, float a_y, float b_x, float b_y);
     void drawSlice(float x, float y, float size_x, float size_y, GLuint texture, float distance, float slice_offset);
+
+    // Helper functions
+    bool stringContains(const std::string& string, char ch);
 
     // Math functions
     int min(int a, int b) { return (a < b) ? a : b; };

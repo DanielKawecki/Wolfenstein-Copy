@@ -26,6 +26,7 @@ private:
 	float rotation_speed = 4; // radians
 
 	std::vector<std::string> map_layout;
+	std::string wall_chars;
 	int tile_x = 0;
 	int tile_y = 0;
 
@@ -44,8 +45,9 @@ public:
 	void setTilePosition(int tile_size);
 	bool checkWalls(float dx, float dy);
 	void setRect(float x_, float y_);
-	void setWalls(std::vector<std::string> map_layout_);
+	void setWalls(std::vector<std::string> map_layout_, std::string wall_chars_);
 	bool intersects(const Rect& rect1, const Rect& rect2);
+	bool stringContains(const std::string& string, char ch);
 
 	float getX() const;
 	float getY() const;

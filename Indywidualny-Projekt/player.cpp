@@ -76,7 +76,7 @@ bool Player::checkWalls(float dx, float dy) {
    
     for (int i = -1; i <= 1; i++) {
         for (int j = -1; j <= 1; j++) {
-            if (map_layout[tile_y + i][tile_x + j] == '#') {
+            if (stringContains(wall_chars, map_layout[tile_y + i][tile_x + j])) {
                 float wall_y = (tile_y + i) * 64;
                 float wall_x = (tile_x + j) * 64;
                 Rect wall_rect = { wall_x, wall_y, wall_x + 64, wall_y + 64 };
@@ -97,8 +97,9 @@ void Player::setRect(float x_, float y_) {
     rect.right = x_ + size;
 }
 
-void Player::setWalls(std::vector<std::string> map_layout_) {
+void Player::setWalls(std::vector<std::string> map_layout_, std::string wall_chars_) {
     map_layout = map_layout_;
+    wall_chars = wall_chars_;
 }
 
 bool Player::intersects(const Rect& rect1, const Rect& rect2) {
@@ -110,6 +111,14 @@ bool Player::intersects(const Rect& rect1, const Rect& rect2) {
     }
     
     return true;
+}
+
+bool Player::stringContains(const std::string& string, char ch) {
+    for (char c : string) {
+        if (c == ch)
+            return true;
+    }
+    return false;
 }
 
 float Player::getX() const { return x; }

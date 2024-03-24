@@ -62,6 +62,7 @@ void Game::setPlayerPosition() {
 
 void Game::inicializeTextures() {
     textures.test = loadTexture("assets/textures/test.png");
+    textures.test_2 = loadTexture("assets/textures/test_2.png");
 }
 
 GLuint Game::loadTexture(const char* texturePath) {
@@ -159,6 +160,7 @@ void Game::drawRays3d() {
     float hit_position = 0.f;
     float slice_offset = 0.f;
     ray_angle = player_angle - 30 * Degree;
+    GLuint texture;
 
     if (ray_angle < 0)
         ray_angle += 2 * PI;
@@ -194,7 +196,7 @@ void Game::drawRays3d() {
             map_y = (int)(ray_y) >> 6;
             map_position = map_y * map_width + map_x;
 
-            if (map_x < 8 && map_x >= 0 && map_layout[map_y][map_x] == '#') {
+            if (map_x < 8 && map_x >= 0 && stringContains(wall_chars, map_layout[map_y][map_x])) {
                 horizontal_x = ray_x;
                 horizontal_y = ray_y;
                 horizontal_distance = getRayLength(player_x, player_y, horizontal_x, horizontal_y, ray_angle);
@@ -235,7 +237,7 @@ void Game::drawRays3d() {
             map_y = (int)(ray_y) >> 6;
             map_position = map_y * map_width + map_x;
             //std::cout << map_x << " " << map_y << std::endl; /////////
-            if (map_y < 8 && map_y >= 0 && map_layout[map_y][map_x] == '#') {
+            if (map_y < 8 && map_y >= 0 && stringContains(wall_chars, map_layout[map_y][map_x])) {
                 vertical_x = ray_x;
                 vertical_y = ray_y;
                 vertical_distance = getRayLength(player_x, player_y, vertical_x, vertical_y, ray_angle);
@@ -341,7 +343,7 @@ void Game::menuHandleInput() {
     if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) {
         initilizeMap();
         player = Player();
-        player.setWalls(map_layout);
+        player.setWalls(map_layout, wall_chars);
         setPlayerPosition();
         pushState(new PlayingState(this));
     }
@@ -384,7 +386,7 @@ void Game::drawMap2d() {
 
     for (size_t y = 0; y < map_layout.size(); ++y) {
         for (size_t x = 0; x < map_layout[y].size(); ++x) {
-            if (map_layout[y][x] == '#')
+            if (stringContains(wall_chars, map_layout[y][x]))
                 glColor3f(1, 1, 1);
             else 
                 glColor3f(0, 0, 0);
@@ -428,6 +430,14 @@ void Game::drawSlice(float x, float y, float size_x, float size_y, GLuint textur
     glEnd();
 
     glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+bool Game::stringContains(const std::string& string, char ch) {
+    for (char c : string) {
+        if (c == ch)
+            return true;
+    }
+    return false;
 }
 
 void Game::pushState(State* state_) {
