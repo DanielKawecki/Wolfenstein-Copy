@@ -157,6 +157,7 @@ void Game::drawRays3d() {
     float player_angle = player.getAngle();
     float shading;
     float hit_position = 0.f;
+    float slice_offset = 0.f;
     ray_angle = player_angle - 30 * Degree;
 
     if (ray_angle < 0)
@@ -254,6 +255,12 @@ void Game::drawRays3d() {
             hit_position = ray_y;
             shading = (64.f * 2) / length; if (shading >= 1) { shading = 1; };
             glColor3f(0.6 * shading, 0.6 * shading, 0.6 * shading);
+
+            float whole;
+            slice_offset = std::modff(hit_position / 64.f, &whole);
+
+            if (ray_angle < 270 * Degree && ray_angle > 90 * Degree)
+                slice_offset = 1.f - slice_offset;
         }
         else if (vertical_distance > horizontal_distance) {
             ray_x = horizontal_x;
@@ -262,6 +269,12 @@ void Game::drawRays3d() {
             hit_position = ray_x;
             shading = (64.f * 2) / length; if (shading >= 1) { shading = 1; };
             glColor3f(0.7 * shading, 0.7 * shading, 0.7 * shading); 
+
+            float whole;
+            slice_offset = std::modff(hit_position / 64.f, &whole);
+
+            if (ray_angle < 180 * Degree)
+                slice_offset = 1.f - slice_offset;
         }
            
         drawLine(player_x, player_y, ray_x, ray_y);
@@ -277,8 +290,10 @@ void Game::drawRays3d() {
         length = length * cos(cosine_angle);
 
         float line_height = (tile_size * 420) / length;
-        if (line_height > 2 * 320)
-            line_height = 2 * 320;
+        /*if (line_height > 2 * 320)
+            line_height = 2 * 320;*/
+
+        //std::cout << line_height << std::endl;
 
         float line_offset = 180 - line_height / 2.f;
 
@@ -288,7 +303,7 @@ void Game::drawRays3d() {
         glVertex2i(rays * 8 + 530, line_height + line_offset);
         glEnd();*/
         
-        drawSlice(rays * 8 + 530, line_offset, 8, line_height, textures.test, length, hit_position);
+        drawSlice(rays * 8 + 530, line_offset, 8, line_height, textures.test, length, slice_offset);
 
         ray_angle += Degree;
 
@@ -395,12 +410,9 @@ void Game::drawLine(float a_x, float a_y, float b_x, float b_y) {
     glEnd();
 }
 
-void Game::drawSlice(float x, float y, float size_x, float size_y, GLuint texture, float distance, float hit_position) {
+void Game::drawSlice(float x, float y, float size_x, float size_y, GLuint texture, float distance, float slice_offset) {
     float shading = (64.f * 2) / distance; if (shading >= 1) { shading = 1; };
     glColor3f(1.f * shading, 1.f * shading, 1.f * shading);
-
-    float whole;
-    float slice_offset = std::modff(hit_position / 64.f, &whole);
 
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture);

@@ -30,7 +30,7 @@ private:
 	int tile_y = 0;
 
 	Rect rect;
-	float size = 15;
+	float size = 18;
 	float top = 0;
 	float bottom = 0;
 	float left = 0;
