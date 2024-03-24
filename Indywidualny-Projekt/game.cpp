@@ -405,10 +405,13 @@ void Game::drawSlice(float x, float y, float size_x, float size_y, GLuint textur
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture);
 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
     glBegin(GL_QUADS);
     glTexCoord2f(slice_offset, 0.0f); glVertex2f(x, y);
-    glTexCoord2f(slice_offset + 0.125, 0.0f); glVertex2f(x + size_x, y);
-    glTexCoord2f(slice_offset + 0.125, 1.0f); glVertex2f(x + size_x, y + size_y);
+    glTexCoord2f(slice_offset + 1.f / 64.f, 0.0f); glVertex2f(x + size_x, y);
+    glTexCoord2f(slice_offset + 1.f / 64.f, 1.0f); glVertex2f(x + size_x, y + size_y);
     glTexCoord2f(slice_offset, 1.0f); glVertex2f(x, y + size_y);
     glEnd();
 
