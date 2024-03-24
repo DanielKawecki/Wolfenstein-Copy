@@ -6,7 +6,7 @@
 #include FT_FREETYPE_H
 #include <SOIL2/SOIL2.h>
 #include <stack>
-#include <set>
+#include <map>
 #include "player.h"
 
 class State;
@@ -28,6 +28,7 @@ private:
     float previous_time = 0;
 
     std::vector<std::string> map_layout;
+    std::map<char, GLuint> texture_atlas;
     std::string wall_chars = "12#";
     int map_width = 8;
     int tile_size = 64;

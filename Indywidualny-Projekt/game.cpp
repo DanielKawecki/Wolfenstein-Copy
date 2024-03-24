@@ -63,6 +63,9 @@ void Game::setPlayerPosition() {
 void Game::inicializeTextures() {
     textures.test = loadTexture("assets/textures/test.png");
     textures.test_2 = loadTexture("assets/textures/test_2.png");
+
+    texture_atlas.insert({ '#', textures.test });
+    texture_atlas.insert({ '1', textures.test_2 });
 }
 
 GLuint Game::loadTexture(const char* texturePath) {
@@ -161,6 +164,8 @@ void Game::drawRays3d() {
     float slice_offset = 0.f;
     ray_angle = player_angle - 30 * Degree;
     GLuint texture;
+    GLuint texture_horiz;
+    GLuint texture_vert;
 
     if (ray_angle < 0)
         ray_angle += 2 * PI;
@@ -200,6 +205,8 @@ void Game::drawRays3d() {
                 horizontal_x = ray_x;
                 horizontal_y = ray_y;
                 horizontal_distance = getRayLength(player_x, player_y, horizontal_x, horizontal_y, ray_angle);
+
+                texture_horiz = texture_atlas.find(map_layout[map_y][map_x])->second;
                 depth_of_field = 8; // Ending the while loop
             }
             else {
@@ -241,6 +248,8 @@ void Game::drawRays3d() {
                 vertical_x = ray_x;
                 vertical_y = ray_y;
                 vertical_distance = getRayLength(player_x, player_y, vertical_x, vertical_y, ray_angle);
+
+                texture_vert = texture_atlas.find(map_layout[map_y][map_x])->second;
                 depth_of_field = 8;
             }
             else {
@@ -257,6 +266,7 @@ void Game::drawRays3d() {
             hit_position = ray_y;
             shading = (64.f * 2) / length; if (shading >= 1) { shading = 1; };
             glColor3f(0.6 * shading, 0.6 * shading, 0.6 * shading);
+            texture = texture_vert;
 
             float whole;
             slice_offset = std::modff(hit_position / 64.f, &whole);
@@ -271,6 +281,7 @@ void Game::drawRays3d() {
             hit_position = ray_x;
             shading = (64.f * 2) / length; if (shading >= 1) { shading = 1; };
             glColor3f(0.7 * shading, 0.7 * shading, 0.7 * shading); 
+            texture = texture_horiz;
 
             float whole;
             slice_offset = std::modff(hit_position / 64.f, &whole);
@@ -297,7 +308,7 @@ void Game::drawRays3d() {
 
         //std::cout << line_height << std::endl;
 
-        float line_offset = 180 - line_height / 2.f;
+        float line_offset = 200 - line_height / 2.f;
 
         /*glLineWidth(8);
         glBegin(GL_LINES);
@@ -305,7 +316,7 @@ void Game::drawRays3d() {
         glVertex2i(rays * 8 + 530, line_height + line_offset);
         glEnd();*/
         
-        drawSlice(rays * 8 + 530, line_offset, 8, line_height, textures.test, length, slice_offset);
+        drawSlice(rays * 8 + 530, line_offset, 8, line_height, texture, length, slice_offset);
 
         ray_angle += Degree;
 
