@@ -57,5 +57,8 @@
     <Image Include="assets\textures\redbrick.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
+    <Image Include="assets\textures\title_screen.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
   </ItemGroup>
 </Project>

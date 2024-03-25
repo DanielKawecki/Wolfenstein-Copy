@@ -37,6 +37,7 @@
     <Image Include="assets\textures\redbrick.png" />
     <Image Include="assets\textures\test.png" />
     <Image Include="assets\textures\test_2.png" />
+    <Image Include="assets\textures\title_screen.png" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

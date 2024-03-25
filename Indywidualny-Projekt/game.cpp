@@ -61,6 +61,7 @@ void Game::setPlayerPosition() {
 }
 
 void Game::inicializeTextures() {
+    textures.title_screen = loadTexture("assets/textures/title_screen.png");
     textures.test = loadTexture("assets/textures/test.png");
     textures.greystone = loadTexture("assets/textures/greystone.png");
     textures.eagle = loadTexture("assets/textures/eagle.png");
@@ -137,13 +138,42 @@ void Game::updateMenu() {
 void Game::renderMenu() {
     /* Render here */
     glClear(GL_COLOR_BUFFER_BIT);
+
+    glColor3f(1.f, 1.f, 1.f);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, textures.title_screen);
+
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0); glVertex2d(0, 0);
+    glTexCoord2f(1, 0); glVertex2d(screen_width, 0);
+    glTexCoord2f(1, 1); glVertex2d(screen_width, screen_height);
+    glTexCoord2f(0, 1); glVertex2d(0, screen_height);
+    glEnd();
+
+    glBindTexture(GL_TEXTURE_2D, 0);
     
-    glColor3f(1, 0, 0);
+    /*glColor3f(1, 0, 0);
     glBegin(GL_QUADS);
     glVertex2d(0, 0);
     glVertex2d(screen_width, 0);
     glVertex2d(screen_width, screen_height);
     glVertex2d(0, screen_height);
+    glEnd();*/
+    
+    // Menu highlight
+    int highlight_y = 200 + highlight * 50;
+
+    glPointSize(16);
+    glColor3f(1, 1, 1);
+    glBegin(GL_QUADS);
+    glVertex2d(100, highlight_y);
+    glVertex2d(400, highlight_y);
+    glVertex2d(340, highlight_y + 40);
+    glVertex2d(100, highlight_y + 40);
     glEnd();
 
     /* Swap front and back buffers */
@@ -281,7 +311,7 @@ void Game::drawRays3d() {
             texture = texture_vert;
 
             float whole;
-            slice_offset = std::modff(hit_position / 64.f, &whole);
+            slice_offset = std::modff(floor(hit_position) / 64.f, &whole);
 
             if (ray_angle < 270 * Degree && ray_angle > 90 * Degree)
                 slice_offset = 1.f - slice_offset;
@@ -296,7 +326,7 @@ void Game::drawRays3d() {
             texture = texture_horiz;
 
             float whole;
-            slice_offset = std::modff(hit_position / 64.f, &whole);
+            slice_offset = std::modff(floor(hit_position) / 64.f, &whole);
 
             if (ray_angle < 180 * Degree)
                 slice_offset = 1.f - slice_offset;
@@ -364,12 +394,43 @@ State* Game::peekState()
 
 void Game::menuHandleInput() {
     if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) {
-        initilizeMap();
-        player = Player();
-        player.setWalls(map_layout, wall_chars);
-        setPlayerPosition();
-        pushState(new PlayingState(this));
+        switch (highlight) {
+        case 0:
+            initilizeMap();
+            player = Player();
+            player.setWalls(map_layout, wall_chars);
+            setPlayerPosition();
+            pushState(new PlayingState(this));
+            break;
+        case 2:
+            glfwSetWindowShouldClose(window, 1);
+            break;
+        default:
+            break;
+        }
     }
+
+    static bool is_W_pressed = false;
+    static bool is_S_pressed = false;
+
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && !is_W_pressed) {
+        is_W_pressed = true;
+        highlight -= 1;
+        if (highlight < 0)
+            highlight = menu_buttons_count - 1;
+    }
+    else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_RELEASE)
+        is_W_pressed = false;
+
+
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && !is_S_pressed) {
+        is_S_pressed = true;
+        highlight += 1;
+        if (highlight > menu_buttons_count - 1)
+            highlight = 0;
+    }
+    else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_RELEASE)
+        is_S_pressed = false;
 }
 
 void Game::drawPlayer2d() {

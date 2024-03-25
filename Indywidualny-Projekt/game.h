@@ -12,6 +12,7 @@
 class State;
 
 struct Textures {
+    GLuint title_screen;
     GLuint test;
     GLuint greystone;
     GLuint eagle;
@@ -37,6 +38,9 @@ private:
 
     Player player;
     Textures textures;
+
+    int menu_buttons_count = 3;
+    int highlight = 0;
 
     // Initializing functions
     void initializeGL();
