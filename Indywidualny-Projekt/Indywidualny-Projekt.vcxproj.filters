@@ -60,5 +60,8 @@
     <Image Include="assets\textures\title_screen.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
+    <Image Include="assets\textures\wings.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -62,6 +62,7 @@ void Game::setPlayerPosition() {
 
 void Game::inicializeTextures() {
     textures.title_screen = loadTexture("assets/textures/title_screen.png");
+    textures.highlight = loadTexture("assets/textures/wings.png");
     textures.test = loadTexture("assets/textures/test.png");
     textures.greystone = loadTexture("assets/textures/greystone.png");
     textures.eagle = loadTexture("assets/textures/eagle.png");
@@ -165,16 +166,27 @@ void Game::renderMenu() {
     glEnd();*/
     
     // Menu highlight
-    int highlight_y = 200 + highlight * 50;
+    int highlight_y = 347 + highlight * 75;
+    int width = 360;
+    int height = 75;
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, textures.highlight);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glPointSize(16);
     glColor3f(1, 1, 1);
     glBegin(GL_QUADS);
-    glVertex2d(100, highlight_y);
-    glVertex2d(400, highlight_y);
-    glVertex2d(340, highlight_y + 40);
-    glVertex2d(100, highlight_y + 40);
+    glTexCoord2f(0, 0); glVertex2d(463, highlight_y);
+    glTexCoord2f(1, 0); glVertex2d(463 + width, highlight_y);
+    glTexCoord2f(1, 1); glVertex2d(463 + width, highlight_y + height);
+    glTexCoord2f(0, 1); glVertex2d(463, highlight_y + height);
     glEnd();
+
+    glDisable(GL_BLEND);
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
@@ -402,7 +414,7 @@ void Game::menuHandleInput() {
             setPlayerPosition();
             pushState(new PlayingState(this));
             break;
-        case 2:
+        case 1:
             glfwSetWindowShouldClose(window, 1);
             break;
         default:

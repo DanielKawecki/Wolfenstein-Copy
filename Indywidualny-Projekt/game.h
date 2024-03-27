@@ -13,6 +13,7 @@ class State;
 
 struct Textures {
     GLuint title_screen;
+    GLuint highlight;
     GLuint test;
     GLuint greystone;
     GLuint eagle;
@@ -22,8 +23,8 @@ struct Textures {
 class Game {
 private:
     GLFWwindow* window = nullptr;
-    int screen_width = 1024;
-    int screen_height = 512;
+    int screen_width = 1280; // 1024;
+    int screen_height = 720; // 512;
     const char* window_title = "Wolfenstein";
     
     float delta_time = 0;
@@ -39,7 +40,7 @@ private:
     Player player;
     Textures textures;
 
-    int menu_buttons_count = 3;
+    int menu_buttons_count = 2;
     int highlight = 0;
 
     // Initializing functions
