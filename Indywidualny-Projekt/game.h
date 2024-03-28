@@ -8,6 +8,7 @@
 #include <stack>
 #include <map>
 #include "player.h"
+#include "enemy.h"
 
 class State;
 
@@ -38,15 +39,23 @@ private:
     int tile_size = 64;
 
     Player player;
+    std::vector<Enemy> all_enemies;
+
     Textures textures;
 
     int menu_buttons_count = 2;
     int highlight = 0;
 
+    // Raycasting variables
+    float FOV = PI / 3.f;
+    int number_of_rays = screen_width / 2;
+    float delta_angle = FOV / (float)number_of_rays;
+    float projection_distance = 0.5f * 20.f * (float)tile_size / tan(0.5f * FOV);
+
     // Initializing functions
     void initializeGL();
     void initilizeMap();
-    void setPlayerPosition();
+    void readFromMap();
     void inicializeTextures();
     GLuint loadTexture(const char* texturePath);
 
@@ -67,6 +76,7 @@ private:
     void drawMap2d();
     void drawLine(float a_x, float a_y, float b_x, float b_y);
     void drawSlice(float x, float y, float size_x, float size_y, GLuint texture, float distance, float slice_offset);
+    void drawEnemies();
 
     // Helper functions
     bool stringContains(const std::string& string, char ch);

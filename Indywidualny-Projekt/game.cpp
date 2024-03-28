@@ -6,6 +6,7 @@
 Game::Game() {
     initializeGL();
     inicializeTextures();
+    std::cout << projection_distance << std::endl;
 }
 
 Game::~Game() {
@@ -51,11 +52,15 @@ void Game::initilizeMap(/*map number*/) {
     }
 }
 
-void Game::setPlayerPosition() {
+void Game::readFromMap() {
     for (size_t y = 0; y < map_layout.size(); ++y) {
         for (size_t x = 0; x < map_layout[y].size(); ++x) {
             if (map_layout[y][x] == 'p')
                 player.setPosition(x * 64 + 32, y * 64 + 32);
+            if (map_layout[y][x] == 'e') {
+                Enemy enemy(x * 64 + 32, y * 64 + 32);
+                all_enemies.push_back(enemy);
+            }
         }
     }
 }
@@ -115,17 +120,18 @@ void Game::renderPlaying() {
     /* Render here */
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glColor3f(0.3f, 0.3f, 0.3f);
+    /*glColor3f(0.3f, 0.3f, 0.3f);
     glBegin(GL_QUADS);
     glVertex2f(530, screen_height);
     glVertex2f(1008, screen_height);
     glVertex2f(1008, screen_height - 320);
     glVertex2f(530, screen_height - 320);
-    glEnd();
+    glEnd();*/
 
-    drawMap2d();
-    drawPlayer2d();
+    //drawMap2d();
+    //drawPlayer2d();
     drawRays3d();
+    //drawEnemies();
 
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
@@ -216,17 +222,20 @@ void Game::drawRays3d() {
     float shading;
     float hit_position = 0.f;
     float slice_offset = 0.f;
-    ray_angle = player_angle - 30 * Degree;
+    ray_angle = player_angle - FOV / 2.f;
     GLuint texture;
     GLuint texture_horiz;
     GLuint texture_vert;
+
+    //float projection_distance = 0.5f * tile_size / tan(0.5f * FOV_VERTICAL);
+    //float ray_projection_position = 0.5f * tan(ray_angle / tan(0.5f * FOV));
 
     if (ray_angle < 0)
         ray_angle += 2 * PI;
     if (ray_angle > 2 * PI)
         ray_angle -= 2 * PI;
 
-    for (int rays = 0; rays < 60; rays++) {
+    for (int rays = 0; rays < number_of_rays; rays++) {
         ////--- Chcecking Horizontal Lines ---
         depth_of_field = 0;
         float horizontal_distance = 1000000;
@@ -344,7 +353,7 @@ void Game::drawRays3d() {
                 slice_offset = 1.f - slice_offset;
         }
            
-        drawLine(player_x, player_y, ray_x, ray_y);
+        //drawLine(player_x, player_y, ray_x, ray_y);
 
         //--- 3D Projection ---
         float cosine_angle = player_angle - ray_angle;
@@ -355,14 +364,15 @@ void Game::drawRays3d() {
             cosine_angle -= 2 * PI;
 
         length = length * cos(cosine_angle);
+        //std::cout << length << std::endl;
 
-        float line_height = (tile_size * 420) / length;
+        float line_height = (tile_size * projection_distance) / length;
         /*if (line_height > 2 * 320)
             line_height = 2 * 320;*/
 
         //std::cout << line_height << std::endl;
 
-        float line_offset = 200 - line_height / 2.f;
+        float line_offset = screen_height / 2.f - line_height / 2.f;
 
         /*glLineWidth(8);
         glBegin(GL_LINES);
@@ -370,9 +380,9 @@ void Game::drawRays3d() {
         glVertex2i(rays * 8 + 530, line_height + line_offset);
         glEnd();*/
         
-        drawSlice(rays * 8 + 530, line_offset, 8, line_height, texture, length, slice_offset);
+        drawSlice(rays * 2, line_offset, 2, line_height, texture, length, slice_offset);
 
-        ray_angle += Degree;
+        ray_angle += delta_angle;
 
         if (ray_angle < 0)
             ray_angle += 2 * PI;
@@ -411,7 +421,7 @@ void Game::menuHandleInput() {
             initilizeMap();
             player = Player();
             player.setWalls(map_layout, wall_chars);
-            setPlayerPosition();
+            readFromMap();
             pushState(new PlayingState(this));
             break;
         case 1:
@@ -526,6 +536,16 @@ void Game::drawSlice(float x, float y, float size_x, float size_y, GLuint textur
     glEnd();
 
     glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Game::drawEnemies() {
+    for (int i = 0; i < all_enemies.size(); i++) {
+        glColor3f(1, 1, 1);
+        glPointSize(8);
+        glBegin(GL_POINTS);
+        glVertex2f(all_enemies[i].getX(), all_enemies[i].getY());
+        glEnd();
+    }
 }
 
 bool Game::stringContains(const std::string& string, char ch) {
