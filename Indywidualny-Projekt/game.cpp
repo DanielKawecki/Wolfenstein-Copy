@@ -58,7 +58,7 @@ void Game::readFromMap() {
             if (map_layout[y][x] == 'p')
                 player.setPosition(x * 64 + 32, y * 64 + 32);
             if (map_layout[y][x] == 'e') {
-                Enemy enemy(x * 64 + 32, y * 64 + 32);
+                Enemy enemy(x * 64, y * 64, 40.f);
                 all_enemies.push_back(enemy);
             }
         }
@@ -131,7 +131,7 @@ void Game::renderPlaying() {
     //drawMap2d();
     //drawPlayer2d();
     drawRays3d();
-    //drawEnemies();
+    drawEnemies();
 
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
@@ -519,7 +519,7 @@ void Game::drawLine(float a_x, float a_y, float b_x, float b_y) {
 }
 
 void Game::drawSlice(float x, float y, float size_x, float size_y, GLuint texture, float distance, float slice_offset) {
-    float shading = (64.f * 2) / distance; if (shading >= 1) { shading = 1; };
+    float shading = (tile_size * 2) / distance; if (shading >= 1) { shading = 1; };
     glColor3f(1.f * shading, 1.f * shading, 1.f * shading);
 
     glEnable(GL_TEXTURE_2D);
@@ -530,8 +530,8 @@ void Game::drawSlice(float x, float y, float size_x, float size_y, GLuint textur
 
     glBegin(GL_QUADS);
     glTexCoord2f(slice_offset, 0.0f); glVertex2f(x, y);
-    glTexCoord2f(slice_offset + 1.f / 64.f, 0.0f); glVertex2f(x + size_x, y);
-    glTexCoord2f(slice_offset + 1.f / 64.f, 1.0f); glVertex2f(x + size_x, y + size_y);
+    glTexCoord2f(slice_offset + 1.f / tile_size, 0.0f); glVertex2f(x + size_x, y);
+    glTexCoord2f(slice_offset + 1.f / tile_size, 1.0f); glVertex2f(x + size_x, y + size_y);
     glTexCoord2f(slice_offset, 1.0f); glVertex2f(x, y + size_y);
     glEnd();
 
@@ -539,11 +539,28 @@ void Game::drawSlice(float x, float y, float size_x, float size_y, GLuint textur
 }
 
 void Game::drawEnemies() {
+    float player_angle = player.getAngle();
+
     for (int i = 0; i < all_enemies.size(); i++) {
-        glColor3f(1, 1, 1);
+        float sprite_x = all_enemies[i].getX() - player.getX();
+        float sprite_y = all_enemies[i].getY() - player.getY();
+        float sprite_z = all_enemies[i].getZ();
+
+        float cosine = -cos(player_angle);
+        float sine = sin(player_angle);
+        float rotated_x = sprite_y * cosine + sprite_x * sine;
+        float rotated_y = sprite_x * cosine - sprite_y * sine;
+        
+        sprite_x = rotated_x;
+        sprite_y = rotated_y;
+
+        sprite_x = (sprite_x * 108.f / sprite_y) + (120.f / 2.f);
+        sprite_y = (sprite_z * 108.f / sprite_y) + (80.f / 2.f);
+
+        glColor3f(1, 1, 0);
         glPointSize(8);
         glBegin(GL_POINTS);
-        glVertex2f(all_enemies[i].getX(), all_enemies[i].getY());
+        glVertex2f(sprite_x * 8, sprite_y * 8);
         glEnd();
     }
 }
