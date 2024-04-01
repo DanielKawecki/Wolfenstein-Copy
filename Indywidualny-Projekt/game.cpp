@@ -3,6 +3,10 @@
 #include <string>
 #include "game.h"
 
+bool compareDistance(const Drawable& a, const Drawable& b) {
+    return a.distance > b.distance;
+}
+
 Game::Game() {
     initializeGL();
     inicializeTextures();
@@ -58,7 +62,7 @@ void Game::readFromMap() {
             if (map_layout[y][x] == 'p')
                 player.setPosition(x * 64 + 32, y * 64 + 32);
             if (map_layout[y][x] == 'e') {
-                Enemy enemy(x * 64, y * 64, 40.f);
+                Enemy enemy(x * 64 + 32, y * 64 + 32, -32.f);
                 all_enemies.push_back(enemy);
             }
         }
@@ -130,8 +134,12 @@ void Game::renderPlaying() {
 
     //drawMap2d();
     //drawPlayer2d();
+    all_drawables.clear();
     drawRays3d();
     drawEnemies();
+
+    std::sort(all_drawables.begin(), all_drawables.end(), compareDistance);
+    drawDrawable();
 
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
@@ -379,8 +387,11 @@ void Game::drawRays3d() {
         glVertex2i(rays * 8 + 530, line_offset);
         glVertex2i(rays * 8 + 530, line_height + line_offset);
         glEnd();*/
+
+        Drawable slice = { rays * 2, line_offset, 2, line_height, texture, length, slice_offset, "slice"};
+        all_drawables.push_back(slice);
         
-        drawSlice(rays * 2, line_offset, 2, line_height, texture, length, slice_offset);
+        //drawSlice(rays * 2, line_offset, 2, line_height, texture, length, slice_offset);
 
         ray_angle += delta_angle;
 
@@ -540,28 +551,53 @@ void Game::drawSlice(float x, float y, float size_x, float size_y, GLuint textur
 
 void Game::drawEnemies() {
     float player_angle = player.getAngle();
+    //float min_wall = *std::min_element(slice_distances.begin(), slice_distances.end());
+    //std::cout << min_wall << std::endl;
 
     for (int i = 0; i < all_enemies.size(); i++) {
+        
         float sprite_x = all_enemies[i].getX() - player.getX();
         float sprite_y = all_enemies[i].getY() - player.getY();
         float sprite_z = all_enemies[i].getZ();
 
         float cosine = -cos(player_angle);
         float sine = sin(player_angle);
-        float rotated_x = sprite_y * cosine + sprite_x * sine;
-        float rotated_y = sprite_x * cosine - sprite_y * sine;
+        float a = sprite_y * cosine + sprite_x * sine;
+        float b = sprite_x * cosine - sprite_y * sine;
         
-        sprite_x = rotated_x;
-        sprite_y = rotated_y;
+        //float theta = atan2f(sprite_y, sprite_x);
+        float distance = hypotf(sprite_x, sprite_y);
 
-        sprite_x = (sprite_x * 108.f / sprite_y) + (120.f / 2.f);
-        sprite_y = (sprite_z * 108.f / sprite_y) + (80.f / 2.f);
+        sprite_x = a;
+        sprite_y = b;
 
-        glColor3f(1, 1, 0);
-        glPointSize(8);
-        glBegin(GL_POINTS);
-        glVertex2f(sprite_x * 8, sprite_y * 8);
-        glEnd();
+        sprite_x = (sprite_x * (projection_distance / 8.f) / sprite_y) + ((screen_width / 8.f) / 2.f);
+        sprite_y = (sprite_z * (projection_distance / 8.f) / sprite_y) + ((screen_height / 8.f) / 2.f);
+
+        Drawable enemy = { sprite_x, sprite_y, 8, 8, textures.eagle, distance, 0, "sprite" };
+        all_drawables.push_back(enemy);
+
+        /*if (true) {
+            glColor3f(1, 1, 0);
+            glPointSize(8);
+            glBegin(GL_POINTS);
+            glVertex2f(sprite_x * 8, sprite_y * 8);
+            glEnd();
+        }*/
+    }
+}
+
+void Game::drawDrawable() {
+    for (const Drawable& it : all_drawables) {
+        if (it.type == "slice")
+            drawSlice(it.x, it.y, it.size_x, it.size_y, it.texture, it.distance, it.slice_offset);
+        else if (it.type == "sprite") {
+            glColor3f(1, 1, 0);
+            glPointSize(8);
+            glBegin(GL_POINTS);
+            glVertex2f(it.x * 8, it.y * 8);
+            glEnd();
+        }
     }
 }
 

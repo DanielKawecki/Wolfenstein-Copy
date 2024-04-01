@@ -7,6 +7,7 @@
 #include <SOIL2/SOIL2.h>
 #include <stack>
 #include <map>
+#include <algorithm>
 #include "player.h"
 #include "enemy.h"
 
@@ -19,6 +20,17 @@ struct Textures {
     GLuint greystone;
     GLuint eagle;
     GLuint red_brick;
+};
+
+struct Drawable {
+    float x;
+    float y;
+    float size_x;
+    float size_y;
+    GLuint texture;
+    float distance;
+    float slice_offset;
+    std::string type;
 };
 
 class Game {
@@ -40,6 +52,7 @@ private:
 
     Player player;
     std::vector<Enemy> all_enemies;
+    std::vector<Drawable> all_drawables;
 
     Textures textures;
 
@@ -50,7 +63,8 @@ private:
     float FOV = PI / 3.f;
     int number_of_rays = screen_width / 2;
     float delta_angle = FOV / (float)number_of_rays;
-    float projection_distance = 0.5f * 20.f * (float)tile_size / tan(0.5f * FOV);
+    float projection_distance = (0.5f * (float) screen_width / tan(0.5f * FOV)) + 41.f;
+    int max_depth = 8;
 
     // Initializing functions
     void initializeGL();
@@ -77,6 +91,7 @@ private:
     void drawLine(float a_x, float a_y, float b_x, float b_y);
     void drawSlice(float x, float y, float size_x, float size_y, GLuint texture, float distance, float slice_offset);
     void drawEnemies();
+    void drawDrawable();
 
     // Helper functions
     bool stringContains(const std::string& string, char ch);
