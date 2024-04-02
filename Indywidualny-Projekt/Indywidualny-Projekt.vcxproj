@@ -34,6 +34,7 @@
     <Text Include="assets\maps\map1.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="assets\sprites\guard_stationary.png" />
     <Image Include="assets\textures\eagle.png" />
     <Image Include="assets\textures\greystone.png" />
     <Image Include="assets\textures\redbrick.png" />

@@ -20,6 +20,7 @@ struct Textures {
     GLuint greystone;
     GLuint eagle;
     GLuint red_brick;
+    GLuint guard_stationary;
 };
 
 struct Drawable {

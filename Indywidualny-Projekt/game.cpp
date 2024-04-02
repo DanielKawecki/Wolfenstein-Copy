@@ -76,6 +76,7 @@ void Game::inicializeTextures() {
     textures.greystone = loadTexture("assets/textures/greystone.png");
     textures.eagle = loadTexture("assets/textures/eagle.png");
     textures.red_brick = loadTexture("assets/textures/redbrick.png");
+    textures.guard_stationary = loadTexture("assets/sprites/guard_stationary.png");
 
     texture_atlas.insert({ '#', textures.test });
     texture_atlas.insert({ '1', textures.greystone });
@@ -124,13 +125,21 @@ void Game::renderPlaying() {
     /* Render here */
     glClear(GL_COLOR_BUFFER_BIT);
 
-    /*glColor3f(0.3f, 0.3f, 0.3f);
+    glColor3f(0.44f, 0.44f, 0.44f);
     glBegin(GL_QUADS);
-    glVertex2f(530, screen_height);
-    glVertex2f(1008, screen_height);
-    glVertex2f(1008, screen_height - 320);
-    glVertex2f(530, screen_height - 320);
-    glEnd();*/
+    glVertex2f(0, screen_height);
+    glVertex2f(screen_width, screen_height);
+    glVertex2f(screen_width, screen_height / 2);
+    glVertex2f(0, screen_height / 2);
+    glEnd();
+
+    glColor3f(0.22f, 0.22f, 0.22f);
+    glBegin(GL_QUADS);
+    glVertex2f(0, screen_height / 2);
+    glVertex2f(screen_width, screen_height / 2);
+    glVertex2f(screen_width, 0);
+    glVertex2f(0, 0);
+    glEnd();
 
     //drawMap2d();
     //drawPlayer2d();
@@ -530,7 +539,7 @@ void Game::drawLine(float a_x, float a_y, float b_x, float b_y) {
 }
 
 void Game::drawSlice(float x, float y, float size_x, float size_y, GLuint texture, float distance, float slice_offset) {
-    float shading = (tile_size * 2) / distance; if (shading >= 1) { shading = 1; };
+    float shading = 0.8; // (tile_size * 2) / distance; if (shading >= 1) { shading = 1; };
     glColor3f(1.f * shading, 1.f * shading, 1.f * shading);
 
     glEnable(GL_TEXTURE_2D);
@@ -551,8 +560,6 @@ void Game::drawSlice(float x, float y, float size_x, float size_y, GLuint textur
 
 void Game::drawEnemies() {
     float player_angle = player.getAngle();
-    //float min_wall = *std::min_element(slice_distances.begin(), slice_distances.end());
-    //std::cout << min_wall << std::endl;
 
     for (int i = 0; i < all_enemies.size(); i++) {
         
@@ -565,25 +572,23 @@ void Game::drawEnemies() {
         float a = sprite_y * cosine + sprite_x * sine;
         float b = sprite_x * cosine - sprite_y * sine;
         
-        //float theta = atan2f(sprite_y, sprite_x);
-        float distance = hypotf(sprite_x, sprite_y);
+        float theta = atan2f(sprite_y, sprite_x) - player_angle;
+        float distance = hypotf(sprite_x, sprite_y) * cos(theta);
 
-        sprite_x = a;
-        sprite_y = b;
+        float dot_product = sprite_x * cos(player_angle) + sprite_y * sin(player_angle);
 
-        sprite_x = (sprite_x * (projection_distance / 8.f) / sprite_y) + ((screen_width / 8.f) / 2.f);
-        sprite_y = (sprite_z * (projection_distance / 8.f) / sprite_y) + ((screen_height / 8.f) / 2.f);
+        if (dot_product > 0) { // Add code in if statement
+            sprite_x = a;
+            sprite_y = b;
 
-        Drawable enemy = { sprite_x, sprite_y, 8, 8, textures.eagle, distance, 0, "sprite" };
-        all_drawables.push_back(enemy);
+            float size = 256 * 256 / distance;
 
-        /*if (true) {
-            glColor3f(1, 1, 0);
-            glPointSize(8);
-            glBegin(GL_POINTS);
-            glVertex2f(sprite_x * 8, sprite_y * 8);
-            glEnd();
-        }*/
+            sprite_x = (sprite_x * (projection_distance / 8.f) / sprite_y) + ((screen_width / 8.f) / 2.f);
+            sprite_y = (sprite_z * (projection_distance / 8.f) / sprite_y) + ((screen_height / 8.f) / 2.f);
+
+            Drawable enemy = { sprite_x * 8.f, sprite_y * 8.f, size, size, textures.guard_stationary, distance, 0, "sprite" };
+            all_drawables.push_back(enemy);
+        }
     }
 }
 
@@ -592,11 +597,26 @@ void Game::drawDrawable() {
         if (it.type == "slice")
             drawSlice(it.x, it.y, it.size_x, it.size_y, it.texture, it.distance, it.slice_offset);
         else if (it.type == "sprite") {
-            glColor3f(1, 1, 0);
-            glPointSize(8);
-            glBegin(GL_POINTS);
-            glVertex2f(it.x * 8, it.y * 8);
+            glColor3f(1.f, 1.f, 1.f);
+            
+            glEnable(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D, it.texture);
+
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+            glBegin(GL_QUADS);
+            glTexCoord2f(0.f, 1.f); glVertex2f(it.x - it.size_x / 2.f, it.y);
+            glTexCoord2f(1.f, 1.f); glVertex2f(it.x + it.size_x / 2.f, it.y);
+            glTexCoord2f(1.f, 0.f); glVertex2f(it.x + it.size_x / 2.f, it.y - it.size_y);
+            glTexCoord2f(0.f, 0.f); glVertex2f(it.x - it.size_x / 2.f, it.y - it.size_y);
             glEnd();
+
+            glDisable(GL_BLEND);
+            glBindTexture(GL_TEXTURE_2D, 0);
         }
     }
 }

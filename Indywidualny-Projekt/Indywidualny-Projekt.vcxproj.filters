@@ -69,5 +69,8 @@
     <Image Include="assets\textures\wings.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
+    <Image Include="assets\sprites\guard_stationary.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
   </ItemGroup>
 </Project>
