@@ -141,8 +141,6 @@ void Game::renderPlaying() {
     glVertex2f(0, 0);
     glEnd();
 
-    //drawMap2d();
-    //drawPlayer2d();
     all_drawables.clear();
     drawRays3d();
     drawEnemies();
@@ -168,9 +166,6 @@ void Game::renderMenu() {
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, textures.title_screen);
 
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
     glBegin(GL_QUADS);
     glTexCoord2f(0, 0); glVertex2d(0, 0);
     glTexCoord2f(1, 0); glVertex2d(screen_width, 0);
@@ -179,14 +174,6 @@ void Game::renderMenu() {
     glEnd();
 
     glBindTexture(GL_TEXTURE_2D, 0);
-    
-    /*glColor3f(1, 0, 0);
-    glBegin(GL_QUADS);
-    glVertex2d(0, 0);
-    glVertex2d(screen_width, 0);
-    glVertex2d(screen_width, screen_height);
-    glVertex2d(0, screen_height);
-    glEnd();*/
     
     // Menu highlight
     int highlight_y = 347 + highlight * 75;
@@ -219,7 +206,6 @@ void Game::setDeltaTime() {
     current_time = static_cast<float>(glfwGetTime());
     delta_time = current_time - previous_time;
     previous_time = current_time;
-    //std::cout << 1.f / delta_time << "fps" << std::endl;
 }
 
 void Game::drawRays3d() {
@@ -243,9 +229,6 @@ void Game::drawRays3d() {
     GLuint texture;
     GLuint texture_horiz;
     GLuint texture_vert;
-
-    //float projection_distance = 0.5f * tile_size / tan(0.5f * FOV_VERTICAL);
-    //float ray_projection_position = 0.5f * tan(ray_angle / tan(0.5f * FOV));
 
     if (ray_angle < 0)
         ray_angle += 2 * PI;
@@ -323,7 +306,7 @@ void Game::drawRays3d() {
             map_x = (int)(ray_x) >> 6;
             map_y = (int)(ray_y) >> 6;
             map_position = map_y * map_width + map_x;
-            //std::cout << map_x << " " << map_y << std::endl; /////////
+
             if (map_y < 8 && map_y >= 0 && stringContains(wall_chars, map_layout[map_y][map_x])) {
                 vertical_x = ray_x;
                 vertical_y = ray_y;
@@ -369,8 +352,6 @@ void Game::drawRays3d() {
             if (ray_angle < 180 * Degree)
                 slice_offset = 1.f - slice_offset;
         }
-           
-        //drawLine(player_x, player_y, ray_x, ray_y);
 
         //--- 3D Projection ---
         float cosine_angle = player_angle - ray_angle;
@@ -381,26 +362,11 @@ void Game::drawRays3d() {
             cosine_angle -= 2 * PI;
 
         length = length * cos(cosine_angle);
-        //std::cout << length << std::endl;
-
         float line_height = (tile_size * projection_distance) / length;
-        /*if (line_height > 2 * 320)
-            line_height = 2 * 320;*/
-
-        //std::cout << line_height << std::endl;
-
         float line_offset = screen_height / 2.f - line_height / 2.f;
-
-        /*glLineWidth(8);
-        glBegin(GL_LINES);
-        glVertex2i(rays * 8 + 530, line_offset);
-        glVertex2i(rays * 8 + 530, line_height + line_offset);
-        glEnd();*/
 
         Drawable slice = { rays * 2, line_offset, 2, line_height, texture, length, slice_offset, "slice"};
         all_drawables.push_back(slice);
-        
-        //drawSlice(rays * 2, line_offset, 2, line_height, texture, length, slice_offset);
 
         ray_angle += delta_angle;
 
@@ -476,13 +442,7 @@ void Game::menuHandleInput() {
 }
 
 void Game::drawPlayer2d() {
-    /*glColor3f(0, 1, 0);
-    glPointSize(10.f);
-    glBegin(GL_POINTS);
-    glVertex2i(player.getX(), player.getY());
-    glEnd();*/
 
-    // Diagonal of the players rect
     glColor3f(0, 1, 0);
     glLineWidth(1);
     glBegin(GL_QUADS);
@@ -577,11 +537,11 @@ void Game::drawEnemies() {
 
         float dot_product = sprite_x * cos(player_angle) + sprite_y * sin(player_angle);
 
-        if (dot_product > 0) { // Add code in if statement
+        if (dot_product > 0) {
             sprite_x = a;
             sprite_y = b;
 
-            float size = 256 * 256 / distance;
+            float size = 256.f * (256.f / distance);
 
             sprite_x = (sprite_x * (projection_distance / 8.f) / sprite_y) + ((screen_width / 8.f) / 2.f);
             sprite_y = (sprite_z * (projection_distance / 8.f) / sprite_y) + ((screen_height / 8.f) / 2.f);

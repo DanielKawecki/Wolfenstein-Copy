@@ -37,8 +37,8 @@ struct Drawable {
 class Game {
 private:
     GLFWwindow* window = nullptr;
-    int screen_width = 1280; // 1024;
-    int screen_height = 720; // 512;
+    int screen_width = 1280;
+    int screen_height = 720;
     const char* window_title = "Wolfenstein";
     
     float delta_time = 0;

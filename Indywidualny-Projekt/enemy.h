@@ -37,8 +37,6 @@ private:
 public:
 	Enemy(float x_, float y_, float z_);
 
-	void getSprite(float player_x, float player_y, float player_angle, float delta_angle);
-	void getProjection();
 	void update(float delta_time);
 	float getX() const;
 	float getY() const;
