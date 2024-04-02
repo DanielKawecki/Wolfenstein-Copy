@@ -10,6 +10,7 @@
 #include <algorithm>
 #include "player.h"
 #include "enemy.h"
+#include "tile.h"
 
 class State;
 
@@ -54,6 +55,10 @@ private:
     Player player;
     std::vector<Enemy> all_enemies;
     std::vector<Drawable> all_drawables;
+
+    Tile* player_tile = nullptr;
+    Tile* enemy_tile = nullptr;
+    std::vector<std::vector<Tile>> bsf_tiles;
 
     Textures textures;
 

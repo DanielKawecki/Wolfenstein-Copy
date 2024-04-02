@@ -57,13 +57,39 @@ void Game::initilizeMap(/*map number*/) {
 }
 
 void Game::readFromMap() {
+    bsf_tiles.resize(map_layout.size(), std::vector<Tile>(map_layout[0].size(), Tile(0.f, 0.f, false)));
+
     for (size_t y = 0; y < map_layout.size(); ++y) {
         for (size_t x = 0; x < map_layout[y].size(); ++x) {
-            if (map_layout[y][x] == 'p')
+            if (map_layout[y][x] == 'p') {
                 player.setPosition(x * 64 + 32, y * 64 + 32);
-            if (map_layout[y][x] == 'e') {
+                bsf_tiles[y][x] = Tile(x * tile_size, y * tile_size, false);
+            }
+                
+            else if (map_layout[y][x] == 'e') {
                 Enemy enemy(x * 64 + 32, y * 64 + 32, -32.f);
                 all_enemies.push_back(enemy);
+                bsf_tiles[y][x] = Tile(x * tile_size, y * tile_size, false);
+            }
+
+            else if (stringContains(wall_chars, map_layout[y][x])) {
+                bsf_tiles[y][x] = Tile(x * tile_size, y * tile_size, true);
+            }
+            
+            else {
+                bsf_tiles[y][x] = Tile(x * tile_size, y * tile_size, false);
+            }
+
+            for (int di = -1; di <= 1; ++di) {
+                for (int dj = -1; dj <= 1; ++dj)
+                    if (di * di + dj * dj == 1)
+                    {
+                        int ni = static_cast<int>(y) + di;
+                        int nj = static_cast<int>(x) + dj;
+                        if (ni >= 0 && ni < bsf_tiles.size() && nj >= 0 && nj < bsf_tiles[y].size() && !bsf_tiles[ni][nj].isWall()) {
+                            bsf_tiles[y][x].addNeighbor(&bsf_tiles[ni][nj]);
+                        }
+                    }
             }
         }
     }
