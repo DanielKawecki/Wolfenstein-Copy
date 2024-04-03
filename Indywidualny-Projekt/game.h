@@ -91,6 +91,9 @@ private:
 
     void menuHandleInput();
 
+    // Updating functions
+    void updateEnemies();
+
     // Drawing functions
     void drawPlayer2d();
     void drawMap2d();
@@ -101,6 +104,7 @@ private:
 
     // Helper functions
     bool stringContains(const std::string& string, char ch);
+    Tile* getTile(int row, int column);
 
     // Math functions
     int min(int a, int b) { return (a < b) ? a : b; };

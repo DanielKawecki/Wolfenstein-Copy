@@ -141,6 +141,7 @@ GLuint Game::loadTexture(const char* texturePath) {
 void Game::updatePlaying() {
     setDeltaTime();
     player.handleInput(window, delta_time);
+    updateEnemies();
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         pushState(new MenuState(this));
@@ -467,6 +468,18 @@ void Game::menuHandleInput() {
         is_S_pressed = false;
 }
 
+void Game::updateEnemies() {
+    player_tile = getTile((int)floor(player.getX() / 64.f), (int)floor(player.getY() / 64.f));
+
+    for (auto& enemy : all_enemies) {
+
+        enemy_tile = getTile((int)floor(enemy.getX() / 64.f), (int)floor(enemy.getY() / 64.f));
+
+        enemy.seekPlayer(enemy_tile, player_tile, bsf_tiles);
+        enemy.update(delta_time);
+    }
+}
+
 void Game::drawPlayer2d() {
 
     glColor3f(0, 1, 0);
@@ -613,6 +626,10 @@ bool Game::stringContains(const std::string& string, char ch) {
             return true;
     }
     return false;
+}
+
+Tile* Game::getTile(int row, int column) {
+    return &bsf_tiles[row][column];
 }
 
 void Game::pushState(State* state_) {

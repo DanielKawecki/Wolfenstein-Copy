@@ -19,4 +19,7 @@ public:
 	Tile* getParent();
 	std::vector<Tile*> getNeighbors();
 	bool isWall();
+
+	float getX() const;
+	float getY() const;
 };

@@ -25,3 +25,11 @@ std::vector<Tile*> Tile::getNeighbors() {
 bool Tile::isWall() {
 	return is_wall;
 }
+
+float Tile::getX() const {
+	return x;
+}
+
+float Tile::getY() const {
+	return y;
+}
