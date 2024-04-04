@@ -13,13 +13,18 @@ private:
 	float x;
 	float y;
 	float z;
-	
-	float angle = 0.f;
-	float speed = 50.f;
-	int health = 1;
 
 	float width = 100.f;
 	float height = 100.f;
+
+	// Enemy behaviour
+	bool stationary = true;
+	bool agroed = false;
+	float agro_distance = 128.f;
+
+	float angle = 0.f;
+	float speed = 50.f;
+	int health = 1;
 
 	// Path-finding related
 	Tile* start = nullptr;
@@ -27,12 +32,6 @@ private:
 	std::vector<Tile*> path;
 
 	// Sprite related
-	float delta_x = 0.f;
-	float delta_y = 0.f;
-	float delta = 0.f;
-	float delta_rays = 0.f;
-	float theta = 0.f;
-
 	float screen_x = 0.f;
 	float screen_y = 0.f;
 	float scale = 1.f;
@@ -46,6 +45,7 @@ public:
 
 	void update(float delta_time);
 	void seekPlayer(Tile* start_, Tile* finish_, std::vector<std::vector<Tile>>& tiles_);
+	void checkAgro(float player_x, float player_y);
 	float getX() const;
 	float getY() const;
 	float getZ() const;

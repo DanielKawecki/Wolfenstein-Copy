@@ -476,6 +476,7 @@ void Game::updateEnemies() {
         enemy_tile = getTile((int)floor(enemy.getX() / 64.f), (int)floor(enemy.getY() / 64.f));
 
         enemy.seekPlayer(enemy_tile, player_tile, bsf_tiles);
+        enemy.checkAgro(player.getX(), player.getY());
         enemy.update(delta_time);
     }
 }
@@ -629,7 +630,7 @@ bool Game::stringContains(const std::string& string, char ch) {
 }
 
 Tile* Game::getTile(int row, int column) {
-    return &bsf_tiles[row][column];
+    return &bsf_tiles[column][row];
 }
 
 void Game::pushState(State* state_) {
