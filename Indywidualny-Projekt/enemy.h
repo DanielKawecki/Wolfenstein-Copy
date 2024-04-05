@@ -7,6 +7,7 @@
 #endif
 
 #include "bfs.h"
+#include "clock.h"
 
 class Enemy {
 private:
@@ -17,14 +18,17 @@ private:
 	float width = 100.f;
 	float height = 100.f;
 
-	// Enemy behaviour
+	// Enemy behaviour related
 	bool stationary = true;
 	bool agroed = false;
+	bool shooting = false;
 	float agro_distance = 128.f;
 
 	float angle = 0.f;
 	float speed = 50.f;
 	int health = 1;
+
+	Clock clock;
 
 	// Path-finding related
 	Tile* start = nullptr;
@@ -37,7 +41,7 @@ private:
 	float scale = 1.f;
 
 	float distance = 0.f;
-	float normalized_distance = 0.f;
+	//float normalized_distance = 0.f;
 
 
 public:
@@ -46,6 +50,7 @@ public:
 	void update(float delta_time);
 	void seekPlayer(Tile* start_, Tile* finish_, std::vector<std::vector<Tile>>& tiles_);
 	void checkAgro(float player_x, float player_y);
+	bool shoot();
 	float getX() const;
 	float getY() const;
 	float getZ() const;

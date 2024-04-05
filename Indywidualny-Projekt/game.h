@@ -11,31 +11,32 @@
 #include "player.h"
 #include "enemy.h"
 #include "tile.h"
+#include "clock.h"
 
 class State;
 
-class Clock {
-private:
-    double start_time = 0.f;
-    double stop_time = 0.f;
-
-public:
-    Clock() {}
-
-    void start() {
-        start_time = glfwGetTime();
-    }
-    double getElapsedTime() {
-        stop_time = glfwGetTime();
-        return stop_time - start_time;
-    }
-    double restart() {
-        stop_time = glfwGetTime();
-        float time = stop_time - start_time;
-        start_time = stop_time;
-        return time;
-    }
-};
+//class Clock {
+//private:
+//    double start_time = 0.f;
+//    double stop_time = 0.f;
+//
+//public:
+//    Clock() {}
+//
+//    void start() {
+//        start_time = glfwGetTime();
+//    }
+//    double getElapsedTime() {
+//        stop_time = glfwGetTime();
+//        return stop_time - start_time;
+//    }
+//    double restart() {
+//        stop_time = glfwGetTime();
+//        float time = stop_time - start_time;
+//        start_time = stop_time;
+//        return time;
+//    }
+//};
 
 struct Textures {
     GLuint title_screen;

@@ -121,6 +121,11 @@ bool Player::stringContains(const std::string& string, char ch) {
     return false;
 }
 
+void Player::substractHealth() {
+    health -= 5;
+    std::cout << health << std::endl;
+}
+
 float Player::getX() const { return x; }
 float Player::getY() const { return y; }
 

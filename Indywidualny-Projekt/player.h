@@ -30,6 +30,8 @@ private:
 	int tile_x = 0;
 	int tile_y = 0;
 
+	int health = 100;
+
 	Rect rect;
 	float size = 18;
 	float top = 0;
@@ -48,6 +50,7 @@ public:
 	void setWalls(std::vector<std::string> map_layout_, std::string wall_chars_);
 	bool intersects(const Rect& rect1, const Rect& rect2);
 	bool stringContains(const std::string& string, char ch);
+	void substractHealth();
 
 	float getX() const;
 	float getY() const;
