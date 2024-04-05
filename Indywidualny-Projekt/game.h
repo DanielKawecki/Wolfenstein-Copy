@@ -14,6 +14,29 @@
 
 class State;
 
+class Clock {
+private:
+    double start_time = 0.f;
+    double stop_time = 0.f;
+
+public:
+    Clock() {}
+
+    void start() {
+        start_time = glfwGetTime();
+    }
+    double getElapsedTime() {
+        stop_time = glfwGetTime();
+        return stop_time - start_time;
+    }
+    double restart() {
+        stop_time = glfwGetTime();
+        float time = stop_time - start_time;
+        start_time = stop_time;
+        return time;
+    }
+};
+
 struct Textures {
     GLuint title_screen;
     GLuint highlight;
@@ -41,6 +64,7 @@ private:
     int screen_width = 1280;
     int screen_height = 720;
     const char* window_title = "Wolfenstein";
+    Clock clock;
     
     float delta_time = 0;
     float current_time = 0;

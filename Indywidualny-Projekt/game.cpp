@@ -10,7 +10,8 @@ bool compareDistance(const Drawable& a, const Drawable& b) {
 Game::Game() {
     initializeGL();
     inicializeTextures();
-    std::cout << projection_distance << std::endl;
+    clock = Clock();
+    clock.start();
 }
 
 Game::~Game() {
@@ -233,6 +234,11 @@ void Game::setDeltaTime() {
     current_time = static_cast<float>(glfwGetTime());
     delta_time = current_time - previous_time;
     previous_time = current_time;
+
+    if (clock.getElapsedTime() > 5) {
+        std::cout << 1 / delta_time << "fps" << std::endl;
+        clock.restart();
+    }
 }
 
 void Game::drawRays3d() {
