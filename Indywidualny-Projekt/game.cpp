@@ -73,6 +73,22 @@ void Game::readFromMap() {
                 bsf_tiles[y][x] = Tile(x * tile_size, y * tile_size, false);
             }
 
+            else if (map_layout[y][x] == 'a') {
+                Refill ammo;
+                ammo.x = x * tile_size + tile_size / 2;
+                ammo.y = y * tile_size + tile_size / 2;
+                ammo.type = "ammo";
+                all_refills.push_back(ammo);
+            }
+
+            else if (map_layout[y][x] == 'h') {
+                Refill health;
+                health.x = x * tile_size + tile_size / 2;
+                health.y = y * tile_size + tile_size / 2;
+                health.type = "health";
+                all_refills.push_back(health);
+            }
+
             else if (stringContains(wall_chars, map_layout[y][x])) {
                 bsf_tiles[y][x] = Tile(x * tile_size, y * tile_size, true);
             }
@@ -143,6 +159,7 @@ void Game::updatePlaying() {
     setDeltaTime();
     player.handleInput(window, delta_time);
     updateEnemies();
+    updateRefills();
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         pushState(new MenuState(this));
@@ -172,6 +189,7 @@ void Game::renderPlaying() {
     all_drawables.clear();
     drawRays3d();
     drawEnemies();
+    drawRefills();
 
     std::sort(all_drawables.begin(), all_drawables.end(), compareDistance);
     drawDrawable();
@@ -489,6 +507,24 @@ void Game::updateEnemies() {
     }
 }
 
+void Game::updateRefills() {
+    for (auto it = all_refills.begin(); it != all_refills.end(); ) {
+        float distance = hypotf(it->x - player.getX(), it->y - player.getY());
+        if (distance < 20.f) {
+            if (it->type == "ammo") {
+                player.addAmmo();
+            }
+            else if (it->type == "health") {
+                player.addHealth();
+            }
+            it = all_refills.erase(it);
+        }
+        else {
+            ++it;
+        }
+    }
+}
+
 void Game::drawPlayer2d() {
 
     glColor3f(0, 1, 0);
@@ -564,6 +600,41 @@ void Game::drawSlice(float x, float y, float size_x, float size_y, GLuint textur
     glEnd();
 
     glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Game::drawRefills() {
+    float player_angle = player.getAngle();
+
+    for (int i = 0; i < all_refills.size(); i++) {
+
+        float sprite_x = all_refills[i].x - player.getX();
+        float sprite_y = all_refills[i].y - player.getY();
+        float sprite_z = all_refills[i].z;
+
+        float cosine = -cos(player_angle);
+        float sine = sin(player_angle);
+        float a = sprite_y * cosine + sprite_x * sine;
+        float b = sprite_x * cosine - sprite_y * sine;
+
+        float theta = atan2f(sprite_y, sprite_x) - player_angle;
+        float distance = hypotf(sprite_x, sprite_y) * cos(theta);
+
+        float dot_product = sprite_x * cos(player_angle) + sprite_y * sin(player_angle);
+
+        if (dot_product > 0) {
+            sprite_x = a;
+            sprite_y = b;
+
+
+            float size = all_refills[i].width * (all_refills[i].width / distance);
+
+            sprite_x = (sprite_x * (projection_distance / 8.f) / sprite_y) + ((screen_width / 8.f) / 2.f);
+            sprite_y = (sprite_z * (projection_distance / 8.f) / sprite_y) + ((screen_height / 8.f) / 2.f);
+
+            Drawable refill = { sprite_x * 8.f, sprite_y * 8.f, size, size, textures.eagle, distance, 0, "sprite" };
+            all_drawables.push_back(refill);
+        }
+    }
 }
 
 void Game::drawEnemies() {

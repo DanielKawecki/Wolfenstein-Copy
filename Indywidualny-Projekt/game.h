@@ -15,29 +15,6 @@
 
 class State;
 
-//class Clock {
-//private:
-//    double start_time = 0.f;
-//    double stop_time = 0.f;
-//
-//public:
-//    Clock() {}
-//
-//    void start() {
-//        start_time = glfwGetTime();
-//    }
-//    double getElapsedTime() {
-//        stop_time = glfwGetTime();
-//        return stop_time - start_time;
-//    }
-//    double restart() {
-//        stop_time = glfwGetTime();
-//        float time = stop_time - start_time;
-//        start_time = stop_time;
-//        return time;
-//    }
-//};
-
 struct Textures {
     GLuint title_screen;
     GLuint highlight;
@@ -59,11 +36,19 @@ struct Drawable {
     std::string type;
 };
 
+struct Refill {
+    float x;
+    float y;
+    float z = -32.f;
+    float width = 100.f;
+    std::string type;
+};
+
 class Game {
 private:
     GLFWwindow* window = nullptr;
-    int screen_width = 1280;
-    int screen_height = 720;
+    int screen_width = 1280; //1120;
+    int screen_height = 720; //630;
     const char* window_title = "Wolfenstein";
     Clock clock;
     
@@ -80,6 +65,7 @@ private:
     Player player;
     std::vector<Enemy> all_enemies;
     std::vector<Drawable> all_drawables;
+    std::vector<Refill> all_refills;
 
     Tile* player_tile = nullptr;
     Tile* enemy_tile = nullptr;
@@ -118,12 +104,14 @@ private:
 
     // Updating functions
     void updateEnemies();
+    void updateRefills();
 
     // Drawing functions
     void drawPlayer2d();
     void drawMap2d();
     void drawLine(float a_x, float a_y, float b_x, float b_y);
     void drawSlice(float x, float y, float size_x, float size_y, GLuint texture, float distance, float slice_offset);
+    void drawRefills();
     void drawEnemies();
     void drawDrawable();
 

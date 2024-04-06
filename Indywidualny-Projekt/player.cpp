@@ -126,6 +126,20 @@ void Player::substractHealth() {
     std::cout << health << std::endl;
 }
 
+void Player::addHealth() {
+    if (health + 25 <= health_cap)
+        health += 25;
+    else
+        health = health_cap;
+}
+
+void Player::addAmmo() {
+    if (ammo + 10 <= ammo_cap)
+        ammo += 10;
+    else
+        ammo = ammo_cap;
+}
+
 float Player::getX() const { return x; }
 float Player::getY() const { return y; }
 

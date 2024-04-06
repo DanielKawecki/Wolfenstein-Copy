@@ -31,6 +31,9 @@ private:
 	int tile_y = 0;
 
 	int health = 100;
+	int health_cap = health;
+	int ammo = 24;
+	int ammo_cap = ammo;
 
 	Rect rect;
 	float size = 18;
@@ -51,6 +54,8 @@ public:
 	bool intersects(const Rect& rect1, const Rect& rect2);
 	bool stringContains(const std::string& string, char ch);
 	void substractHealth();
+	void addHealth();
+	void addAmmo();
 
 	float getX() const;
 	float getY() const;

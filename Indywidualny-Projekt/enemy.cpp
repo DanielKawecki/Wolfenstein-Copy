@@ -47,7 +47,13 @@ void Enemy::checkAgro(float player_x, float player_y) {
 }
 
 bool Enemy::shoot() {
-	if (agroed && !shooting && distance < agro_distance) {
+	if (shooting && clock.getElapsedTime() > 1) {
+		stationary = false;
+		shooting = false;
+		return true;
+	}
+	
+	else if (agroed && !shooting && distance < agro_distance) {
 		stationary = true;
 		shooting = true;
 		clock.restart();
@@ -56,12 +62,7 @@ bool Enemy::shoot() {
 		shooting = false;
 		stationary = false;
 	}
-	else if (shooting && clock.getElapsedTime() > 1) {
-		stationary = false;
-		shooting = false;
-		return true;
-	}
-
+	
 	return false;
 }
 
