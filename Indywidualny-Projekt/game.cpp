@@ -164,6 +164,9 @@ void Game::updatePlaying() {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         pushState(new MenuState(this));
     }
+    else if (player.isDead()) {
+        pushState(new DeadState(this));
+    }
 }
 
 void Game::renderPlaying() {
@@ -257,6 +260,79 @@ void Game::setDeltaTime() {
         std::cout << 1 / delta_time << "fps" << std::endl;
         clock.restart();
     }
+}
+
+void Game::updateDead() {
+    if (isEnterPressed()) {
+        switch (highlight) {
+        case 0:
+            pushState(new PlayingState(this));
+            break;
+        case 1:
+            highlight = 0;
+            pushState(new MenuState(this));
+            break;
+        case 2:
+            glfwSetWindowShouldClose(window, 1);
+            break;
+        default:
+            break;
+        }
+    }
+
+    static bool is_W_pressed = false;
+    static bool is_S_pressed = false;
+
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && !is_W_pressed) {
+        is_W_pressed = true;
+        highlight -= 1;
+        if (highlight < 0)
+            highlight = dead_buttons_count - 1;
+    }
+    else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_RELEASE)
+        is_W_pressed = false;
+
+
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && !is_S_pressed) {
+        is_S_pressed = true;
+        highlight += 1;
+        if (highlight > dead_buttons_count - 1)
+            highlight = 0;
+    }
+    else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_RELEASE)
+        is_S_pressed = false;
+}
+
+void Game::renderDead() {
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glColor3f(1.f, 0.f, 0.f);
+
+    // Menu highlight
+    int highlight_y = 347 + highlight * 75;
+    int width = 360;
+    int height = 75;
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, textures.highlight);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glPointSize(16);
+    glColor3f(1, 1, 1);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0); glVertex2d(463, highlight_y);
+    glTexCoord2f(1, 0); glVertex2d(463 + width, highlight_y);
+    glTexCoord2f(1, 1); glVertex2d(463 + width, highlight_y + height);
+    glTexCoord2f(0, 1); glVertex2d(463, highlight_y + height);
+    glEnd();
+
+    glDisable(GL_BLEND);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    /* Swap front and back buffers */
+    glfwSwapBuffers(window);
 }
 
 void Game::drawRays3d() {
@@ -452,7 +528,7 @@ State* Game::peekState()
 }
 
 void Game::menuHandleInput() {
-    if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) {
+    if (isEnterPressed()) {
         switch (highlight) {
         case 0:
             initilizeMap();
@@ -710,6 +786,19 @@ bool Game::stringContains(const std::string& string, char ch) {
 
 Tile* Game::getTile(int row, int column) {
     return &bsf_tiles[column][row];
+}
+
+bool Game::isEnterPressed() {
+    static bool is_Enter_pressed = false;
+
+    if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS && !is_Enter_pressed) {
+        is_Enter_pressed = true;
+        return true;
+    }
+    else if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_RELEASE) {
+        is_Enter_pressed = false;
+        return false;
+    }
 }
 
 void Game::pushState(State* state_) {

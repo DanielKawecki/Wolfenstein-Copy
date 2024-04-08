@@ -2,8 +2,8 @@
 
 #include "game.h"
 
-// Maszyna stanów wykonana jest w ten sposób w celach edukacyjnych. Z pewnoœci¹
-// do tego zastosowania mo¿a by zrobiæ to proœciej.
+// Maszyna stanï¿½w wykonana jest w ten sposï¿½b w celach edukacyjnych. Z pewnoï¿½ciï¿½
+// do tego zastosowania moï¿½a by zrobiï¿½ to proï¿½ciej.
 
 class State {
 public:
@@ -47,6 +47,26 @@ public:
 
     void render() {
         game->renderPlaying();
+    }
+
+private:
+    Game* game;
+};
+
+class DeadState : public State {
+public:
+    DeadState(Game* game_) : game(game_) {}
+
+    void handleEvents() {
+        //game->handlePlaying();
+    }
+
+    void update(float delta_time) {
+        game->updateDead();
+    }
+
+    void render() {
+        game->renderDead();
     }
 
 private:

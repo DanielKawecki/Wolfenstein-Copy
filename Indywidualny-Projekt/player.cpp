@@ -151,3 +151,7 @@ float Player::getAngle() const { return angle; }
 Rect Player::getRect() {
     return rect;
 }
+
+bool Player::isDead() {
+    return health <= 0;
+}

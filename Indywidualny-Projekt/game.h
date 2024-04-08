@@ -74,6 +74,7 @@ private:
     Textures textures;
 
     int menu_buttons_count = 2;
+    int dead_buttons_count = 3;
     int highlight = 0;
 
     // Raycasting variables
@@ -118,6 +119,7 @@ private:
     // Helper functions
     bool stringContains(const std::string& string, char ch);
     Tile* getTile(int row, int column);
+    bool isEnterPressed();
 
     // Math functions
     int min(int a, int b) { return (a < b) ? a : b; };
@@ -138,6 +140,10 @@ public:
     void updatePlaying();
     void renderPlaying();
     void setDeltaTime();
+
+    // Main functions for pleyer died state
+    void updateDead();
+    void renderDead();
 
 };
 

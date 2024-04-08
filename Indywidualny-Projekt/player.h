@@ -30,7 +30,7 @@ private:
 	int tile_x = 0;
 	int tile_y = 0;
 
-	int health = 100;
+	int health = 2;
 	int health_cap = health;
 	int ammo = 24;
 	int ammo_cap = ammo;
@@ -63,4 +63,5 @@ public:
 	int getTileY() const;
 	float getAngle() const;
 	Rect getRect();
+	bool isDead();
 };
