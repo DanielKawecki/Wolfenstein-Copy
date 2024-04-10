@@ -59,6 +59,8 @@ void Game::initilizeMap(/*map number*/) {
 
 void Game::readFromMap() {
     bsf_tiles.resize(map_layout.size(), std::vector<Tile>(map_layout[0].size(), Tile(0.f, 0.f, false)));
+    all_enemies.clear();
+    all_refills.clear();
 
     for (size_t y = 0; y < map_layout.size(); ++y) {
         for (size_t x = 0; x < map_layout[y].size(); ++x) {
@@ -225,7 +227,8 @@ void Game::renderMenu() {
     glBindTexture(GL_TEXTURE_2D, 0);
     
     // Menu highlight
-    int highlight_y = 347 + highlight * 75;
+    int highlight_x = 303;
+    int highlight_y = 290 + highlight * 70;
     int width = 360;
     int height = 75;
 
@@ -238,10 +241,10 @@ void Game::renderMenu() {
     glPointSize(16);
     glColor3f(1, 1, 1);
     glBegin(GL_QUADS);
-    glTexCoord2f(0, 0); glVertex2d(463, highlight_y);
-    glTexCoord2f(1, 0); glVertex2d(463 + width, highlight_y);
-    glTexCoord2f(1, 1); glVertex2d(463 + width, highlight_y + height);
-    glTexCoord2f(0, 1); glVertex2d(463, highlight_y + height);
+    glTexCoord2f(0, 0); glVertex2d(highlight_x, highlight_y);
+    glTexCoord2f(1, 0); glVertex2d(highlight_x + width, highlight_y);
+    glTexCoord2f(1, 1); glVertex2d(highlight_x + width, highlight_y + height);
+    glTexCoord2f(0, 1); glVertex2d(highlight_x, highlight_y + height);
     glEnd();
 
     glDisable(GL_BLEND);
@@ -266,6 +269,10 @@ void Game::updateDead() {
     if (isEnterPressed()) {
         switch (highlight) {
         case 0:
+            initilizeMap();
+            player = Player();
+            player.setWalls(map_layout, wall_chars);
+            readFromMap();
             pushState(new PlayingState(this));
             break;
         case 1:
@@ -309,7 +316,8 @@ void Game::renderDead() {
     glColor3f(1.f, 0.f, 0.f);
 
     // Menu highlight
-    int highlight_y = 347 + highlight * 75;
+    int highlight_x = 303;
+    int highlight_y = 290 + highlight * 70;
     int width = 360;
     int height = 75;
 
@@ -322,10 +330,10 @@ void Game::renderDead() {
     glPointSize(16);
     glColor3f(1, 1, 1);
     glBegin(GL_QUADS);
-    glTexCoord2f(0, 0); glVertex2d(463, highlight_y);
-    glTexCoord2f(1, 0); glVertex2d(463 + width, highlight_y);
-    glTexCoord2f(1, 1); glVertex2d(463 + width, highlight_y + height);
-    glTexCoord2f(0, 1); glVertex2d(463, highlight_y + height);
+    glTexCoord2f(0, 0); glVertex2d(highlight_x, highlight_y);
+    glTexCoord2f(1, 0); glVertex2d(highlight_x + width, highlight_y);
+    glTexCoord2f(1, 1); glVertex2d(highlight_x + width, highlight_y + height);
+    glTexCoord2f(0, 1); glVertex2d(highlight_x, highlight_y + height);
     glEnd();
 
     glDisable(GL_BLEND);
@@ -586,7 +594,7 @@ void Game::updateEnemies() {
 void Game::updateRefills() {
     for (auto it = all_refills.begin(); it != all_refills.end(); ) {
         float distance = hypotf(it->x - player.getX(), it->y - player.getY());
-        if (distance < 20.f) {
+        if (distance < 50.f) {
             if (it->type == "ammo") {
                 player.addAmmo();
             }
@@ -736,7 +744,7 @@ void Game::drawEnemies() {
             sprite_x = a;
             sprite_y = b;
 
-            float size = 256.f * (256.f / distance);
+            float size = 180.f * (256.f / distance);
 
             sprite_x = (sprite_x * (projection_distance / 8.f) / sprite_y) + ((screen_width / 8.f) / 2.f);
             sprite_y = (sprite_z * (projection_distance / 8.f) / sprite_y) + ((screen_height / 8.f) / 2.f);
@@ -789,8 +797,6 @@ Tile* Game::getTile(int row, int column) {
 }
 
 bool Game::isEnterPressed() {
-    static bool is_Enter_pressed = false;
-
     if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS && !is_Enter_pressed) {
         is_Enter_pressed = true;
         return true;
@@ -799,6 +805,8 @@ bool Game::isEnterPressed() {
         is_Enter_pressed = false;
         return false;
     }
+
+    return false;
 }
 
 void Game::pushState(State* state_) {

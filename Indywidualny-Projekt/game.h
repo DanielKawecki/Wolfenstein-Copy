@@ -47,8 +47,8 @@ struct Refill {
 class Game {
 private:
     GLFWwindow* window = nullptr;
-    int screen_width = 1280; //1120;
-    int screen_height = 720; //630;
+    int screen_width = 960;
+    int screen_height = 600;
     const char* window_title = "Wolfenstein";
     Clock clock;
     
@@ -76,6 +76,14 @@ private:
     int menu_buttons_count = 2;
     int dead_buttons_count = 3;
     int highlight = 0;
+
+    bool is_Enter_pressed = false;
+
+    // TODO: 
+    // Strzelanie gracza
+    // Przeciwnik nie powinien strzelaæ przez œciany
+    // Tekstury do apteczek
+    // Tekstury dla nowej rozdzielczoœci
 
     // Raycasting variables
     float FOV = PI / 3.f;
