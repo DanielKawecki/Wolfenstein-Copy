@@ -23,6 +23,8 @@ struct Textures {
     GLuint eagle;
     GLuint red_brick;
     GLuint guard_stationary;
+    GLuint health_pack;
+    GLuint ammo_pack;
 };
 
 struct Drawable {
@@ -40,7 +42,7 @@ struct Refill {
     float x;
     float y;
     float z = -32.f;
-    float width = 100.f;
+    float width = 150.f;
     std::string type;
 };
 

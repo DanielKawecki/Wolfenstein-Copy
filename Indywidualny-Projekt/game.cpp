@@ -122,6 +122,8 @@ void Game::inicializeTextures() {
     textures.eagle = loadTexture("assets/textures/eagle.png");
     textures.red_brick = loadTexture("assets/textures/redbrick.png");
     textures.guard_stationary = loadTexture("assets/sprites/guard_stationary.png");
+    textures.health_pack = loadTexture("assets/sprites/health.png");
+    textures.ammo_pack = loadTexture("assets/sprites/ammo.png");
 
     texture_atlas.insert({ '#', textures.test });
     texture_atlas.insert({ '1', textures.greystone });
@@ -688,6 +690,7 @@ void Game::drawSlice(float x, float y, float size_x, float size_y, GLuint textur
 
 void Game::drawRefills() {
     float player_angle = player.getAngle();
+    GLuint texture;
 
     for (int i = 0; i < all_refills.size(); i++) {
 
@@ -715,7 +718,12 @@ void Game::drawRefills() {
             sprite_x = (sprite_x * (projection_distance / 8.f) / sprite_y) + ((screen_width / 8.f) / 2.f);
             sprite_y = (sprite_z * (projection_distance / 8.f) / sprite_y) + ((screen_height / 8.f) / 2.f);
 
-            Drawable refill = { sprite_x * 8.f, sprite_y * 8.f, size, size, textures.eagle, distance, 0, "sprite" };
+            if (all_refills[i].type == "ammo")
+                texture = textures.ammo_pack;
+            else if (all_refills[i].type == "health")
+                texture = textures.health_pack;
+
+            Drawable refill = { sprite_x * 8.f, sprite_y * 8.f, size, size, texture, distance, 0, "sprite" };
             all_drawables.push_back(refill);
         }
     }
