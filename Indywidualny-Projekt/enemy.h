@@ -22,10 +22,11 @@ private:
 	bool stationary = true;
 	bool agroed = false;
 	bool shooting = false;
-	float agro_distance = 128.f;
+	bool vision_on_player = false;
+	float agro_distance = 500.f;
 
 	float angle = 0.f;
-	float speed = 50.f;
+	float speed = 120.f;
 	int health = 1;
 
 	Clock clock;
@@ -50,9 +51,11 @@ public:
 	void update(float delta_time);
 	void seekPlayer(Tile* start_, Tile* finish_, std::vector<std::vector<Tile>>& tiles_);
 	void checkAgro(float player_x, float player_y);
+	void setVision(bool vision_);
 	bool shoot();
 	float getX() const;
 	float getY() const;
 	float getZ() const;
 	float getScreenX() const;
+	bool getVision() const;
 };

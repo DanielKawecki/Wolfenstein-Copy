@@ -53,17 +53,25 @@ bool Enemy::shoot() {
 		return true;
 	}
 	
-	else if (agroed && !shooting && distance < agro_distance) {
+	else if (agroed && !shooting && distance < agro_distance && vision_on_player) {
 		stationary = true;
 		shooting = true;
 		clock.restart();
 	}
-	else if (agroed && shooting && distance > agro_distance) {
+	else if (agroed && shooting && distance > agro_distance && !vision_on_player) {
 		shooting = false;
 		stationary = false;
 	}
 	
 	return false;
+}
+
+void Enemy::setVision(bool vision_) {
+	vision_on_player = vision_;
+}
+
+bool Enemy::getVision() const {
+	return vision_on_player;
 }
 
 float Enemy::getX() const {
