@@ -197,6 +197,9 @@ void Game::renderPlaying() {
     drawRays3d();
     drawEnemies();
     drawRefills();
+    //drawMap2d();
+    //drawPlayer2d();
+    //drawEnemies();
 
     std::sort(all_drawables.begin(), all_drawables.end(), compareDistance);
     drawDrawable();
@@ -394,20 +397,20 @@ void Game::drawRays3d() {
         if (ray_angle == 0 || ray_angle == PI) {
             ray_x = player_x;
             ray_y = player_y;
-            depth_of_field = 8;
+            depth_of_field = map_width;
         }
-        while (depth_of_field < 8) {
+        while (depth_of_field < map_width) {
             map_x = (int)(ray_x) >> 6;
             map_y = (int)(ray_y) >> 6;
             map_position = map_y * map_width + map_x;
 
-            if (map_x < 8 && map_x >= 0 && stringContains(wall_chars, map_layout[map_y][map_x])) {
+            if (map_x < map_width && map_x >= 0 && stringContains(wall_chars, map_layout[map_y][map_x])) {
                 horizontal_x = ray_x;
                 horizontal_y = ray_y;
                 horizontal_distance = getRayLength(player_x, player_y, horizontal_x, horizontal_y, ray_angle);
 
                 texture_horiz = texture_atlas.find(map_layout[map_y][map_x])->second;
-                depth_of_field = 8; // Ending the while loop
+                depth_of_field = map_width; // Ending the while loop
             }
             else {
                 ray_x += x_offset;
@@ -437,20 +440,20 @@ void Game::drawRays3d() {
         if (ray_angle == 0 || ray_angle == PI) {
             ray_x = player_x;
             ray_y = player_y;
-            depth_of_field = 8;
+            depth_of_field = map_width;
         }
-        while (depth_of_field < 8) {
+        while (depth_of_field < map_width) {
             map_x = (int)(ray_x) >> 6;
             map_y = (int)(ray_y) >> 6;
             map_position = map_y * map_width + map_x;
 
-            if (map_y < 8 && map_y >= 0 && stringContains(wall_chars, map_layout[map_y][map_x])) {
+            if (map_y < map_width && map_y >= 0 && stringContains(wall_chars, map_layout[map_y][map_x])) {
                 vertical_x = ray_x;
                 vertical_y = ray_y;
                 vertical_distance = getRayLength(player_x, player_y, vertical_x, vertical_y, ray_angle);
 
                 texture_vert = texture_atlas.find(map_layout[map_y][map_x])->second;
-                depth_of_field = 8;
+                depth_of_field = map_width;
             }
             else {
                 ray_x += x_offset;
@@ -582,7 +585,7 @@ void Game::updateEnemies() {
     player_tile = getTile((int)floor(player.getX() / 64.f), (int)floor(player.getY() / 64.f));
 
     for (auto& enemy : all_enemies) {
-
+        enemy.setVision(!visionCheck(enemy.getX(), enemy.getY()));
         enemy_tile = getTile((int)floor(enemy.getX() / 64.f), (int)floor(enemy.getY() / 64.f));
 
         enemy.seekPlayer(enemy_tile, player_tile, bsf_tiles);
@@ -665,6 +668,14 @@ void Game::drawLine(float a_x, float a_y, float b_x, float b_y) {
     glBegin(GL_LINES);
     glVertex2i(a_x, a_y);
     glVertex2i(b_x, b_y);
+    glEnd();
+}
+
+void Game::drawPoint(float x, float y) {
+    glColor3f(1, 1, 0);
+    glLineWidth(3);
+    glBegin(GL_POINTS);
+    glVertex2i(x, y);
     glEnd();
 }
 
@@ -759,7 +770,12 @@ void Game::drawEnemies() {
 
             Drawable enemy = { sprite_x * 8.f, sprite_y * 8.f, size, size, textures.guard_stationary, distance, 0, "sprite" };
             all_drawables.push_back(enemy);
+
         }
+        /*if (all_enemies[i].getVision())
+            drawLine(player.getX(), player.getY(), all_enemies[i].getX(), all_enemies[i].getY());
+
+        drawPoint(all_enemies[i].getX(), all_enemies[i].getY());*/
     }
 }
 
@@ -831,4 +847,31 @@ void Game::run() {
             states.top()->render();
         }
     }
+}
+
+bool Game::visionCheck(float enemy_x, float enemy_y) {
+    float dx = player.getX() - (enemy_x + 10.f);
+    float dy = player.getY() - (enemy_y + 10.f);
+
+    int steps = std::max(std::abs(dx), std::abs(dy)) / (tile_size / 16.f);
+    float xIncrement = dx / steps;
+    float yIncrement = dy / steps;
+
+    float x = enemy_x;
+    float y = enemy_y;
+
+    for (int i = 0; i <= steps; ++i) {
+
+        int map_x = (int)(floor(x) / tile_size);
+        int map_y = (int)(floor(y) / tile_size);
+
+        if (stringContains(wall_chars, map_layout[map_y][map_x])) {
+            return true;
+        }
+
+        x += xIncrement;
+        y += yIncrement;
+    }
+
+    return false;
 }

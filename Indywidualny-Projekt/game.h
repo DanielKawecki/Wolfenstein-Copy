@@ -61,7 +61,7 @@ private:
     std::vector<std::string> map_layout;
     std::map<char, GLuint> texture_atlas;
     std::string wall_chars = "123#";
-    int map_width = 8;
+    int map_width = 16;
     int tile_size = 64;
 
     Player player;
@@ -84,8 +84,7 @@ private:
     // TODO: 
     // Strzelanie gracza
     // Przeciwnik nie powinien strzelaæ przez œciany
-    // Tekstury do apteczek
-    // Tekstury dla nowej rozdzielczoœci
+    // Zakoñczenie poziomu
 
     // Raycasting variables
     float FOV = PI / 3.f;
@@ -121,6 +120,7 @@ private:
     void drawPlayer2d();
     void drawMap2d();
     void drawLine(float a_x, float a_y, float b_x, float b_y);
+    void drawPoint(float x, float y);
     void drawSlice(float x, float y, float size_x, float size_y, GLuint texture, float distance, float slice_offset);
     void drawRefills();
     void drawEnemies();
@@ -130,6 +130,7 @@ private:
     bool stringContains(const std::string& string, char ch);
     Tile* getTile(int row, int column);
     bool isEnterPressed();
+    bool visionCheck(float enemy_x, float enemy_y);
 
     // Math functions
     int min(int a, int b) { return (a < b) ? a : b; };

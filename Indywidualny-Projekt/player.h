@@ -22,7 +22,7 @@ private:
 	float x = 0;
 	float y = 0;
 	float angle = 0;
-	float speed = 150;
+	float speed = 200;
 	float rotation_speed = 4; // radians
 
 	std::vector<std::string> map_layout;
