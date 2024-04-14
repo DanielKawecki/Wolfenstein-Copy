@@ -125,6 +125,11 @@ void Game::inicializeTextures() {
     textures.health_pack = loadTexture("assets/sprites/health.png");
     textures.ammo_pack = loadTexture("assets/sprites/ammo.png");
 
+    guard_textures.run0 = loadTexture("assets/sprites/guard/run0.png");
+    guard_textures.run1 = loadTexture("assets/sprites/guard/run1.png");
+    guard_textures.run2 = loadTexture("assets/sprites/guard/run2.png");
+    guard_textures.run3 = loadTexture("assets/sprites/guard/run3.png");
+
     texture_atlas.insert({ '#', textures.test });
     texture_atlas.insert({ '1', textures.greystone });
     texture_atlas.insert({ '2', textures.eagle });
@@ -767,8 +772,9 @@ void Game::drawEnemies() {
 
             sprite_x = (sprite_x * (projection_distance / 8.f) / sprite_y) + ((screen_width / 8.f) / 2.f);
             sprite_y = (sprite_z * (projection_distance / 8.f) / sprite_y) + ((screen_height / 8.f) / 2.f);
+            getEnemyTexture(all_enemies[i].getStationary(), all_enemies[i].getTextureRunning());
 
-            Drawable enemy = { sprite_x * 8.f, sprite_y * 8.f, size, size, textures.guard_stationary, distance, 0, "sprite" };
+            Drawable enemy = { sprite_x * 8.f, sprite_y * 8.f, size, size, current_guard_texture, distance, 0, "sprite" };
             all_drawables.push_back(enemy);
 
         }
@@ -874,4 +880,29 @@ bool Game::visionCheck(float enemy_x, float enemy_y) {
     }
 
     return false;
+}
+
+void Game::getEnemyTexture(bool stationary, int number) {
+    if (stationary)
+        current_guard_texture = textures.guard_stationary;
+
+    else if (!stationary) {
+        switch (number) {
+        case 0:
+            current_guard_texture = guard_textures.run0;
+            break;
+        case 1:
+            current_guard_texture = guard_textures.run1;
+            break;
+        case 2:
+            current_guard_texture = guard_textures.run2;
+            break;
+        case 3:
+            current_guard_texture = guard_textures.run3;
+            break;
+        default:
+            current_guard_texture = textures.guard_stationary;
+            break;
+        }
+    }
 }

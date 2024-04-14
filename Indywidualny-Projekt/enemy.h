@@ -18,18 +18,28 @@ private:
 	float width = 100.f;
 	float height = 100.f;
 
+	// if not stationary then use texture for running
+	// enemy will use clock to manage which texture to use
+
 	// Enemy behaviour related
 	bool stationary = true;
 	bool agroed = false;
 	bool shooting = false;
 	bool vision_on_player = false;
-	float agro_distance = 500.f;
+	float agro_distance = 200.f;
 
 	float angle = 0.f;
 	float speed = 120.f;
 	int health = 1;
+	bool alive = true;
 
 	Clock clock;
+	Clock animation_clock;
+	float animation_time = 0.002;
+	int current_run_frame = 0;
+	int run_frames = 4;
+	int current_death_frame = 0;
+	int death_frames = 5;
 
 	// Path-finding related
 	Tile* start = nullptr;
@@ -58,4 +68,7 @@ public:
 	float getZ() const;
 	float getScreenX() const;
 	bool getVision() const;
+	bool getStationary() const;
+	int getTextureRunning() const;
+	int getTextureDeath() const;
 };

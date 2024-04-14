@@ -27,6 +27,13 @@ struct Textures {
     GLuint ammo_pack;
 };
 
+struct Guard {
+    GLuint run0;
+    GLuint run1;
+    GLuint run2;
+    GLuint run3;
+};
+
 struct Drawable {
     float x;
     float y;
@@ -74,6 +81,8 @@ private:
     std::vector<std::vector<Tile>> bsf_tiles;
 
     Textures textures;
+    Guard guard_textures;
+    GLuint current_guard_texture;
 
     int menu_buttons_count = 2;
     int dead_buttons_count = 3;
@@ -131,6 +140,7 @@ private:
     Tile* getTile(int row, int column);
     bool isEnterPressed();
     bool visionCheck(float enemy_x, float enemy_y);
+    void getEnemyTexture(bool stationary, int number);
 
     // Math functions
     int min(int a, int b) { return (a < b) ? a : b; };

@@ -10,12 +10,18 @@ Enemy::Enemy(float x_, float y_, float z_) {
 
 	clock = Clock();
 	clock.start();
+
+	animation_clock = Clock();
+	animation_clock.start();
 }
 
 void Enemy::update(float delta_time) {
 	if (agroed && !stationary) {
 		x += speed * cos(angle) * delta_time;
 		y += speed * sin(angle) * delta_time;
+
+		if (animation_clock.restart() > animation_time)
+			current_run_frame = (current_run_frame + 1) % run_frames;
 	}
 }
 
@@ -72,6 +78,18 @@ void Enemy::setVision(bool vision_) {
 
 bool Enemy::getVision() const {
 	return vision_on_player;
+}
+
+bool Enemy::getStationary() const {
+	return stationary;
+}
+
+int Enemy::getTextureRunning() const {
+	return current_run_frame;
+}
+
+int Enemy::getTextureDeath() const {
+	return current_death_frame;
 }
 
 float Enemy::getX() const {
