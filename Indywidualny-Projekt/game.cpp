@@ -129,6 +129,8 @@ void Game::inicializeTextures() {
     guard_textures.run1 = loadTexture("assets/sprites/guard/run1.png");
     guard_textures.run2 = loadTexture("assets/sprites/guard/run2.png");
     guard_textures.run3 = loadTexture("assets/sprites/guard/run3.png");
+    guard_textures.aim = loadTexture("assets/sprites/guard/aim.png");
+    guard_textures.shoot = loadTexture("assets/sprites/guard/shoot.png");
 
     texture_atlas.insert({ '#', textures.test });
     texture_atlas.insert({ '1', textures.greystone });
@@ -597,7 +599,6 @@ void Game::updateEnemies() {
         enemy.checkAgro(player.getX(), player.getY());
         if (enemy.shoot()) {
             player.substractHealth();
-            current_guard_texture = guard_textures.run0;
         }
             
         enemy.update(delta_time);
@@ -775,7 +776,7 @@ void Game::drawEnemies() {
 
             sprite_x = (sprite_x * (projection_distance / 8.f) / sprite_y) + ((screen_width / 8.f) / 2.f);
             sprite_y = (sprite_z * (projection_distance / 8.f) / sprite_y) + ((screen_height / 8.f) / 2.f);
-            getEnemyTexture(all_enemies[i].getStationary(), all_enemies[i].getTextureRunning());
+            getEnemyTexture(all_enemies[i].getStationary(), all_enemies[i].getShooting(), all_enemies[i].getSuccesfulShot(), all_enemies[i].getTextureRunning());
 
             Drawable enemy = { sprite_x * 8.f, sprite_y * 8.f, size, size, current_guard_texture, distance, 0, "sprite" };
             all_drawables.push_back(enemy);
@@ -885,8 +886,8 @@ bool Game::visionCheck(float enemy_x, float enemy_y) {
     return false;
 }
 
-void Game::getEnemyTexture(bool stationary, int number) {
-    if (stationary)
+void Game::getEnemyTexture(bool stationary, bool shooting, bool succesful_shot, int number) {
+    if (stationary && !shooting)
         current_guard_texture = textures.guard_stationary;
 
     else if (!stationary) {
@@ -907,5 +908,13 @@ void Game::getEnemyTexture(bool stationary, int number) {
             current_guard_texture = textures.guard_stationary;
             break;
         }
+    }
+
+    else if (shooting) {
+        current_guard_texture = guard_textures.aim;
+    }
+
+    if (succesful_shot) {
+        current_guard_texture = guard_textures.shoot;
     }
 }

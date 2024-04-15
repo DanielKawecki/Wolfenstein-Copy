@@ -13,6 +13,9 @@ Enemy::Enemy(float x_, float y_, float z_) {
 
 	animation_clock = Clock();
 	animation_clock.start();
+
+	flash_clock = Clock();
+	flash_clock.start();
 }
 
 void Enemy::update(float delta_time) {
@@ -57,6 +60,8 @@ bool Enemy::shoot() {
 	if (shooting && clock.getElapsedTime() > 1) {
 		stationary = false;
 		shooting = false;
+		succesful_shot = true;
+		flash_clock.restart();
 		return true;
 	}
 	
@@ -69,7 +74,10 @@ bool Enemy::shoot() {
 		shooting = false;
 		stationary = false;
 	}
-	
+
+	if (flash_clock.getElapsedTime() >= flash_time)
+		succesful_shot = false;
+
 	return false;
 }
 
@@ -83,6 +91,17 @@ bool Enemy::getVision() const {
 
 bool Enemy::getStationary() const {
 	return stationary;
+}
+
+bool Enemy::getShooting() const {
+	return shooting;
+}
+
+bool Enemy::getSuccesfulShot() {
+	if (succesful_shot && flash_clock.getElapsedTime() < flash_time) {
+		return true;
+	}
+	return false;
 }
 
 int Enemy::getTextureRunning() const {

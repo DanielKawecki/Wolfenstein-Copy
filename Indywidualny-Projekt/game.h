@@ -32,6 +32,8 @@ struct Guard {
     GLuint run1;
     GLuint run2;
     GLuint run3;
+    GLuint aim;
+    GLuint shoot;
 };
 
 struct Drawable {
@@ -140,7 +142,7 @@ private:
     Tile* getTile(int row, int column);
     bool isEnterPressed();
     bool visionCheck(float enemy_x, float enemy_y);
-    void getEnemyTexture(bool stationary, int number);
+    void getEnemyTexture(bool stationary, bool shooting, bool succesful_shot, int number);
 
     // Math functions
     int min(int a, int b) { return (a < b) ? a : b; };

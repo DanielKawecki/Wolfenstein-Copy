@@ -25,6 +25,7 @@ private:
 	bool stationary = true;
 	bool agroed = false;
 	bool shooting = false;
+	bool succesful_shot = false;
 	bool vision_on_player = false;
 	float agro_distance = 200.f;
 
@@ -35,6 +36,8 @@ private:
 
 	Clock clock;
 	Clock animation_clock;
+	Clock flash_clock;
+	double flash_time = 0.1;
 	double animation_time = 0.15;
 	int current_run_frame = 0;
 	int run_frames = 4;
@@ -69,6 +72,8 @@ public:
 	float getScreenX() const;
 	bool getVision() const;
 	bool getStationary() const;
+	bool getShooting() const;
+	bool getSuccesfulShot();
 	int getTextureRunning() const;
 	int getTextureDeath() const;
 };
