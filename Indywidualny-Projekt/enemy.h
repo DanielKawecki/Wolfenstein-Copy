@@ -35,7 +35,7 @@ private:
 
 	Clock clock;
 	Clock animation_clock;
-	float animation_time = 0.002;
+	double animation_time = 0.15;
 	int current_run_frame = 0;
 	int run_frames = 4;
 	int current_death_frame = 0;

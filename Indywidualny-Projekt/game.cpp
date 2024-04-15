@@ -595,8 +595,11 @@ void Game::updateEnemies() {
 
         enemy.seekPlayer(enemy_tile, player_tile, bsf_tiles);
         enemy.checkAgro(player.getX(), player.getY());
-        if (enemy.shoot())
+        if (enemy.shoot()) {
             player.substractHealth();
+            current_guard_texture = guard_textures.run0;
+        }
+            
         enemy.update(delta_time);
     }
 }

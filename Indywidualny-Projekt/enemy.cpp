@@ -19,9 +19,10 @@ void Enemy::update(float delta_time) {
 	if (agroed && !stationary) {
 		x += speed * cos(angle) * delta_time;
 		y += speed * sin(angle) * delta_time;
-
-		if (animation_clock.restart() > animation_time)
-			current_run_frame = (current_run_frame + 1) % run_frames;
+	}
+	if (!stationary && animation_clock.getElapsedTime() >= animation_time) {
+		current_run_frame = (current_run_frame + 1) % run_frames;
+		animation_clock.restart();
 	}
 }
 
