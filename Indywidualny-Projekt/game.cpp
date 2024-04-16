@@ -169,6 +169,7 @@ GLuint Game::loadTexture(const char* texturePath) {
 void Game::updatePlaying() {
     setDeltaTime();
     player.handleInput(window, delta_time);
+    shoot();
     updateEnemies();
     updateRefills();
 
@@ -778,6 +779,8 @@ void Game::drawEnemies() {
             sprite_y = (sprite_z * (projection_distance / 8.f) / sprite_y) + ((screen_height / 8.f) / 2.f);
             getEnemyTexture(all_enemies[i].getStationary(), all_enemies[i].getShooting(), all_enemies[i].getSuccesfulShot(), all_enemies[i].getTextureRunning());
 
+            all_enemies[i].setScreenX(sprite_x * 8.f);
+
             Drawable enemy = { sprite_x * 8.f, sprite_y * 8.f, size, size, current_guard_texture, distance, 0, "sprite" };
             all_drawables.push_back(enemy);
 
@@ -917,4 +920,24 @@ void Game::getEnemyTexture(bool stationary, bool shooting, bool succesful_shot, 
     if (succesful_shot) {
         current_guard_texture = guard_textures.shoot;
     }
+}
+
+void Game::shoot() {
+    static bool is_SLASH_pressed = false;
+
+    if (glfwGetKey(window, GLFW_KEY_SLASH) == GLFW_PRESS && !is_SLASH_pressed) {
+        for (int i = 0; i < all_enemies.size(); i++) {
+            is_SLASH_pressed = true;
+            //std::cout << all_enemies[i].getScreenX() << std::endl;
+            if (all_enemies[i].getScreenX() > reticle_position - reticle_offset &&
+                all_enemies[i].getScreenX() < reticle_position + reticle_offset) {
+                all_enemies[i].subtractHealth();
+                printf("Enemy shot!\n");
+            }
+        }
+    } 
+
+    else if (glfwGetKey(window, GLFW_KEY_SLASH) == GLFW_RELEASE)
+        is_SLASH_pressed = false;
+
 }

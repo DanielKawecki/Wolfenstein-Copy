@@ -91,11 +91,13 @@ private:
     int highlight = 0;
 
     bool is_Enter_pressed = false;
+    
+    float reticle_position = screen_width / 2;
+    float reticle_offset = 30.f;
 
     // TODO: 
     // Strzelanie gracza
-    // Przeciwnik nie powinien strzelaæ przez œciany
-    // Zakoñczenie poziomu
+    // Zakoï¿½czenie poziomu
 
     // Raycasting variables
     float FOV = PI / 3.f;
@@ -143,6 +145,7 @@ private:
     bool isEnterPressed();
     bool visionCheck(float enemy_x, float enemy_y);
     void getEnemyTexture(bool stationary, bool shooting, bool succesful_shot, int number);
+    void shoot();
 
     // Math functions
     int min(int a, int b) { return (a < b) ? a : b; };

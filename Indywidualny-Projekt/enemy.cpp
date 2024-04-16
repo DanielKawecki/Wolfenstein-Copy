@@ -112,6 +112,14 @@ int Enemy::getTextureDeath() const {
 	return current_death_frame;
 }
 
+void Enemy::setScreenX(float screen_x_) {
+	screen_x = screen_x_;
+}
+
+void Enemy::subtractHealth() {
+	health -= 1;
+}
+
 float Enemy::getX() const {
 	return x;
 }

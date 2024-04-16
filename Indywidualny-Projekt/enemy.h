@@ -31,7 +31,7 @@ private:
 
 	float angle = 0.f;
 	float speed = 120.f;
-	int health = 1;
+	int health = 3;
 	bool alive = true;
 
 	Clock clock;
@@ -76,4 +76,6 @@ public:
 	bool getSuccesfulShot();
 	int getTextureRunning() const;
 	int getTextureDeath() const;
+	void setScreenX(float screeen_x_);
+	void subtractHealth();
 };
