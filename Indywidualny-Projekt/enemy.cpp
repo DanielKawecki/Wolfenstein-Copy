@@ -27,6 +27,9 @@ void Enemy::update(float delta_time) {
 		current_run_frame = (current_run_frame + 1) % run_frames;
 		animation_clock.restart();
 	}
+
+	if (health <= 0)
+		alive = false;
 }
 
 void Enemy::seekPlayer(Tile* start_, Tile* finish_, std::vector<std::vector<Tile>>& tiles_) {
@@ -102,6 +105,10 @@ bool Enemy::getSuccesfulShot() {
 		return true;
 	}
 	return false;
+}
+
+bool Enemy::isAlive() const {
+	return alive;
 }
 
 int Enemy::getTextureRunning() const {

@@ -74,6 +74,7 @@ public:
 	bool getStationary() const;
 	bool getShooting() const;
 	bool getSuccesfulShot();
+	bool isAlive() const;
 	int getTextureRunning() const;
 	int getTextureDeath() const;
 	void setScreenX(float screeen_x_);

@@ -146,6 +146,7 @@ private:
     bool visionCheck(float enemy_x, float enemy_y);
     void getEnemyTexture(bool stationary, bool shooting, bool succesful_shot, int number);
     void shoot();
+    void checkForDead();
 
     // Math functions
     int min(int a, int b) { return (a < b) ? a : b; };

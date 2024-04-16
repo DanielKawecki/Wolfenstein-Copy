@@ -167,6 +167,7 @@ GLuint Game::loadTexture(const char* texturePath) {
 }
 
 void Game::updatePlaying() {
+    checkForDead();
     setDeltaTime();
     player.handleInput(window, delta_time);
     shoot();
@@ -941,3 +942,15 @@ void Game::shoot() {
         is_SLASH_pressed = false;
 
 }
+
+void Game::checkForDead() {
+    for (int i = 0; i < all_enemies.size(); ) {
+        if (!all_enemies[i].isAlive()) {
+            all_enemies.erase(all_enemies.begin() + i);
+        }
+        else {
+            i++;
+        }
+    }
+}
+
