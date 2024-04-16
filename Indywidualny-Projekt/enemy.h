@@ -31,7 +31,7 @@ private:
 
 	float angle = 0.f;
 	float speed = 120.f;
-	int health = 3;
+	int health = 1;
 	bool alive = true;
 
 	Clock clock;

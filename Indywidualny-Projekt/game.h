@@ -72,6 +72,7 @@ private:
     std::string wall_chars = "123#";
     int map_width = 16;
     int tile_size = 64;
+    int enemy_count;
 
     Player player;
     std::vector<Enemy> all_enemies;

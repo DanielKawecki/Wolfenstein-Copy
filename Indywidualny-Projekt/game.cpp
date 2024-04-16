@@ -61,6 +61,7 @@ void Game::readFromMap() {
     bsf_tiles.resize(map_layout.size(), std::vector<Tile>(map_layout[0].size(), Tile(0.f, 0.f, false)));
     all_enemies.clear();
     all_refills.clear();
+    enemy_count = 0;
 
     for (size_t y = 0; y < map_layout.size(); ++y) {
         for (size_t x = 0; x < map_layout[y].size(); ++x) {
@@ -73,6 +74,7 @@ void Game::readFromMap() {
                 Enemy enemy(x * 64 + 32, y * 64 + 32, -32.f);
                 all_enemies.push_back(enemy);
                 bsf_tiles[y][x] = Tile(x * tile_size, y * tile_size, false);
+                enemy_count += 1;
             }
 
             else if (map_layout[y][x] == 'a') {

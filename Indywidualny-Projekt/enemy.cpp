@@ -55,8 +55,12 @@ void Enemy::seekPlayer(Tile* start_, Tile* finish_, std::vector<std::vector<Tile
 void Enemy::checkAgro(float player_x, float player_y) {
 	distance = hypotf(x - player_x, y - player_y);
 
-	if (distance < agro_distance)
+	//std::cout << vision_on_player << std::endl;
+	if (distance < agro_distance || vision_on_player) {
 		agroed = true;
+	}
+		
+	//std::cout << agroed << std::endl;
 }
 
 bool Enemy::shoot() {
