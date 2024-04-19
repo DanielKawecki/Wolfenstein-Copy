@@ -27,6 +27,20 @@ struct Textures {
     GLuint ammo_pack;
 };
 
+struct Guard {
+    GLuint run0;
+    GLuint run1;
+    GLuint run2;
+    GLuint run3;
+    GLuint aim;
+    GLuint shoot;
+    GLuint death1;
+    GLuint death2;
+    GLuint death3;
+    GLuint death4;
+    GLuint death5;
+};
+
 struct Drawable {
     float x;
     float y;
@@ -63,6 +77,7 @@ private:
     std::string wall_chars = "123#";
     int map_width = 16;
     int tile_size = 64;
+    int enemy_count;
 
     Player player;
     std::vector<Enemy> all_enemies;
@@ -74,17 +89,21 @@ private:
     std::vector<std::vector<Tile>> bsf_tiles;
 
     Textures textures;
+    Guard guard_textures;
+    GLuint current_guard_texture;
 
     int menu_buttons_count = 2;
     int dead_buttons_count = 3;
     int highlight = 0;
 
     bool is_Enter_pressed = false;
+    
+    float reticle_position = screen_width / 2;
+    float reticle_offset = 30.f;
 
     // TODO: 
     // Strzelanie gracza
-    // Przeciwnik nie powinien strzelaæ przez œciany
-    // Zakoñczenie poziomu
+    // Zakoï¿½czenie poziomu
 
     // Raycasting variables
     float FOV = PI / 3.f;
@@ -131,6 +150,10 @@ private:
     Tile* getTile(int row, int column);
     bool isEnterPressed();
     bool visionCheck(float enemy_x, float enemy_y);
+    //void getEnemyTexture(bool stationary, bool shooting, bool succesful_shot, int number);
+    void getEnemyTexture(Enemy& enemy);
+    void shoot();
+    void checkForDead();
 
     // Math functions
     int min(int a, int b) { return (a < b) ? a : b; };
