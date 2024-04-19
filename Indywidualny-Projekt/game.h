@@ -42,6 +42,7 @@ struct Guard {
 };
 
 struct Gun {
+    GLuint gun;
     GLuint shoot0;
     GLuint shoot1;
     GLuint shoot2;

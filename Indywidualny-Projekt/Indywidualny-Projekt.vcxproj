@@ -39,7 +39,26 @@
     <Text Include="assets\maps\map1.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="assets\sprites\ammo.png" />
+    <Image Include="assets\sprites\guard\aim.png" />
+    <Image Include="assets\sprites\guard\death1.png" />
+    <Image Include="assets\sprites\guard\death2.png" />
+    <Image Include="assets\sprites\guard\death3.png" />
+    <Image Include="assets\sprites\guard\death4.png" />
+    <Image Include="assets\sprites\guard\death5.png" />
+    <Image Include="assets\sprites\guard\hit.png" />
+    <Image Include="assets\sprites\guard\run0.png" />
+    <Image Include="assets\sprites\guard\run1.png" />
+    <Image Include="assets\sprites\guard\run2.png" />
+    <Image Include="assets\sprites\guard\run3.png" />
+    <Image Include="assets\sprites\guard\shoot.png" />
     <Image Include="assets\sprites\guard_stationary.png" />
+    <Image Include="assets\sprites\gun\gun.png" />
+    <Image Include="assets\sprites\gun\shoot1.png" />
+    <Image Include="assets\sprites\gun\shoot2.png" />
+    <Image Include="assets\sprites\gun\shoot3.png" />
+    <Image Include="assets\sprites\gun\shoot4.png" />
+    <Image Include="assets\sprites\health.png" />
     <Image Include="assets\textures\eagle.png" />
     <Image Include="assets\textures\greystone.png" />
     <Image Include="assets\textures\redbrick.png" />

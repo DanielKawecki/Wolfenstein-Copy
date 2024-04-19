@@ -141,6 +141,11 @@ void Game::inicializeTextures() {
     guard_textures.death4 = loadTexture("assets/sprites/guard/death4.png");
     guard_textures.death5 = loadTexture("assets/sprites/guard/death5.png");
 
+    gun_textures.gun = loadTexture("assets/sprites/gun/gun.png");
+    gun_textures.shoot0 = loadTexture("assets/sprites/gun/shoot1.png");
+    gun_textures.shoot1 = loadTexture("assets/sprites/gun/shoot2.png");
+    gun_textures.shoot2 = loadTexture("assets/sprites/gun/shoot3.png");
+
     texture_atlas.insert({ '#', textures.test });
     texture_atlas.insert({ '1', textures.greystone });
     texture_atlas.insert({ '2', textures.eagle });
@@ -842,17 +847,51 @@ void Game::drawGun() {
     if (is_shooting && shooting_clock.getElapsedTime() >= shooing_time) {
         shooting_clock.restart();
         current_shooting_frame += 1;
-        if (current_shooting_frame == shooting_frames - 1)
+        if (current_shooting_frame == shooting_frames) {
             is_shooting = false;
+            current_shooting_frame = 0;
+        }
+            
     }
     
     switch (current_shooting_frame) {
-    default:
+    case 0:
+        current_shooting_texture = gun_textures.gun;
+        break;
+    case 1:
         current_shooting_texture = gun_textures.shoot0;
+        break;
+    case 2:
+        current_shooting_texture = gun_textures.shoot1;
+        break;
+    case 3:
+        current_shooting_texture = gun_textures.shoot2;
+        break;
+    default:
+        current_shooting_texture = gun_textures.gun;
         break;
     }
 
-    // Draw texture onto rect
+    glColor3f(1.f, 1.f, 1.f);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, current_shooting_texture);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.f, 0.f); glVertex2f(160, 200);
+    glTexCoord2f(0.f, 1.f); glVertex2f(160, 600);
+    glTexCoord2f(1.f, 1.f); glVertex2f(800, 600);
+    glTexCoord2f(1.f, 0.f); glVertex2f(800, 200);
+    glEnd();
+
+    glDisable(GL_BLEND);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 bool Game::stringContains(const std::string& string, char ch) {
@@ -997,7 +1036,8 @@ void Game::shoot() {
             is_SLASH_pressed = true;
             //std::cout << all_enemies[i].getScreenX() << std::endl;
             if (all_enemies[i].getScreenX() > reticle_position - reticle_offset &&
-                all_enemies[i].getScreenX() < reticle_position + reticle_offset) {
+                all_enemies[i].getScreenX() < reticle_position + reticle_offset &&
+                all_enemies[i].getVision()) {
                 all_enemies[i].subtractHealth();
                 printf("Enemy shot!\n");
             }
