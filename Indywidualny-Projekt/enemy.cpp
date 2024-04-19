@@ -28,8 +28,11 @@ void Enemy::update(float delta_time) {
 		animation_clock.restart();
 	}
 
-	if (health <= 0)
+	if (health <= 0) {
 		alive = false;
+		dying = true;
+		animation_clock.restart();
+	}
 }
 
 void Enemy::seekPlayer(Tile* start_, Tile* finish_, std::vector<std::vector<Tile>>& tiles_) {
@@ -129,6 +132,20 @@ void Enemy::setScreenX(float screen_x_) {
 
 void Enemy::subtractHealth() {
 	health -= 1;
+}
+
+void Enemy::die() {
+	//printf("%d\n", current_death_frame);
+	if (dying && animation_clock.getElapsedTime() >= animation_time) {
+		current_death_frame += 1;
+		animation_clock.restart();
+		if (current_death_frame == death_frames - 1)
+			dying = false;
+	}
+}
+
+bool Enemy::isDying() const {
+	return dying;
 }
 
 float Enemy::getX() const {

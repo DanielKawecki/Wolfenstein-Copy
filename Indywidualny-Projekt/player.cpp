@@ -122,7 +122,7 @@ bool Player::stringContains(const std::string& string, char ch) {
 }
 
 void Player::substractHealth() {
-    health -= 5;
+    health -= 20;
     std::cout << health << std::endl;
 }
 

@@ -27,7 +27,7 @@ private:
 	bool shooting = false;
 	bool succesful_shot = false;
 	bool vision_on_player = false;
-	float agro_distance = 200.f;
+	float agro_distance = 250.f;
 
 	float angle = 0.f;
 	float speed = 120.f;
@@ -38,11 +38,12 @@ private:
 	Clock animation_clock;
 	Clock flash_clock;
 	double flash_time = 0.1;
-	double animation_time = 0.15;
+	double animation_time = 0.12;
 	int current_run_frame = 0;
 	int run_frames = 4;
 	int current_death_frame = 0;
 	int death_frames = 5;
+	bool dying = false;
 
 	// Path-finding related
 	Tile* start = nullptr;
@@ -79,4 +80,6 @@ public:
 	int getTextureDeath() const;
 	void setScreenX(float screeen_x_);
 	void subtractHealth();
+	void die();
+	bool isDying() const;
 };

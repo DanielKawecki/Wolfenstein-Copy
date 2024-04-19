@@ -34,6 +34,11 @@ struct Guard {
     GLuint run3;
     GLuint aim;
     GLuint shoot;
+    GLuint death1;
+    GLuint death2;
+    GLuint death3;
+    GLuint death4;
+    GLuint death5;
 };
 
 struct Drawable {
@@ -145,7 +150,8 @@ private:
     Tile* getTile(int row, int column);
     bool isEnterPressed();
     bool visionCheck(float enemy_x, float enemy_y);
-    void getEnemyTexture(bool stationary, bool shooting, bool succesful_shot, int number);
+    //void getEnemyTexture(bool stationary, bool shooting, bool succesful_shot, int number);
+    void getEnemyTexture(Enemy& enemy);
     void shoot();
     void checkForDead();
 

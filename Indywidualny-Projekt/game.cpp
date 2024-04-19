@@ -133,6 +133,11 @@ void Game::inicializeTextures() {
     guard_textures.run3 = loadTexture("assets/sprites/guard/run3.png");
     guard_textures.aim = loadTexture("assets/sprites/guard/aim.png");
     guard_textures.shoot = loadTexture("assets/sprites/guard/shoot.png");
+    guard_textures.death1 = loadTexture("assets/sprites/guard/death1.png");
+    guard_textures.death2 = loadTexture("assets/sprites/guard/death2.png");
+    guard_textures.death3 = loadTexture("assets/sprites/guard/death3.png");
+    guard_textures.death4 = loadTexture("assets/sprites/guard/death4.png");
+    guard_textures.death5 = loadTexture("assets/sprites/guard/death5.png");
 
     texture_atlas.insert({ '#', textures.test });
     texture_atlas.insert({ '1', textures.greystone });
@@ -169,7 +174,7 @@ GLuint Game::loadTexture(const char* texturePath) {
 }
 
 void Game::updatePlaying() {
-    checkForDead();
+    //checkForDead();
     setDeltaTime();
     player.handleInput(window, delta_time);
     shoot();
@@ -596,16 +601,20 @@ void Game::updateEnemies() {
     player_tile = getTile((int)floor(player.getX() / 64.f), (int)floor(player.getY() / 64.f));
 
     for (auto& enemy : all_enemies) {
-        enemy.setVision(!visionCheck(enemy.getX(), enemy.getY()));
-        enemy_tile = getTile((int)floor(enemy.getX() / 64.f), (int)floor(enemy.getY() / 64.f));
+        if (enemy.isAlive()) {
+            enemy.setVision(!visionCheck(enemy.getX(), enemy.getY()));
+            enemy_tile = getTile((int)floor(enemy.getX() / 64.f), (int)floor(enemy.getY() / 64.f));
 
-        enemy.seekPlayer(enemy_tile, player_tile, bsf_tiles);
-        enemy.checkAgro(player.getX(), player.getY());
-        if (enemy.shoot()) {
-            player.substractHealth();
+            enemy.seekPlayer(enemy_tile, player_tile, bsf_tiles);
+            enemy.checkAgro(player.getX(), player.getY());
+            if (enemy.shoot()) {
+                player.substractHealth();
+            }
+
+            enemy.update(delta_time);
         }
-            
-        enemy.update(delta_time);
+        else if (enemy.isDying())
+            enemy.die();
     }
 }
 
@@ -780,7 +789,8 @@ void Game::drawEnemies() {
 
             sprite_x = (sprite_x * (projection_distance / 8.f) / sprite_y) + ((screen_width / 8.f) / 2.f);
             sprite_y = (sprite_z * (projection_distance / 8.f) / sprite_y) + ((screen_height / 8.f) / 2.f);
-            getEnemyTexture(all_enemies[i].getStationary(), all_enemies[i].getShooting(), all_enemies[i].getSuccesfulShot(), all_enemies[i].getTextureRunning());
+            //getEnemyTexture(all_enemies[i].getStationary(), all_enemies[i].getShooting(), all_enemies[i].getSuccesfulShot(), all_enemies[i].getTextureRunning());
+            getEnemyTexture(all_enemies[i]);
 
             all_enemies[i].setScreenX(sprite_x * 8.f);
 
@@ -892,7 +902,14 @@ bool Game::visionCheck(float enemy_x, float enemy_y) {
     return false;
 }
 
-void Game::getEnemyTexture(bool stationary, bool shooting, bool succesful_shot, int number) {
+void Game::getEnemyTexture(Enemy& enemy) {//bool stationary, bool shooting, bool succesful_shot, int number) {
+    bool stationary = enemy.getStationary();
+    bool shooting = enemy.getShooting();
+    bool succesful_shot = enemy.getSuccesfulShot();
+    bool alive = enemy.isAlive();
+    int number_death = enemy.getTextureDeath();
+    int number = enemy.getTextureRunning();
+    
     if (stationary && !shooting)
         current_guard_texture = textures.guard_stationary;
 
@@ -923,6 +940,31 @@ void Game::getEnemyTexture(bool stationary, bool shooting, bool succesful_shot, 
     if (succesful_shot) {
         current_guard_texture = guard_textures.shoot;
     }
+
+    if (enemy.isDying()) {
+        switch (number_death) {
+        case 0:
+            current_guard_texture = guard_textures.death1;
+            break;
+        case 1:
+            current_guard_texture = guard_textures.death2;
+            break;
+        case 2:
+            current_guard_texture = guard_textures.death3;
+            break;
+        case 3:
+            current_guard_texture = guard_textures.death4;
+            break;
+        case 4:
+            current_guard_texture = guard_textures.death5;
+        default:
+            current_guard_texture = guard_textures.death5;
+            break;
+        }
+    }
+
+    else if (!alive)
+        current_guard_texture = guard_textures.death5;
 }
 
 void Game::shoot() {
