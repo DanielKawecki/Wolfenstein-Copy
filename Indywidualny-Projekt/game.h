@@ -41,6 +41,12 @@ struct Guard {
     GLuint death5;
 };
 
+struct Gun {
+    GLuint shoot0;
+    GLuint shoot1;
+    GLuint shoot2;
+};
+
 struct Drawable {
     float x;
     float y;
@@ -89,6 +95,7 @@ private:
     std::vector<std::vector<Tile>> bsf_tiles;
 
     Textures textures;
+    Gun gun_textures;
     Guard guard_textures;
     GLuint current_guard_texture;
 
@@ -100,10 +107,17 @@ private:
     
     float reticle_position = screen_width / 2;
     float reticle_offset = 30.f;
+    double shooing_time = 0.12;
+    bool is_shooting = false;
+    Clock shooting_clock;
+    GLuint current_shooting_texture;
+    int current_shooting_frame = 0;
+    int shooting_frames = 4;
 
     // TODO: 
-    // Strzelanie gracza
-    // Zako�czenie poziomu
+    // Zakonczenie poziomu
+    // UI
+    // Lista poziomow
 
     // Raycasting variables
     float FOV = PI / 3.f;
@@ -144,6 +158,7 @@ private:
     void drawRefills();
     void drawEnemies();
     void drawDrawable();
+    void drawGun();
 
     // Helper functions
     bool stringContains(const std::string& string, char ch);

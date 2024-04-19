@@ -12,6 +12,8 @@ Game::Game() {
     inicializeTextures();
     clock = Clock();
     clock.start();
+    shooting_clock = Clock();
+    shooting_clock.start();
 }
 
 Game::~Game() {
@@ -219,6 +221,8 @@ void Game::renderPlaying() {
 
     std::sort(all_drawables.begin(), all_drawables.end(), compareDistance);
     drawDrawable();
+
+    drawGun();
 
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
@@ -834,6 +838,23 @@ void Game::drawDrawable() {
     }
 }
 
+void Game::drawGun() {
+    if (is_shooting && shooting_clock.getElapsedTime() >= shooing_time) {
+        shooting_clock.restart();
+        current_shooting_frame += 1;
+        if (current_shooting_frame == shooting_frames - 1)
+            is_shooting = false;
+    }
+    
+    switch (current_shooting_frame) {
+    default:
+        current_shooting_texture = gun_textures.shoot0;
+        break;
+    }
+
+    // Draw texture onto rect
+}
+
 bool Game::stringContains(const std::string& string, char ch) {
     for (char c : string) {
         if (c == ch)
@@ -971,6 +992,7 @@ void Game::shoot() {
     static bool is_SLASH_pressed = false;
 
     if (glfwGetKey(window, GLFW_KEY_SLASH) == GLFW_PRESS && !is_SLASH_pressed) {
+        is_shooting = true;
         for (int i = 0; i < all_enemies.size(); i++) {
             is_SLASH_pressed = true;
             //std::cout << all_enemies[i].getScreenX() << std::endl;
