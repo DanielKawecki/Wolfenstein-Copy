@@ -150,6 +150,14 @@ void Game::inicializeTextures() {
     gun_textures.shoot1 = loadTexture("assets/sprites/gun/shoot2.png");
     gun_textures.shoot2 = loadTexture("assets/sprites/gun/shoot3.png");
 
+    digits.zero = loadTexture("assets/font/0.png");
+    digits.one = loadTexture("assets/font/1.png");
+    digits.two = loadTexture("assets/font/2.png");
+
+    digit_atlas.insert({ 0, digits.zero });
+    digit_atlas.insert({ 1, digits.one });
+    digit_atlas.insert({ 2, digits.two });
+
     texture_atlas.insert({ '#', textures.test });
     texture_atlas.insert({ '1', textures.greystone });
     texture_atlas.insert({ '2', textures.eagle });
@@ -1037,6 +1045,26 @@ void Game::drawHUD() {
 
     glDisable(GL_BLEND);
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    // Health status
+    std::string health = std::to_string(player.getHealth());
+    int digits_count = health.length();
+    
+    if (digits_count == 3) {
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, digits.one);
+
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.f, 0.f); glVertex2f(0, 0);
+        glTexCoord2f(0.f, 1.f); glVertex2f(0, 48);
+        glTexCoord2f(1.f, 1.f); glVertex2f(24, 48);
+        glTexCoord2f(1.f, 0.f); glVertex2f(24, 0);
+        glEnd();
+
+        glDisable(GL_BLEND);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
 }
 
 bool Game::stringContains(const std::string& string, char ch) {

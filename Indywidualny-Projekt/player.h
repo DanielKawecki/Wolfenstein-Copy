@@ -62,6 +62,7 @@ public:
 	int getTileX() const;
 	int getTileY() const;
 	float getAngle() const;
+	int getHealth() const;
 	Rect getRect();
 	bool isDead();
 };

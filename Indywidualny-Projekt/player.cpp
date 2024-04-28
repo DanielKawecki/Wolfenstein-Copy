@@ -148,6 +148,10 @@ int Player::getTileY() const { return tile_y; }
 
 float Player::getAngle() const { return angle; }
 
+int Player::getHealth() const {
+    return health;
+}
+
 Rect Player::getRect() {
     return rect;
 }
