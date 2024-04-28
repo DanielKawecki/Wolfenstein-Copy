@@ -196,6 +196,7 @@ void Game::updatePlaying() {
         pushState(new MenuState(this));
     }
     else if (player.isDead()) {
+        highlight = 0;
         pushState(new DeadState(this));
     }
 }
@@ -347,13 +348,27 @@ void Game::updateDead() {
 void Game::renderDead() {
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glColor3f(1.f, 0.f, 0.f);
+    glColor3f(1.f, 1.f, 1.f);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, textures.death_screen);
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0); glVertex2d(0, 0);
+    glTexCoord2f(1, 0); glVertex2d(screen_width, 0);
+    glTexCoord2f(1, 1); glVertex2d(screen_width, screen_height);
+    glTexCoord2f(0, 1); glVertex2d(0, screen_height);
+    glEnd();
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     // Menu highlight
     int highlight_x = 303;
-    int highlight_y = 290 + highlight * 70;
+    int highlight_y = 220 + highlight * 70;
     int width = 360;
     int height = 75;
+
+    glColor3f(1.f, 1.f, 1.f);
 
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, textures.highlight);
