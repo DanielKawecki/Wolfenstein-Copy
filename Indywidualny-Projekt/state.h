@@ -17,6 +17,10 @@ class MenuState : public State {
 public:
     MenuState(Game* game_) : game(game_) {}
 
+    void handleEvents() {
+        //game->handlePlaying();
+    }
+
     void update(float delta_time) {
         game->updateMenu();
     }
@@ -32,6 +36,10 @@ private:
 class MapSelectState : public State {
 public:
     MapSelectState(Game* game_) : game(game_) {}
+
+    void handleEvents() {
+        //game->handlePlaying();
+    }
 
     void update(float delta_time) {
         game->updateMapSelect();
@@ -49,6 +57,10 @@ class PlayingState : public State {
 public:
     PlayingState(Game* game_) : game(game_) {}
 
+    void handleEvents() {
+        //game->handlePlaying();
+    }
+
     void update(float delta_time) {
         game->updatePlaying();
     }
@@ -64,6 +76,10 @@ private:
 class DeadState : public State {
 public:
     DeadState(Game* game_) : game(game_) {}
+
+    void handleEvents() {
+        //game->handlePlaying();
+    }
 
     void update(float delta_time) {
         game->updateDead();
