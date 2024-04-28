@@ -62,6 +62,7 @@
     <Image Include="assets\textures\death_screen.png" />
     <Image Include="assets\textures\eagle.png" />
     <Image Include="assets\textures\greystone.png" />
+    <Image Include="assets\textures\hud.png" />
     <Image Include="assets\textures\redbrick.png" />
     <Image Include="assets\textures\select_screen.png" />
     <Image Include="assets\textures\test.png" />

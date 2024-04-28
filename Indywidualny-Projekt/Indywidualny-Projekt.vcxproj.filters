@@ -144,5 +144,14 @@
     <Image Include="assets\sprites\gun\gun.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
+    <Image Include="assets\textures\death_screen.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\textures\select_screen.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\textures\hud.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
   </ItemGroup>
 </Project>

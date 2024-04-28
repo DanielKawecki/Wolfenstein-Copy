@@ -131,6 +131,7 @@ void Game::inicializeTextures() {
     textures.guard_stationary = loadTexture("assets/sprites/guard_stationary.png");
     textures.health_pack = loadTexture("assets/sprites/health.png");
     textures.ammo_pack = loadTexture("assets/sprites/ammo.png");
+    textures.hud = loadTexture("assets/textures/hud.png");
 
     guard_textures.run0 = loadTexture("assets/sprites/guard/run0.png");
     guard_textures.run1 = loadTexture("assets/sprites/guard/run1.png");
@@ -232,6 +233,7 @@ void Game::renderPlaying() {
     std::sort(all_drawables.begin(), all_drawables.end(), compareDistance);
     drawDrawable();
 
+    drawHUD();
     drawGun();
 
     /* Swap front and back buffers */
@@ -1004,10 +1006,33 @@ void Game::drawGun() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     glBegin(GL_QUADS);
-    glTexCoord2f(0.f, 0.f); glVertex2f(160, 200);
-    glTexCoord2f(0.f, 1.f); glVertex2f(160, 600);
-    glTexCoord2f(1.f, 1.f); glVertex2f(800, 600);
-    glTexCoord2f(1.f, 0.f); glVertex2f(800, 200);
+    glTexCoord2f(0.f, 0.f); glVertex2f(160, 80);
+    glTexCoord2f(0.f, 1.f); glVertex2f(160, 480);
+    glTexCoord2f(1.f, 1.f); glVertex2f(800, 480);
+    glTexCoord2f(1.f, 0.f); glVertex2f(800, 80);
+    glEnd();
+
+    glDisable(GL_BLEND);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Game::drawHUD() {
+    glColor3f(1.f, 1.f, 1.f);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, textures.hud);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.f, 0.f); glVertex2f(0, 480);
+    glTexCoord2f(0.f, 1.f); glVertex2f(0, 600);
+    glTexCoord2f(1.f, 1.f); glVertex2f(960, 600);
+    glTexCoord2f(1.f, 0.f); glVertex2f(960, 480);
     glEnd();
 
     glDisable(GL_BLEND);

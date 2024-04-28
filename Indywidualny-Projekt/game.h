@@ -27,6 +27,7 @@ struct Textures {
     GLuint guard_stationary;
     GLuint health_pack;
     GLuint ammo_pack;
+    GLuint hud;
 };
 
 struct Guard {
@@ -159,6 +160,7 @@ private:
     void drawEnemies();
     void drawDrawable();
     void drawGun();
+    void drawHUD();
 
     // Helper functions
     bool stringContains(const std::string& string, char ch);
