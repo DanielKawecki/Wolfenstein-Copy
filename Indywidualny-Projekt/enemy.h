@@ -18,9 +18,6 @@ private:
 	float width = 100.f;
 	float height = 100.f;
 
-	// if not stationary then use texture for running
-	// enemy will use clock to manage which texture to use
-
 	// Enemy behaviour related
 	bool stationary = true;
 	bool agroed = false;

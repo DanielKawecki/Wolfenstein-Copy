@@ -87,5 +87,62 @@
     <Image Include="assets\sprites\guard_stationary.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
+    <Image Include="assets\sprites\gun\shoot1.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\sprites\gun\shoot2.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\sprites\gun\shoot3.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\sprites\gun\shoot4.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\sprites\ammo.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\sprites\health.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\sprites\guard\aim.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\sprites\guard\death1.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\sprites\guard\death2.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\sprites\guard\death3.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\sprites\guard\death4.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\sprites\guard\death5.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\sprites\guard\hit.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\sprites\guard\run0.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\sprites\guard\run1.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\sprites\guard\run2.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\sprites\guard\run3.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\sprites\guard\shoot.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\sprites\gun\gun.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
   </ItemGroup>
 </Project>
