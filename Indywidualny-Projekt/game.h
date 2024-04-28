@@ -87,6 +87,7 @@ private:
     int map_width = 16;
     int tile_size = 64;
     int enemy_count;
+    int current_map;
 
     Player player;
     std::vector<Enemy> all_enemies;
@@ -127,7 +128,7 @@ private:
 
     // Initializing functions
     void initializeGL();
-    void initilizeMap();
+    void initilizeMap(int number);
     void readFromMap();
     void inicializeTextures();
     GLuint loadTexture(const char* texturePath);
@@ -192,6 +193,10 @@ public:
     // Main functions for pleyer died state
     void updateDead();
     void renderDead();
+
+    // For map selection screen
+    void updateMapSelect();
+    void renderMapSelect();
 
 };
 

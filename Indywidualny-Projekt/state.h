@@ -33,6 +33,26 @@ private:
     Game* game;
 };
 
+class MapSelectState : public State {
+public:
+    MapSelectState(Game* game_) : game(game_) {}
+
+    void handleEvents() {
+        //game->handlePlaying();
+    }
+
+    void update(float delta_time) {
+        game->updateMapSelect();
+    }
+
+    void render() {
+        game->renderMapSelect();
+    }
+
+private:
+    Game* game;
+};
+
 class PlayingState : public State {
 public:
     PlayingState(Game* game_) : game(game_) {}

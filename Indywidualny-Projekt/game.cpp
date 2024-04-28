@@ -40,11 +40,12 @@ void Game::initializeGL() {
     glOrtho(0, screen_width, screen_height, 0, -1, 1);
 }
 
-void Game::initilizeMap(/*map number*/) {
+void Game::initilizeMap(int number) {
     map_layout.clear();
 
     try {
-        std::ifstream file("assets/maps/map1.txt");
+        std::string path = "assets/maps/map" + std::to_string(number) + ".txt";
+        std::ifstream file(path);
         if (!file.is_open()) {
             throw std::runtime_error("Error opening file");
         }
@@ -191,6 +192,7 @@ void Game::updatePlaying() {
     updateRefills();
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        highlight = 0;
         pushState(new MenuState(this));
     }
     else if (player.isDead()) {
@@ -301,7 +303,7 @@ void Game::updateDead() {
     if (isEnterPressed()) {
         switch (highlight) {
         case 0:
-            initilizeMap();
+            initilizeMap(current_map);
             player = Player();
             player.setWalls(map_layout, wall_chars);
             readFromMap();
@@ -350,6 +352,111 @@ void Game::renderDead() {
     // Menu highlight
     int highlight_x = 303;
     int highlight_y = 290 + highlight * 70;
+    int width = 360;
+    int height = 75;
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, textures.highlight);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    glPointSize(16);
+    glColor3f(1, 1, 1);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0); glVertex2d(highlight_x, highlight_y);
+    glTexCoord2f(1, 0); glVertex2d(highlight_x + width, highlight_y);
+    glTexCoord2f(1, 1); glVertex2d(highlight_x + width, highlight_y + height);
+    glTexCoord2f(0, 1); glVertex2d(highlight_x, highlight_y + height);
+    glEnd();
+
+    glDisable(GL_BLEND);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    /* Swap front and back buffers */
+    glfwSwapBuffers(window);
+}
+
+void Game::updateMapSelect() {
+    if (isEnterPressed()) {
+        switch (highlight) {
+        case 0:
+            current_map = 1;
+            initilizeMap(current_map);
+            player = Player();
+            player.setWalls(map_layout, wall_chars);
+            readFromMap();
+            pushState(new PlayingState(this));
+            break;
+        case 1:
+            current_map = 2;
+            initilizeMap(current_map);
+            player = Player();
+            player.setWalls(map_layout, wall_chars);
+            readFromMap();
+            pushState(new PlayingState(this));
+            break;
+        case 2:
+            current_map = 3;
+            initilizeMap(current_map);
+            player = Player();
+            player.setWalls(map_layout, wall_chars);
+            readFromMap();
+            pushState(new PlayingState(this));
+            break;
+        case 3:
+            highlight = 0;
+            pushState(new MenuState(this));
+            break;
+        default:
+            break;
+        }
+    }
+
+    static bool is_W_pressed = false;
+    static bool is_S_pressed = false;
+
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS && !is_W_pressed) {
+        is_W_pressed = true;
+        highlight -= 1;
+        if (highlight < 0)
+            highlight = select_buttons_count - 1;
+    }
+    else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_RELEASE)
+        is_W_pressed = false;
+
+
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && !is_S_pressed) {
+        is_S_pressed = true;
+        highlight += 1;
+        if (highlight > select_buttons_count - 1)
+            highlight = 0;
+    }
+    else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_RELEASE)
+        is_S_pressed = false;
+}
+
+void Game::renderMapSelect() {
+    /* Render here */
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glColor3f(1.f, 1.f, 1.f);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, textures.select_screen);
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0); glVertex2d(0, 0);
+    glTexCoord2f(1, 0); glVertex2d(screen_width, 0);
+    glTexCoord2f(1, 1); glVertex2d(screen_width, screen_height);
+    glTexCoord2f(0, 1); glVertex2d(0, screen_height);
+    glEnd();
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    // Menu highlight
+    int highlight_x = 303;
+    int highlight_y = 220 + highlight * 70;
     int width = 360;
     int height = 75;
 
@@ -571,11 +678,7 @@ void Game::menuHandleInput() {
     if (isEnterPressed()) {
         switch (highlight) {
         case 0:
-            initilizeMap();
-            player = Player();
-            player.setWalls(map_layout, wall_chars);
-            readFromMap();
-            pushState(new PlayingState(this));
+            pushState(new MapSelectState(this));
             break;
         case 1:
             glfwSetWindowShouldClose(window, 1);
