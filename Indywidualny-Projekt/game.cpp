@@ -120,6 +120,8 @@ void Game::readFromMap() {
 
 void Game::inicializeTextures() {
     textures.title_screen = loadTexture("assets/textures/title_screen.png");
+    textures.select_screen = loadTexture("assets/textures/select_screen.png");
+    textures.death_screen = loadTexture("assets/textures/death_screen.png");
     textures.highlight = loadTexture("assets/textures/wings.png");
     textures.test = loadTexture("assets/textures/test.png");
     textures.greystone = loadTexture("assets/textures/greystone.png");

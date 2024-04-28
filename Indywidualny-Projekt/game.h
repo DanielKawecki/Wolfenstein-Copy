@@ -17,6 +17,8 @@ class State;
 
 struct Textures {
     GLuint title_screen;
+    GLuint select_screen;
+    GLuint death_screen;
     GLuint highlight;
     GLuint test;
     GLuint greystone;
@@ -102,6 +104,7 @@ private:
 
     int menu_buttons_count = 2;
     int dead_buttons_count = 3;
+    int select_buttons_count = 4;
     int highlight = 0;
 
     bool is_Enter_pressed = false;
@@ -114,11 +117,6 @@ private:
     GLuint current_shooting_texture;
     int current_shooting_frame = 0;
     int shooting_frames = 4;
-
-    // TODO: 
-    // Zakonczenie poziomu
-    // UI
-    // Lista poziomow
 
     // Raycasting variables
     float FOV = PI / 3.f;
