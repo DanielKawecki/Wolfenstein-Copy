@@ -39,6 +39,16 @@
     <Text Include="assets\maps\map1.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="assets\font\0.png" />
+    <Image Include="assets\font\1.png" />
+    <Image Include="assets\font\2.png" />
+    <Image Include="assets\font\3.png" />
+    <Image Include="assets\font\4.png" />
+    <Image Include="assets\font\5.png" />
+    <Image Include="assets\font\6.png" />
+    <Image Include="assets\font\7.png" />
+    <Image Include="assets\font\8.png" />
+    <Image Include="assets\font\9.png" />
     <Image Include="assets\sprites\ammo.png" />
     <Image Include="assets\sprites\guard\aim.png" />
     <Image Include="assets\sprites\guard\death1.png" />
