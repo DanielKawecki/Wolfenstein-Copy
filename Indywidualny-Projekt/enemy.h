@@ -25,7 +25,7 @@ private:
 	bool succesful_shot = false;
 	bool vision_on_player = false;
 	float agro_distance = 250.f;
-	float shoot_speed = 0.2;
+	float shoot_speed = 0.4;
 
 	float angle = 0.f;
 	float speed = 120.f;

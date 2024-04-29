@@ -55,6 +55,7 @@ public:
 	bool stringContains(const std::string& string, char ch);
 	void substractHealth();
 	void addHealth();
+	void subtractAmmo();
 	void addAmmo();
 
 	float getX() const;
@@ -63,6 +64,7 @@ public:
 	int getTileY() const;
 	float getAngle() const;
 	int getHealth() const;
+	int getAmmo() const;
 	Rect getRect();
 	bool isDead();
 };

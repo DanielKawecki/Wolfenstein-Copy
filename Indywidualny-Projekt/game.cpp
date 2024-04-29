@@ -1128,6 +1128,55 @@ void Game::drawHUD() {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
+    // Ammo status
+    std::string ammo = std::to_string(player.getAmmo());
+    digits_count = ammo.length();
+
+    if (digits_count == 2)
+        second_digit = ammo[0];
+
+    if (digits_count > 1) {
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, digit_atlas.find(second_digit)->second);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.f, 0.f); glVertex2f(642, 528);
+        glTexCoord2f(0.f, 1.f); glVertex2f(642, 576);
+        glTexCoord2f(1.f, 1.f); glVertex2f(666, 576);
+        glTexCoord2f(1.f, 0.f); glVertex2f(666, 528);
+        glEnd();
+
+        glDisable(GL_BLEND);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    third_digit = '0';
+    if (digits_count == 1)
+        third_digit = ammo[0];
+    else if (digits_count == 2)
+        third_digit = ammo[1];
+
+    if (digits_count >= 1) {
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, digit_atlas.find(third_digit)->second);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.f, 0.f); glVertex2f(666, 528);
+        glTexCoord2f(0.f, 1.f); glVertex2f(666, 576);
+        glTexCoord2f(1.f, 1.f); glVertex2f(690, 576);
+        glTexCoord2f(1.f, 0.f); glVertex2f(690, 528);
+        glEnd();
+
+        glDisable(GL_BLEND);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
 }
 
 bool Game::stringContains(const std::string& string, char ch) {
@@ -1266,16 +1315,17 @@ void Game::getEnemyTexture(Enemy& enemy) {//bool stationary, bool shooting, bool
 void Game::shoot() {
     static bool is_SLASH_pressed = false;
 
-    if (glfwGetKey(window, GLFW_KEY_SLASH) == GLFW_PRESS && !is_SLASH_pressed) {
+    if (glfwGetKey(window, GLFW_KEY_SLASH) == GLFW_PRESS && player.getAmmo() > 0 && !is_shooting) {
         is_shooting = true;
+        player.subtractAmmo();
+        is_SLASH_pressed = true;
         for (int i = 0; i < all_enemies.size(); i++) {
-            is_SLASH_pressed = true;
             //std::cout << all_enemies[i].getScreenX() << std::endl;
             if (all_enemies[i].getScreenX() > reticle_position - reticle_offset &&
                 all_enemies[i].getScreenX() < reticle_position + reticle_offset &&
                 all_enemies[i].getVision()) {
                 all_enemies[i].subtractHealth();
-                printf("Enemy shot!\n");
+                //printf("Enemy shot!\n");
             }
         }
     } 
@@ -1295,4 +1345,3 @@ void Game::checkForDead() {
         }
     }
 }
-
