@@ -67,7 +67,7 @@ void Enemy::checkAgro(float player_x, float player_y) {
 }
 
 bool Enemy::shoot() {
-	if (shooting && clock.getElapsedTime() > 1) {
+	if (shooting && clock.getElapsedTime() > shoot_speed) {
 		stationary = false;
 		shooting = false;
 		succesful_shot = true;

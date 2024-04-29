@@ -97,7 +97,7 @@ private:
 
     std::vector<std::string> map_layout;
     std::map<char, GLuint> texture_atlas;
-    std::map<int, GLuint> digit_atlas;
+    std::map<char, GLuint> digit_atlas;
     std::string wall_chars = "123#";
     int map_width = 16;
     int tile_size = 64;
