@@ -1177,6 +1177,22 @@ void Game::drawHUD() {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
+    // Current level status
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, digit_atlas.find(current_map + '0')->second);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.f, 0.f); glVertex2f(67, 528);
+    glTexCoord2f(0.f, 1.f); glVertex2f(67, 576);
+    glTexCoord2f(1.f, 1.f); glVertex2f(91, 576);
+    glTexCoord2f(1.f, 0.f); glVertex2f(91, 528);
+    glEnd();
+
+    glDisable(GL_BLEND);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 bool Game::stringContains(const std::string& string, char ch) {
