@@ -96,6 +96,11 @@ void Game::readFromMap() {
                 all_refills.push_back(health);
             }
 
+            else if (map_layout[y][x] == 'e') {
+                bsf_tiles[y][x] = Tile(x * tile_size, y * tile_size, true);
+                level_exit = &bsf_tiles[y][x];
+            }
+
             else if (stringContains(wall_chars, map_layout[y][x])) {
                 bsf_tiles[y][x] = Tile(x * tile_size, y * tile_size, true);
             }
@@ -217,6 +222,7 @@ void Game::updatePlaying() {
     shoot();
     updateEnemies();
     updateRefills();
+    checkExit();
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         highlight = 0;
@@ -1363,5 +1369,17 @@ void Game::checkForDead() {
         else {
             i++;
         }
+    }
+}
+
+void Game::checkExit() {
+    float x = player.getX() - level_exit->getX();
+    float y = player.getY() - level_exit->getY();
+
+    float distance = hypotf(x, y);
+
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && distance < 64.f) {
+        highlight = 0;
+        pushState(new MenuState(this));
     }
 }

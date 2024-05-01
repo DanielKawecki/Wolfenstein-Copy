@@ -105,6 +105,7 @@ private:
     int tile_size = 64;
     int enemy_count;
     int current_map;
+    Tile* level_exit;
 
     Player player;
     std::vector<Enemy> all_enemies;
@@ -188,6 +189,7 @@ private:
     void getEnemyTexture(Enemy& enemy);
     void shoot();
     void checkForDead();
+    void checkExit();
 
     // Math functions
     int min(int a, int b) { return (a < b) ? a : b; };
