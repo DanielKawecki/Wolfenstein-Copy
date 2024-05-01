@@ -122,8 +122,8 @@ bool Player::stringContains(const std::string& string, char ch) {
 }
 
 void Player::substractHealth() {
-    health -= 20;
-    std::cout << health << std::endl;
+    health -= 1;
+    //std::cout << health << std::endl;
 }
 
 void Player::addHealth() {
@@ -131,6 +131,10 @@ void Player::addHealth() {
         health += 25;
     else
         health = health_cap;
+}
+
+void Player::subtractAmmo() {
+    ammo -= 1;
 }
 
 void Player::addAmmo() {
@@ -147,6 +151,14 @@ int Player::getTileX() const { return tile_x; }
 int Player::getTileY() const { return tile_y; }
 
 float Player::getAngle() const { return angle; }
+
+int Player::getHealth() const {
+    return health;
+}
+
+int Player::getAmmo() const {
+    return ammo;
+}
 
 Rect Player::getRect() {
     return rect;

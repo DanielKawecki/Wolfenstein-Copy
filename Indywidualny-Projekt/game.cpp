@@ -150,6 +150,28 @@ void Game::inicializeTextures() {
     gun_textures.shoot1 = loadTexture("assets/sprites/gun/shoot2.png");
     gun_textures.shoot2 = loadTexture("assets/sprites/gun/shoot3.png");
 
+    digits.zero = loadTexture("assets/font/0.png");
+    digits.one = loadTexture("assets/font/1.png");
+    digits.two = loadTexture("assets/font/2.png");
+    digits.three = loadTexture("assets/font/3.png");
+    digits.four = loadTexture("assets/font/4.png");
+    digits.five = loadTexture("assets/font/5.png");
+    digits.six = loadTexture("assets/font/6.png");
+    digits.seven = loadTexture("assets/font/7.png");
+    digits.eight = loadTexture("assets/font/8.png");
+    digits.nine = loadTexture("assets/font/9.png");
+
+    digit_atlas.insert({ '0', digits.zero});
+    digit_atlas.insert({ '1', digits.one});
+    digit_atlas.insert({ '2', digits.two});
+    digit_atlas.insert({ '3', digits.three});
+    digit_atlas.insert({ '4', digits.four});
+    digit_atlas.insert({ '5', digits.five});
+    digit_atlas.insert({ '6', digits.six});
+    digit_atlas.insert({ '7', digits.seven});
+    digit_atlas.insert({ '8', digits.eight});
+    digit_atlas.insert({ '9', digits.nine});
+
     texture_atlas.insert({ '#', textures.test });
     texture_atlas.insert({ '1', textures.greystone });
     texture_atlas.insert({ '2', textures.eagle });
@@ -1037,6 +1059,140 @@ void Game::drawHUD() {
 
     glDisable(GL_BLEND);
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    // Health status
+    std::string health = std::to_string(player.getHealth());
+    int digits_count = health.length();
+    
+    if (digits_count == 3) {
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, digits.one);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.f, 0.f); glVertex2f(504, 528);
+        glTexCoord2f(0.f, 1.f); glVertex2f(504, 576);
+        glTexCoord2f(1.f, 1.f); glVertex2f(528, 576);
+        glTexCoord2f(1.f, 0.f); glVertex2f(528, 528);
+        glEnd();
+
+        glDisable(GL_BLEND);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    char second_digit = '0';
+    if (digits_count == 2)
+        second_digit = health[0];
+
+    if (digits_count > 1) {
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, digit_atlas.find(second_digit)->second);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.f, 0.f); glVertex2f(528, 528);
+        glTexCoord2f(0.f, 1.f); glVertex2f(528, 576);
+        glTexCoord2f(1.f, 1.f); glVertex2f(552, 576);
+        glTexCoord2f(1.f, 0.f); glVertex2f(552, 528);
+        glEnd();
+
+        glDisable(GL_BLEND);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    char third_digit = '0';
+    if (digits_count == 1)
+        third_digit = health[0];
+    else if (digits_count == 2)
+        third_digit = health[1];
+
+    if (digits_count >= 1) {
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, digit_atlas.find(third_digit)->second);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.f, 0.f); glVertex2f(552, 528);
+        glTexCoord2f(0.f, 1.f); glVertex2f(552, 576);
+        glTexCoord2f(1.f, 1.f); glVertex2f(576, 576);
+        glTexCoord2f(1.f, 0.f); glVertex2f(576, 528);
+        glEnd();
+
+        glDisable(GL_BLEND);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    // Ammo status
+    std::string ammo = std::to_string(player.getAmmo());
+    digits_count = ammo.length();
+
+    if (digits_count == 2)
+        second_digit = ammo[0];
+
+    if (digits_count > 1) {
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, digit_atlas.find(second_digit)->second);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.f, 0.f); glVertex2f(642, 528);
+        glTexCoord2f(0.f, 1.f); glVertex2f(642, 576);
+        glTexCoord2f(1.f, 1.f); glVertex2f(666, 576);
+        glTexCoord2f(1.f, 0.f); glVertex2f(666, 528);
+        glEnd();
+
+        glDisable(GL_BLEND);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    third_digit = '0';
+    if (digits_count == 1)
+        third_digit = ammo[0];
+    else if (digits_count == 2)
+        third_digit = ammo[1];
+
+    if (digits_count >= 1) {
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, digit_atlas.find(third_digit)->second);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.f, 0.f); glVertex2f(666, 528);
+        glTexCoord2f(0.f, 1.f); glVertex2f(666, 576);
+        glTexCoord2f(1.f, 1.f); glVertex2f(690, 576);
+        glTexCoord2f(1.f, 0.f); glVertex2f(690, 528);
+        glEnd();
+
+        glDisable(GL_BLEND);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    // Current level status
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, digit_atlas.find(current_map + '0')->second);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.f, 0.f); glVertex2f(67, 528);
+    glTexCoord2f(0.f, 1.f); glVertex2f(67, 576);
+    glTexCoord2f(1.f, 1.f); glVertex2f(91, 576);
+    glTexCoord2f(1.f, 0.f); glVertex2f(91, 528);
+    glEnd();
+
+    glDisable(GL_BLEND);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 bool Game::stringContains(const std::string& string, char ch) {
@@ -1175,16 +1331,17 @@ void Game::getEnemyTexture(Enemy& enemy) {//bool stationary, bool shooting, bool
 void Game::shoot() {
     static bool is_SLASH_pressed = false;
 
-    if (glfwGetKey(window, GLFW_KEY_SLASH) == GLFW_PRESS && !is_SLASH_pressed) {
+    if (glfwGetKey(window, GLFW_KEY_SLASH) == GLFW_PRESS && player.getAmmo() > 0 && !is_shooting) {
         is_shooting = true;
+        player.subtractAmmo();
+        is_SLASH_pressed = true;
         for (int i = 0; i < all_enemies.size(); i++) {
-            is_SLASH_pressed = true;
             //std::cout << all_enemies[i].getScreenX() << std::endl;
             if (all_enemies[i].getScreenX() > reticle_position - reticle_offset &&
                 all_enemies[i].getScreenX() < reticle_position + reticle_offset &&
                 all_enemies[i].getVision()) {
                 all_enemies[i].subtractHealth();
-                printf("Enemy shot!\n");
+                //printf("Enemy shot!\n");
             }
         }
     } 
@@ -1204,4 +1361,3 @@ void Game::checkForDead() {
         }
     }
 }
-

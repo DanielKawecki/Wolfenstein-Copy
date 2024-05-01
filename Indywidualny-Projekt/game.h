@@ -70,6 +70,19 @@ struct Refill {
     std::string type;
 };
 
+struct Digits {
+    GLuint zero;
+    GLuint one;
+    GLuint two;
+    GLuint three;
+    GLuint four;
+    GLuint five;
+    GLuint six;
+    GLuint seven;
+    GLuint eight;
+    GLuint nine;
+};
+
 class Game {
 private:
     GLFWwindow* window = nullptr;
@@ -84,6 +97,7 @@ private:
 
     std::vector<std::string> map_layout;
     std::map<char, GLuint> texture_atlas;
+    std::map<char, GLuint> digit_atlas;
     std::string wall_chars = "123#";
     int map_width = 16;
     int tile_size = 64;
@@ -103,6 +117,7 @@ private:
     Gun gun_textures;
     Guard guard_textures;
     GLuint current_guard_texture;
+    Digits digits;
 
     int menu_buttons_count = 2;
     int dead_buttons_count = 3;
