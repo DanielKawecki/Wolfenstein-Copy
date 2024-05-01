@@ -73,7 +73,7 @@ void Game::readFromMap() {
                 bsf_tiles[y][x] = Tile(x * tile_size, y * tile_size, false);
             }
                 
-            else if (map_layout[y][x] == 'e') {
+            else if (map_layout[y][x] == 'g') {
                 Enemy enemy(x * 64 + 32, y * 64 + 32, -32.f);
                 all_enemies.push_back(enemy);
                 bsf_tiles[y][x] = Tile(x * tile_size, y * tile_size, false);
@@ -132,6 +132,8 @@ void Game::inicializeTextures() {
     textures.health_pack = loadTexture("assets/sprites/health.png");
     textures.ammo_pack = loadTexture("assets/sprites/ammo.png");
     textures.hud = loadTexture("assets/textures/hud.png");
+    textures.exit = loadTexture("assets/textures/exit.png");
+    textures.metal = loadTexture("assets/textures/metal.png");
 
     guard_textures.run0 = loadTexture("assets/sprites/guard/run0.png");
     guard_textures.run1 = loadTexture("assets/sprites/guard/run1.png");
@@ -176,6 +178,8 @@ void Game::inicializeTextures() {
     texture_atlas.insert({ '1', textures.greystone });
     texture_atlas.insert({ '2', textures.eagle });
     texture_atlas.insert({ '3', textures.red_brick });
+    texture_atlas.insert({ '4', textures.metal });
+    texture_atlas.insert({ 'e', textures.exit });
 }
 
 GLuint Game::loadTexture(const char* texturePath) {

@@ -28,6 +28,8 @@ struct Textures {
     GLuint health_pack;
     GLuint ammo_pack;
     GLuint hud;
+    GLuint exit;
+    GLuint metal;
 };
 
 struct Guard {
@@ -98,7 +100,7 @@ private:
     std::vector<std::string> map_layout;
     std::map<char, GLuint> texture_atlas;
     std::map<char, GLuint> digit_atlas;
-    std::string wall_chars = "123#";
+    std::string wall_chars = "1234e#";
     int map_width = 16;
     int tile_size = 64;
     int enemy_count;
