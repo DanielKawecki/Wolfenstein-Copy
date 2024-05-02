@@ -104,6 +104,7 @@ private:
     int map_width = 16;
     int tile_size = 64;
     int enemy_count;
+    int enemy_killed = 0;
     int current_map;
     Tile* level_exit;
 
@@ -219,6 +220,9 @@ public:
     void updateMapSelect();
     void renderMapSelect();
 
+    // Level complete state
+    void updateLevelComplete();
+    void renderLevelComplete();
 };
 
 #include "state.h"

@@ -92,3 +92,23 @@ public:
 private:
     Game* game;
 };
+
+class LevelComplete : public State {
+public:
+    LevelComplete(Game* game_) : game(game_) {}
+
+    void handleEvents() {
+        //game->handlePlaying();
+    }
+
+    void update(float delta_time) {
+        game->updateLevelComplete();
+    }
+
+    void render() {
+        game->renderLevelComplete();
+    }
+
+private:
+    Game* game;
+};

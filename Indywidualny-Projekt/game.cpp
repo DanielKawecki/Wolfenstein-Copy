@@ -531,6 +531,44 @@ void Game::renderMapSelect() {
     glfwSwapBuffers(window);
 }
 
+void Game::updateLevelComplete() {
+    if (isEnterPressed()) {
+        pushState(new MenuState(this));
+        highlight = 0;
+    }
+}
+
+void Game::renderLevelComplete() {
+    int enemies_killed = 0;
+    for (int i = 0; i < all_enemies.size(); i++) {
+        if (!all_enemies[i].isAlive())
+            enemies_killed++;
+    }
+    int kill_ratio = enemies_killed / enemy_count;
+
+    // Draw 
+
+    /* Render here */
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glColor3f(1.f, 1.f, 1.f);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, textures.test);
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0); glVertex2d(0, 0);
+    glTexCoord2f(1, 0); glVertex2d(screen_width, 0);
+    glTexCoord2f(1, 1); glVertex2d(screen_width, screen_height);
+    glTexCoord2f(0, 1); glVertex2d(0, screen_height);
+    glEnd();
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    /* Swap front and back buffers */
+    glfwSwapBuffers(window);
+}
+
 void Game::drawRays3d() {
     int depth_of_field;
     int map_x;
@@ -1380,6 +1418,6 @@ void Game::checkExit() {
 
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && distance < 64.f) {
         highlight = 0;
-        pushState(new MenuState(this));
+        pushState(new LevelComplete(this));
     }
 }
