@@ -128,6 +128,7 @@ void Game::inicializeTextures() {
     textures.title_screen = loadTexture("assets/textures/title_screen.png");
     textures.select_screen = loadTexture("assets/textures/select_screen.png");
     textures.death_screen = loadTexture("assets/textures/death_screen.png");
+    textures.complete_screen = loadTexture("assets/textures/complete.png");
     textures.highlight = loadTexture("assets/textures/wings.png");
     textures.test = loadTexture("assets/textures/test.png");
     textures.greystone = loadTexture("assets/textures/greystone.png");
@@ -539,14 +540,6 @@ void Game::updateLevelComplete() {
 }
 
 void Game::renderLevelComplete() {
-    int enemies_killed = 0;
-    for (int i = 0; i < all_enemies.size(); i++) {
-        if (!all_enemies[i].isAlive())
-            enemies_killed++;
-    }
-    int kill_ratio = enemies_killed / enemy_count;
-
-    // Draw 
 
     /* Render here */
     glClear(GL_COLOR_BUFFER_BIT);
@@ -554,7 +547,7 @@ void Game::renderLevelComplete() {
     glColor3f(1.f, 1.f, 1.f);
 
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, textures.test);
+    glBindTexture(GL_TEXTURE_2D, textures.complete_screen);
 
     glBegin(GL_QUADS);
     glTexCoord2f(0, 0); glVertex2d(0, 0);
@@ -564,6 +557,83 @@ void Game::renderLevelComplete() {
     glEnd();
 
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    // Digits position on the screen
+    int x = 590;
+    int y = 255;
+    
+    // Draw kill ratio
+    int enemies_killed = 0;
+    for (int i = 0; i < all_enemies.size(); i++) {
+        if (!all_enemies[i].isAlive())
+            enemies_killed++;
+    }
+    std::string kill_ratio = std::to_string(100 * enemies_killed / enemy_count);
+    int digits_count = kill_ratio.length();
+
+    if (digits_count == 3) {
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, digits.one);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.f, 0.f); glVertex2f(x, y);
+        glTexCoord2f(0.f, 1.f); glVertex2f(x, y + 32);
+        glTexCoord2f(1.f, 1.f); glVertex2f(x + 16, y + 32);
+        glTexCoord2f(1.f, 0.f); glVertex2f(x + 16, y);
+        glEnd();
+
+        glDisable(GL_BLEND);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    char second_digit = '0';
+    if (digits_count == 2)
+        second_digit = kill_ratio[0];
+
+    if (digits_count > 1) {
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, digit_atlas.find(second_digit)->second);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.f, 0.f); glVertex2f(x + 16, y);
+        glTexCoord2f(0.f, 1.f); glVertex2f(x + 16, y + 32);
+        glTexCoord2f(1.f, 1.f); glVertex2f(x + 32, y + 32);
+        glTexCoord2f(1.f, 0.f); glVertex2f(x + 32, y);
+        glEnd();
+
+        glDisable(GL_BLEND);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    char third_digit = '0';
+    if (digits_count == 1)
+        third_digit = kill_ratio[0];
+    else if (digits_count == 2)
+        third_digit = kill_ratio[1];
+
+    if (digits_count >= 1) {
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, digit_atlas.find(third_digit)->second);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.f, 0.f); glVertex2f(x + 32, y);
+        glTexCoord2f(0.f, 1.f); glVertex2f(x + 32, y + 32);
+        glTexCoord2f(1.f, 1.f); glVertex2f(x + 48, y + 32);
+        glTexCoord2f(1.f, 0.f); glVertex2f(x + 48, y);
+        glEnd();
+
+        glDisable(GL_BLEND);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
 
     /* Swap front and back buffers */
     glfwSwapBuffers(window);

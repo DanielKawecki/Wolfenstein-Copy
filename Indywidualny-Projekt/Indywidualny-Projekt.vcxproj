@@ -69,6 +69,7 @@
     <Image Include="assets\sprites\gun\shoot3.png" />
     <Image Include="assets\sprites\gun\shoot4.png" />
     <Image Include="assets\sprites\health.png" />
+    <Image Include="assets\textures\complete.png" />
     <Image Include="assets\textures\death_screen.png" />
     <Image Include="assets\textures\eagle.png" />
     <Image Include="assets\textures\exit.png" />

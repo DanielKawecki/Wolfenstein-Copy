@@ -19,6 +19,7 @@ struct Textures {
     GLuint title_screen;
     GLuint select_screen;
     GLuint death_screen;
+    GLuint complete_screen;
     GLuint highlight;
     GLuint test;
     GLuint greystone;
