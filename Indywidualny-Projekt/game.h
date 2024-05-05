@@ -19,6 +19,7 @@ struct Textures {
     GLuint title_screen;
     GLuint select_screen;
     GLuint death_screen;
+    GLuint complete_screen;
     GLuint highlight;
     GLuint test;
     GLuint greystone;
@@ -28,6 +29,8 @@ struct Textures {
     GLuint health_pack;
     GLuint ammo_pack;
     GLuint hud;
+    GLuint exit;
+    GLuint metal;
 };
 
 struct Guard {
@@ -98,11 +101,13 @@ private:
     std::vector<std::string> map_layout;
     std::map<char, GLuint> texture_atlas;
     std::map<char, GLuint> digit_atlas;
-    std::string wall_chars = "123#";
+    std::string wall_chars = "1234e#";
     int map_width = 16;
     int tile_size = 64;
     int enemy_count;
+    int enemy_killed = 0;
     int current_map;
+    Tile* level_exit;
 
     Player player;
     std::vector<Enemy> all_enemies;
@@ -186,6 +191,7 @@ private:
     void getEnemyTexture(Enemy& enemy);
     void shoot();
     void checkForDead();
+    void checkExit();
 
     // Math functions
     int min(int a, int b) { return (a < b) ? a : b; };
@@ -215,6 +221,9 @@ public:
     void updateMapSelect();
     void renderMapSelect();
 
+    // Level complete state
+    void updateLevelComplete();
+    void renderLevelComplete();
 };
 
 #include "state.h"

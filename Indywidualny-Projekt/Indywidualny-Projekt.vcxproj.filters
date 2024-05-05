@@ -183,5 +183,14 @@
     <Image Include="assets\font\9.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
+    <Image Include="assets\textures\metal.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\textures\exit.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="assets\textures\complete.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
   </ItemGroup>
 </Project>

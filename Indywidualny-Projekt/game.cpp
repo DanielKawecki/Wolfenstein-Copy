@@ -73,7 +73,7 @@ void Game::readFromMap() {
                 bsf_tiles[y][x] = Tile(x * tile_size, y * tile_size, false);
             }
                 
-            else if (map_layout[y][x] == 'e') {
+            else if (map_layout[y][x] == 'g') {
                 Enemy enemy(x * 64 + 32, y * 64 + 32, -32.f);
                 all_enemies.push_back(enemy);
                 bsf_tiles[y][x] = Tile(x * tile_size, y * tile_size, false);
@@ -94,6 +94,11 @@ void Game::readFromMap() {
                 health.y = y * tile_size + tile_size / 2;
                 health.type = "health";
                 all_refills.push_back(health);
+            }
+
+            else if (map_layout[y][x] == 'e') {
+                bsf_tiles[y][x] = Tile(x * tile_size, y * tile_size, true);
+                level_exit = &bsf_tiles[y][x];
             }
 
             else if (stringContains(wall_chars, map_layout[y][x])) {
@@ -123,6 +128,7 @@ void Game::inicializeTextures() {
     textures.title_screen = loadTexture("assets/textures/title_screen.png");
     textures.select_screen = loadTexture("assets/textures/select_screen.png");
     textures.death_screen = loadTexture("assets/textures/death_screen.png");
+    textures.complete_screen = loadTexture("assets/textures/complete.png");
     textures.highlight = loadTexture("assets/textures/wings.png");
     textures.test = loadTexture("assets/textures/test.png");
     textures.greystone = loadTexture("assets/textures/greystone.png");
@@ -132,6 +138,8 @@ void Game::inicializeTextures() {
     textures.health_pack = loadTexture("assets/sprites/health.png");
     textures.ammo_pack = loadTexture("assets/sprites/ammo.png");
     textures.hud = loadTexture("assets/textures/hud.png");
+    textures.exit = loadTexture("assets/textures/exit.png");
+    textures.metal = loadTexture("assets/textures/metal.png");
 
     guard_textures.run0 = loadTexture("assets/sprites/guard/run0.png");
     guard_textures.run1 = loadTexture("assets/sprites/guard/run1.png");
@@ -176,6 +184,8 @@ void Game::inicializeTextures() {
     texture_atlas.insert({ '1', textures.greystone });
     texture_atlas.insert({ '2', textures.eagle });
     texture_atlas.insert({ '3', textures.red_brick });
+    texture_atlas.insert({ '4', textures.metal });
+    texture_atlas.insert({ 'e', textures.exit });
 }
 
 GLuint Game::loadTexture(const char* texturePath) {
@@ -213,6 +223,7 @@ void Game::updatePlaying() {
     shoot();
     updateEnemies();
     updateRefills();
+    checkExit();
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         highlight = 0;
@@ -516,6 +527,113 @@ void Game::renderMapSelect() {
 
     glDisable(GL_BLEND);
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    /* Swap front and back buffers */
+    glfwSwapBuffers(window);
+}
+
+void Game::updateLevelComplete() {
+    if (isEnterPressed()) {
+        pushState(new MenuState(this));
+        highlight = 0;
+    }
+}
+
+void Game::renderLevelComplete() {
+
+    /* Render here */
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glColor3f(1.f, 1.f, 1.f);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, textures.complete_screen);
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0); glVertex2d(0, 0);
+    glTexCoord2f(1, 0); glVertex2d(screen_width, 0);
+    glTexCoord2f(1, 1); glVertex2d(screen_width, screen_height);
+    glTexCoord2f(0, 1); glVertex2d(0, screen_height);
+    glEnd();
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    // Digits position on the screen
+    int x = 590;
+    int y = 255;
+    
+    // Draw kill ratio
+    int enemies_killed = 0;
+    for (int i = 0; i < all_enemies.size(); i++) {
+        if (!all_enemies[i].isAlive())
+            enemies_killed++;
+    }
+    std::string kill_ratio = std::to_string(100 * enemies_killed / enemy_count);
+    int digits_count = kill_ratio.length();
+
+    if (digits_count == 3) {
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, digits.one);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.f, 0.f); glVertex2f(x, y);
+        glTexCoord2f(0.f, 1.f); glVertex2f(x, y + 32);
+        glTexCoord2f(1.f, 1.f); glVertex2f(x + 16, y + 32);
+        glTexCoord2f(1.f, 0.f); glVertex2f(x + 16, y);
+        glEnd();
+
+        glDisable(GL_BLEND);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    char second_digit = '0';
+    if (digits_count == 2)
+        second_digit = kill_ratio[0];
+
+    if (digits_count > 1) {
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, digit_atlas.find(second_digit)->second);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.f, 0.f); glVertex2f(x + 16, y);
+        glTexCoord2f(0.f, 1.f); glVertex2f(x + 16, y + 32);
+        glTexCoord2f(1.f, 1.f); glVertex2f(x + 32, y + 32);
+        glTexCoord2f(1.f, 0.f); glVertex2f(x + 32, y);
+        glEnd();
+
+        glDisable(GL_BLEND);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    char third_digit = '0';
+    if (digits_count == 1)
+        third_digit = kill_ratio[0];
+    else if (digits_count == 2)
+        third_digit = kill_ratio[1];
+
+    if (digits_count >= 1) {
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, digit_atlas.find(third_digit)->second);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.f, 0.f); glVertex2f(x + 32, y);
+        glTexCoord2f(0.f, 1.f); glVertex2f(x + 32, y + 32);
+        glTexCoord2f(1.f, 1.f); glVertex2f(x + 48, y + 32);
+        glTexCoord2f(1.f, 0.f); glVertex2f(x + 48, y);
+        glEnd();
+
+        glDisable(GL_BLEND);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
 
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
@@ -1359,5 +1477,17 @@ void Game::checkForDead() {
         else {
             i++;
         }
+    }
+}
+
+void Game::checkExit() {
+    float x = player.getX() - level_exit->getX();
+    float y = player.getY() - level_exit->getY();
+
+    float distance = hypotf(x, y);
+
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && distance < 64.f) {
+        highlight = 0;
+        pushState(new LevelComplete(this));
     }
 }
