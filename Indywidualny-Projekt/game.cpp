@@ -1066,6 +1066,7 @@ void Game::drawEnemies() {
             sprite_y = b;
 
             float size = 180.f * (256.f / distance);
+            all_enemies[i].setSize(size);
 
             sprite_x = (sprite_x * (projection_distance / 8.f) / sprite_y) + ((screen_width / 8.f) / 2.f);
             sprite_y = (sprite_z * (projection_distance / 8.f) / sprite_y) + ((screen_height / 8.f) / 2.f);
@@ -1073,7 +1074,7 @@ void Game::drawEnemies() {
             getEnemyTexture(all_enemies[i]);
 
             all_enemies[i].setScreenX(sprite_x * 8.f);
-
+            // current_guard_texture
             Drawable enemy = { sprite_x * 8.f, sprite_y * 8.f, size, size, current_guard_texture, distance, 0, "sprite" };
             all_drawables.push_back(enemy);
 
@@ -1482,9 +1483,16 @@ void Game::shoot() {
         is_SLASH_pressed = true;
         for (int i = 0; i < all_enemies.size(); i++) {
             //std::cout << all_enemies[i].getScreenX() << std::endl;
-            if (all_enemies[i].getScreenX() > reticle_position - reticle_offset &&
-                all_enemies[i].getScreenX() < reticle_position + reticle_offset &&
-                all_enemies[i].getVision()) {
+            //if (all_enemies[i].getScreenX() > reticle_position - reticle_offset &&
+            //    all_enemies[i].getScreenX() < reticle_position + reticle_offset &&
+            //    all_enemies[i].getVision()) {
+            //    all_enemies[i].subtractHealth();
+            //    //printf("Enemy shot!\n");
+            //}
+            float x = all_enemies[i].getScreenX();
+            float size = (all_enemies[i].getSize() - 120.f) / 4.f;
+            bool vision = all_enemies[i].getVision();
+            if (x - size < reticle_position && x + size > reticle_position && vision) {
                 all_enemies[i].subtractHealth();
                 //printf("Enemy shot!\n");
             }
@@ -1513,7 +1521,7 @@ void Game::checkExit() {
 
     float distance = hypotf(x, y);
 
-    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && distance < 64.f) {
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && distance < 96.f) {
         highlight = 0;
         pushState(new LevelComplete(this));
     }

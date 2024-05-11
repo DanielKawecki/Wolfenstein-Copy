@@ -52,6 +52,7 @@ private:
 	float screen_x = 0.f;
 	float screen_y = 0.f;
 	float scale = 1.f;
+	float size = 64.f;
 
 	float distance = 0.f;
 	//float normalized_distance = 0.f;
@@ -80,4 +81,6 @@ public:
 	void subtractHealth();
 	void die();
 	bool isDying() const;
+	void setSize(float size_);
+	float getSize() const;
 };

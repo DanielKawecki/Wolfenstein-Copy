@@ -148,6 +148,14 @@ bool Enemy::isDying() const {
 	return dying;
 }
 
+void Enemy::setSize(float size_) {
+	size = size_;
+}
+
+float Enemy::getSize() const {
+	return size;
+}
+
 float Enemy::getX() const {
 	return x;
 }
