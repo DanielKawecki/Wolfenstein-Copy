@@ -559,7 +559,7 @@ void Game::renderLevelComplete() {
     glBindTexture(GL_TEXTURE_2D, 0);
 
     // Digits position on the screen
-    int x = 590;
+    int x = 605;
     int y = 255;
     
     // Draw kill ratio
@@ -577,6 +577,9 @@ void Game::renderLevelComplete() {
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glBegin(GL_QUADS);
         glTexCoord2f(0.f, 0.f); glVertex2f(x, y);
@@ -599,6 +602,9 @@ void Game::renderLevelComplete() {
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glBegin(GL_QUADS);
         glTexCoord2f(0.f, 0.f); glVertex2f(x + 16, y);
@@ -623,6 +629,9 @@ void Game::renderLevelComplete() {
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glBegin(GL_QUADS);
         glTexCoord2f(0.f, 0.f); glVertex2f(x + 32, y);
@@ -1189,6 +1198,9 @@ void Game::drawHUD() {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         glBegin(GL_QUADS);
         glTexCoord2f(0.f, 0.f); glVertex2f(504, 528);
         glTexCoord2f(0.f, 1.f); glVertex2f(504, 576);
@@ -1210,6 +1222,9 @@ void Game::drawHUD() {
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glBegin(GL_QUADS);
         glTexCoord2f(0.f, 0.f); glVertex2f(528, 528);
@@ -1234,6 +1249,9 @@ void Game::drawHUD() {
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glBegin(GL_QUADS);
         glTexCoord2f(0.f, 0.f); glVertex2f(552, 528);
@@ -1260,6 +1278,9 @@ void Game::drawHUD() {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         glBegin(GL_QUADS);
         glTexCoord2f(0.f, 0.f); glVertex2f(642, 528);
         glTexCoord2f(0.f, 1.f); glVertex2f(642, 576);
@@ -1284,6 +1305,9 @@ void Game::drawHUD() {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         glBegin(GL_QUADS);
         glTexCoord2f(0.f, 0.f); glVertex2f(666, 528);
         glTexCoord2f(0.f, 1.f); glVertex2f(666, 576);
@@ -1301,6 +1325,9 @@ void Game::drawHUD() {
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glBegin(GL_QUADS);
     glTexCoord2f(0.f, 0.f); glVertex2f(67, 528);
