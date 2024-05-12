@@ -108,6 +108,7 @@ private:
     int enemy_killed = 0;
     int current_map;
     Tile* level_exit;
+    int levels_unlocked = 1;
 
     Player player;
     std::vector<Enemy> all_enemies;

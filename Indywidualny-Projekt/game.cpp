@@ -511,7 +511,13 @@ void Game::renderMapSelect() {
     int height = 75;
 
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, textures.highlight);
+
+    if (highlight + 1 == 4)
+        glBindTexture(GL_TEXTURE_2D, textures.highlight);
+    else if (highlight + 1 > levels_unlocked) 
+        glBindTexture(GL_TEXTURE_2D, textures.test);
+    else
+        glBindTexture(GL_TEXTURE_2D, textures.highlight);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -527,6 +533,26 @@ void Game::renderMapSelect() {
 
     glDisable(GL_BLEND);
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    // Level locekd
+    /*int lock_x = 435;
+    int lock_y = 205 + 1 * 70;
+    int lock_width = 15;
+    int lock_height = 15;
+
+    glColor3f(1.f, 1.f, 1.f);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, textures.test);
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0); glVertex2d(lock_x, lock_y);
+    glTexCoord2f(1, 0); glVertex2d(lock_x + lock_width, lock_y);
+    glTexCoord2f(1, 1); glVertex2d(lock_x + lock_width, lock_y + lock_height);
+    glTexCoord2f(0, 1); glVertex2d(lock_x, lock_y + lock_height);
+    glEnd();
+
+    glBindTexture(GL_TEXTURE_2D, 0);*/
 
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
