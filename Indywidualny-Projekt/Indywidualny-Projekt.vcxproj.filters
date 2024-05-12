@@ -192,5 +192,8 @@
     <Image Include="assets\textures\complete.png">
       <Filter>Pliki zasobów</Filter>
     </Image>
+    <Image Include="assets\textures\locked.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
   </ItemGroup>
 </Project>

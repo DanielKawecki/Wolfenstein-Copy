@@ -21,6 +21,7 @@ struct Textures {
     GLuint death_screen;
     GLuint complete_screen;
     GLuint highlight;
+    GLuint locked;
     GLuint test;
     GLuint greystone;
     GLuint eagle;

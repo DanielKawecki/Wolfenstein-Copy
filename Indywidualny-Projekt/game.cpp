@@ -130,6 +130,7 @@ void Game::inicializeTextures() {
     textures.death_screen = loadTexture("assets/textures/death_screen.png");
     textures.complete_screen = loadTexture("assets/textures/complete.png");
     textures.highlight = loadTexture("assets/textures/wings.png");
+    textures.locked = loadTexture("assets/textures/locked.png");
     textures.test = loadTexture("assets/textures/test.png");
     textures.greystone = loadTexture("assets/textures/greystone.png");
     textures.eagle = loadTexture("assets/textures/eagle.png");
@@ -428,7 +429,7 @@ void Game::renderDead() {
 }
 
 void Game::updateMapSelect() {
-    if (isEnterPressed()) {
+    if (isEnterPressed() && (highlight + 1 <= levels_unlocked || highlight + 1 == 4)) {
         switch (highlight) {
         case 0:
             current_map = 1;
@@ -515,7 +516,7 @@ void Game::renderMapSelect() {
     if (highlight + 1 == 4)
         glBindTexture(GL_TEXTURE_2D, textures.highlight);
     else if (highlight + 1 > levels_unlocked) 
-        glBindTexture(GL_TEXTURE_2D, textures.test);
+        glBindTexture(GL_TEXTURE_2D, textures.locked);
     else
         glBindTexture(GL_TEXTURE_2D, textures.highlight);
 
