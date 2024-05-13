@@ -8,6 +8,7 @@
 #include <stack>
 #include <map>
 #include <algorithm>
+#include <fstream>
 #include "player.h"
 #include "enemy.h"
 #include "tile.h"
@@ -189,6 +190,8 @@ private:
     Tile* getTile(int row, int column);
     bool isEnterPressed();
     bool visionCheck(float enemy_x, float enemy_y);
+    void checkUnlocked();
+    void updateUnlocked();
     //void getEnemyTexture(bool stationary, bool shooting, bool succesful_shot, int number);
     void getEnemyTexture(Enemy& enemy);
     void shoot();

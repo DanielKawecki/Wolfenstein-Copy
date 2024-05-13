@@ -14,6 +14,7 @@ Game::Game() {
     clock.start();
     shooting_clock = Clock();
     shooting_clock.start();
+    checkUnlocked();
 }
 
 Game::~Game() {
@@ -1436,6 +1437,34 @@ bool Game::visionCheck(float enemy_x, float enemy_y) {
     return false;
 }
 
+void Game::checkUnlocked() {
+    std::string temp;
+    std::string path = "assets/maps/unlocked.txt";
+    std::ifstream file(path);
+
+    if (file.is_open()) {
+        std::getline(file, temp);
+        file.close();
+
+        levels_unlocked = std::stoi(temp);
+    }
+    else {
+        std::ofstream new_file(path);
+        new_file << "1";
+        new_file.close();
+
+        levels_unlocked = 1;
+    }
+}
+
+void Game::updateUnlocked() {
+    std::string path = "assets/maps/unlocked.txt";
+    std::ofstream file(path, std::ofstream::out | std::ofstream::trunc);
+    levels_unlocked++;
+    file << std::to_string(levels_unlocked);
+    file.close();
+}
+
 void Game::getEnemyTexture(Enemy& enemy) {//bool stationary, bool shooting, bool succesful_shot, int number) {
     bool stationary = enemy.getStationary();
     bool shooting = enemy.getShooting();
@@ -1550,6 +1579,7 @@ void Game::checkExit() {
 
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && distance < 96.f) {
         highlight = 0;
+        updateUnlocked();
         pushState(new LevelComplete(this));
     }
 }
