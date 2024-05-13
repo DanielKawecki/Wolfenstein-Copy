@@ -1459,10 +1459,12 @@ void Game::checkUnlocked() {
 
 void Game::updateUnlocked() {
     std::string path = "assets/maps/unlocked.txt";
-    std::ofstream file(path, std::ofstream::out | std::ofstream::trunc);
-    levels_unlocked++;
-    file << std::to_string(levels_unlocked);
-    file.close();
+    if (levels_unlocked == current_map) {
+        std::ofstream file(path, std::ofstream::out | std::ofstream::trunc);
+        levels_unlocked++;
+        file << std::to_string(levels_unlocked);
+        file.close();
+    }
 }
 
 void Game::getEnemyTexture(Enemy& enemy) {//bool stationary, bool shooting, bool succesful_shot, int number) {
@@ -1546,7 +1548,7 @@ void Game::shoot() {
             //    //printf("Enemy shot!\n");
             //}
             float x = all_enemies[i].getScreenX();
-            float size = (all_enemies[i].getSize() - 120.f) / 4.f;
+            float size = (all_enemies[i].getSize() - 50.f) / 4.f;
             bool vision = all_enemies[i].getVision();
             if (x - size < reticle_position && x + size > reticle_position && vision) {
                 all_enemies[i].subtractHealth();
