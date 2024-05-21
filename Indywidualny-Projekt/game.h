@@ -71,7 +71,7 @@ struct Refill {
     float x;
     float y;
     float z = -32.f;
-    float width = 150.f;
+    float width = 180.f;
     std::string type;
 };
 

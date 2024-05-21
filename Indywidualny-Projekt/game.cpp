@@ -30,6 +30,7 @@ void Game::initializeGL() {
         throw std::runtime_error("Failed to initialize GLFW");
 
     /* Create a windowed mode window and its OpenGL context */
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     window = glfwCreateWindow(screen_width, screen_height, window_title, nullptr, nullptr);
     if (!window) {
         glfwTerminate();
@@ -39,6 +40,7 @@ void Game::initializeGL() {
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
     glOrtho(0, screen_width, screen_height, 0, -1, 1);
+    glfwSetWindowPos(window, 100, 100);
 }
 
 void Game::initilizeMap(int number) {
@@ -1217,6 +1219,7 @@ void Game::drawHUD() {
     glBindTexture(GL_TEXTURE_2D, 0);
 
     // Health status
+    glColor3f(0.7, 0.7, 1.f);
     std::string health = std::to_string(player.getHealth());
     int digits_count = health.length();
     
