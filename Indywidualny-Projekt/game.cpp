@@ -1361,11 +1361,13 @@ void Game::drawHUD() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    int offset = 91 * 3;
+
     glBegin(GL_QUADS);
-    glTexCoord2f(0.f, 0.f); glVertex2f(67, 528);
-    glTexCoord2f(0.f, 1.f); glVertex2f(67, 576);
-    glTexCoord2f(1.f, 1.f); glVertex2f(91, 576);
-    glTexCoord2f(1.f, 0.f); glVertex2f(91, 528);
+    glTexCoord2f(0.f, 0.f); glVertex2f(340, 528);
+    glTexCoord2f(0.f, 1.f); glVertex2f(340, 576);
+    glTexCoord2f(1.f, 1.f); glVertex2f(364, 576);
+    glTexCoord2f(1.f, 0.f); glVertex2f(364, 528);
     glEnd();
 
     glDisable(GL_BLEND);
