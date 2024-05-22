@@ -14,6 +14,7 @@ Game::Game() {
     clock.start();
     shooting_clock = Clock();
     shooting_clock.start();
+    checkUnlocked();
 }
 
 Game::~Game() {
@@ -29,6 +30,7 @@ void Game::initializeGL() {
         throw std::runtime_error("Failed to initialize GLFW");
 
     /* Create a windowed mode window and its OpenGL context */
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     window = glfwCreateWindow(screen_width, screen_height, window_title, nullptr, nullptr);
     if (!window) {
         glfwTerminate();
@@ -38,6 +40,7 @@ void Game::initializeGL() {
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
     glOrtho(0, screen_width, screen_height, 0, -1, 1);
+    glfwSetWindowPos(window, 100, 100);
 }
 
 void Game::initilizeMap(int number) {
@@ -130,6 +133,7 @@ void Game::inicializeTextures() {
     textures.death_screen = loadTexture("assets/textures/death_screen.png");
     textures.complete_screen = loadTexture("assets/textures/complete.png");
     textures.highlight = loadTexture("assets/textures/wings.png");
+    textures.locked = loadTexture("assets/textures/locked.png");
     textures.test = loadTexture("assets/textures/test.png");
     textures.greystone = loadTexture("assets/textures/greystone.png");
     textures.eagle = loadTexture("assets/textures/eagle.png");
@@ -428,7 +432,7 @@ void Game::renderDead() {
 }
 
 void Game::updateMapSelect() {
-    if (isEnterPressed()) {
+    if (isEnterPressed() && (highlight + 1 <= levels_unlocked || highlight + 1 == 4)) {
         switch (highlight) {
         case 0:
             current_map = 1;
@@ -511,7 +515,13 @@ void Game::renderMapSelect() {
     int height = 75;
 
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, textures.highlight);
+
+    if (highlight + 1 == 4)
+        glBindTexture(GL_TEXTURE_2D, textures.highlight);
+    else if (highlight + 1 > levels_unlocked) 
+        glBindTexture(GL_TEXTURE_2D, textures.locked);
+    else
+        glBindTexture(GL_TEXTURE_2D, textures.highlight);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -527,6 +537,26 @@ void Game::renderMapSelect() {
 
     glDisable(GL_BLEND);
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    // Level locekd
+    /*int lock_x = 435;
+    int lock_y = 205 + 1 * 70;
+    int lock_width = 15;
+    int lock_height = 15;
+
+    glColor3f(1.f, 1.f, 1.f);
+
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, textures.test);
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0); glVertex2d(lock_x, lock_y);
+    glTexCoord2f(1, 0); glVertex2d(lock_x + lock_width, lock_y);
+    glTexCoord2f(1, 1); glVertex2d(lock_x + lock_width, lock_y + lock_height);
+    glTexCoord2f(0, 1); glVertex2d(lock_x, lock_y + lock_height);
+    glEnd();
+
+    glBindTexture(GL_TEXTURE_2D, 0);*/
 
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
@@ -559,7 +589,7 @@ void Game::renderLevelComplete() {
     glBindTexture(GL_TEXTURE_2D, 0);
 
     // Digits position on the screen
-    int x = 590;
+    int x = 605;
     int y = 255;
     
     // Draw kill ratio
@@ -577,6 +607,9 @@ void Game::renderLevelComplete() {
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glBegin(GL_QUADS);
         glTexCoord2f(0.f, 0.f); glVertex2f(x, y);
@@ -599,6 +632,9 @@ void Game::renderLevelComplete() {
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glBegin(GL_QUADS);
         glTexCoord2f(0.f, 0.f); glVertex2f(x + 16, y);
@@ -623,6 +659,9 @@ void Game::renderLevelComplete() {
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glBegin(GL_QUADS);
         glTexCoord2f(0.f, 0.f); glVertex2f(x + 32, y);
@@ -1057,6 +1096,7 @@ void Game::drawEnemies() {
             sprite_y = b;
 
             float size = 180.f * (256.f / distance);
+            all_enemies[i].setSize(size);
 
             sprite_x = (sprite_x * (projection_distance / 8.f) / sprite_y) + ((screen_width / 8.f) / 2.f);
             sprite_y = (sprite_z * (projection_distance / 8.f) / sprite_y) + ((screen_height / 8.f) / 2.f);
@@ -1064,7 +1104,7 @@ void Game::drawEnemies() {
             getEnemyTexture(all_enemies[i]);
 
             all_enemies[i].setScreenX(sprite_x * 8.f);
-
+            // current_guard_texture
             Drawable enemy = { sprite_x * 8.f, sprite_y * 8.f, size, size, current_guard_texture, distance, 0, "sprite" };
             all_drawables.push_back(enemy);
 
@@ -1179,6 +1219,7 @@ void Game::drawHUD() {
     glBindTexture(GL_TEXTURE_2D, 0);
 
     // Health status
+    glColor3f(0.7, 0.7, 1.f);
     std::string health = std::to_string(player.getHealth());
     int digits_count = health.length();
     
@@ -1188,6 +1229,9 @@ void Game::drawHUD() {
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glBegin(GL_QUADS);
         glTexCoord2f(0.f, 0.f); glVertex2f(504, 528);
@@ -1210,6 +1254,9 @@ void Game::drawHUD() {
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glBegin(GL_QUADS);
         glTexCoord2f(0.f, 0.f); glVertex2f(528, 528);
@@ -1234,6 +1281,9 @@ void Game::drawHUD() {
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         glBegin(GL_QUADS);
         glTexCoord2f(0.f, 0.f); glVertex2f(552, 528);
@@ -1260,6 +1310,9 @@ void Game::drawHUD() {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         glBegin(GL_QUADS);
         glTexCoord2f(0.f, 0.f); glVertex2f(642, 528);
         glTexCoord2f(0.f, 1.f); glVertex2f(642, 576);
@@ -1284,6 +1337,9 @@ void Game::drawHUD() {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         glBegin(GL_QUADS);
         glTexCoord2f(0.f, 0.f); glVertex2f(666, 528);
         glTexCoord2f(0.f, 1.f); glVertex2f(666, 576);
@@ -1302,11 +1358,16 @@ void Game::drawHUD() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    int offset = 91 * 3;
+
     glBegin(GL_QUADS);
-    glTexCoord2f(0.f, 0.f); glVertex2f(67, 528);
-    glTexCoord2f(0.f, 1.f); glVertex2f(67, 576);
-    glTexCoord2f(1.f, 1.f); glVertex2f(91, 576);
-    glTexCoord2f(1.f, 0.f); glVertex2f(91, 528);
+    glTexCoord2f(0.f, 0.f); glVertex2f(340, 528);
+    glTexCoord2f(0.f, 1.f); glVertex2f(340, 576);
+    glTexCoord2f(1.f, 1.f); glVertex2f(364, 576);
+    glTexCoord2f(1.f, 0.f); glVertex2f(364, 528);
     glEnd();
 
     glDisable(GL_BLEND);
@@ -1379,6 +1440,36 @@ bool Game::visionCheck(float enemy_x, float enemy_y) {
     }
 
     return false;
+}
+
+void Game::checkUnlocked() {
+    std::string temp;
+    std::string path = "assets/maps/unlocked.txt";
+    std::ifstream file(path);
+
+    if (file.is_open()) {
+        std::getline(file, temp);
+        file.close();
+
+        levels_unlocked = std::stoi(temp);
+    }
+    else {
+        std::ofstream new_file(path);
+        new_file << "1";
+        new_file.close();
+
+        levels_unlocked = 1;
+    }
+}
+
+void Game::updateUnlocked() {
+    std::string path = "assets/maps/unlocked.txt";
+    if (levels_unlocked == current_map) {
+        std::ofstream file(path, std::ofstream::out | std::ofstream::trunc);
+        levels_unlocked++;
+        file << std::to_string(levels_unlocked);
+        file.close();
+    }
 }
 
 void Game::getEnemyTexture(Enemy& enemy) {//bool stationary, bool shooting, bool succesful_shot, int number) {
@@ -1455,9 +1546,16 @@ void Game::shoot() {
         is_SLASH_pressed = true;
         for (int i = 0; i < all_enemies.size(); i++) {
             //std::cout << all_enemies[i].getScreenX() << std::endl;
-            if (all_enemies[i].getScreenX() > reticle_position - reticle_offset &&
-                all_enemies[i].getScreenX() < reticle_position + reticle_offset &&
-                all_enemies[i].getVision()) {
+            //if (all_enemies[i].getScreenX() > reticle_position - reticle_offset &&
+            //    all_enemies[i].getScreenX() < reticle_position + reticle_offset &&
+            //    all_enemies[i].getVision()) {
+            //    all_enemies[i].subtractHealth();
+            //    //printf("Enemy shot!\n");
+            //}
+            float x = all_enemies[i].getScreenX();
+            float size = (all_enemies[i].getSize() - 50.f) / 4.f;
+            bool vision = all_enemies[i].getVision();
+            if (x - size < reticle_position && x + size > reticle_position && vision) {
                 all_enemies[i].subtractHealth();
                 //printf("Enemy shot!\n");
             }
@@ -1486,8 +1584,9 @@ void Game::checkExit() {
 
     float distance = hypotf(x, y);
 
-    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && distance < 64.f) {
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && distance < 96.f) {
         highlight = 0;
+        updateUnlocked();
         pushState(new LevelComplete(this));
     }
 }

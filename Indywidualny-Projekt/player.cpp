@@ -3,6 +3,8 @@
 Player::Player() {
 	x = 200;
 	y = 200;
+
+    srand(time(NULL));
 }
 
 void Player::setPosition(float x_, float y_) {
@@ -122,7 +124,8 @@ bool Player::stringContains(const std::string& string, char ch) {
 }
 
 void Player::substractHealth() {
-    health -= 1;
+    if ((float)rand() / RAND_MAX > 0.55)
+        health -= rand() % 7 + 3;
     //std::cout << health << std::endl;
 }
 

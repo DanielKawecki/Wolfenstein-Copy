@@ -75,6 +75,7 @@
     <Image Include="assets\textures\exit.png" />
     <Image Include="assets\textures\greystone.png" />
     <Image Include="assets\textures\hud.png" />
+    <Image Include="assets\textures\locked.png" />
     <Image Include="assets\textures\metal.png" />
     <Image Include="assets\textures\redbrick.png" />
     <Image Include="assets\textures\select_screen.png" />

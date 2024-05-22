@@ -8,6 +8,7 @@
 #include <stack>
 #include <map>
 #include <algorithm>
+#include <fstream>
 #include "player.h"
 #include "enemy.h"
 #include "tile.h"
@@ -21,6 +22,7 @@ struct Textures {
     GLuint death_screen;
     GLuint complete_screen;
     GLuint highlight;
+    GLuint locked;
     GLuint test;
     GLuint greystone;
     GLuint eagle;
@@ -69,7 +71,7 @@ struct Refill {
     float x;
     float y;
     float z = -32.f;
-    float width = 150.f;
+    float width = 180.f;
     std::string type;
 };
 
@@ -108,6 +110,7 @@ private:
     int enemy_killed = 0;
     int current_map;
     Tile* level_exit;
+    int levels_unlocked = 1;
 
     Player player;
     std::vector<Enemy> all_enemies;
@@ -187,6 +190,8 @@ private:
     Tile* getTile(int row, int column);
     bool isEnterPressed();
     bool visionCheck(float enemy_x, float enemy_y);
+    void checkUnlocked();
+    void updateUnlocked();
     //void getEnemyTexture(bool stationary, bool shooting, bool succesful_shot, int number);
     void getEnemyTexture(Enemy& enemy);
     void shoot();
